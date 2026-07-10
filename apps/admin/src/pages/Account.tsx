@@ -55,7 +55,7 @@ export function Account() {
       setProfileSaved(true);
       setTimeout(() => setProfileSaved(false), 3000);
     } catch (e) {
-      setProfileError(e instanceof Error ? e.message : "Failed to save profile");
+      setProfileError(e instanceof Error ? e.message : t("account.profile.errors.saveFailed"));
     } finally {
       setProfileSaving(false);
     }
@@ -64,33 +64,33 @@ export function Account() {
   return (
     <div className="page">
       <div className="page-header">
-        <h2>Account</h2>
+        <h2>{t("account.title")}</h2>
       </div>
 
       <section className="settings-section">
-        <h3>Profile</h3>
+        <h3>{t("account.profile.title")}</h3>
         <div className="settings-form">
           <label>
-            Email
+            {t("account.profile.email")}
             <input type="email" value={user?.email || ""} disabled />
           </label>
           <div style={{ display: "flex", gap: "1rem" }}>
             <label style={{ flex: 1 }}>
-              First Name
+              {t("account.profile.firstName")}
               <input
                 type="text"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
-                placeholder="First name"
+                placeholder={t("account.profile.firstNamePlaceholder")}
               />
             </label>
             <label style={{ flex: 1 }}>
-              Last Name
+              {t("account.profile.lastName")}
               <input
                 type="text"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
-                placeholder="Last name"
+                placeholder={t("account.profile.lastNamePlaceholder")}
               />
             </label>
           </div>
@@ -100,9 +100,9 @@ export function Account() {
               disabled={profileSaving}
               onClick={handleProfileSave}
             >
-              {profileSaving ? "Saving..." : "Save Profile"}
+              {profileSaving ? t("account.profile.saving") : t("account.profile.save")}
             </button>
-            {profileSaved && <span className="settings-success">Profile saved!</span>}
+            {profileSaved && <span className="settings-success">{t("account.profile.saved")}</span>}
             {profileError && <span className="auth-error">{profileError}</span>}
           </div>
         </div>
@@ -139,10 +139,10 @@ export function Account() {
       </section>
 
       <section className="settings-section">
-        <h3>Change Password</h3>
+        <h3>{t("account.password.title")}</h3>
         <div className="settings-form">
           <label>
-            Current Password
+            {t("account.password.current")}
             <input
               type="password"
               value={currentPassword}
@@ -150,17 +150,17 @@ export function Account() {
             />
           </label>
           <label>
-            New Password
+            {t("account.password.new")}
             <input
               type="password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              placeholder="At least 12 characters"
+              placeholder={t("account.password.newPlaceholder")}
             />
             <PasswordStrengthMeter password={newPassword} />
           </label>
           <label>
-            Confirm New Password
+            {t("account.password.confirm")}
             <input
               type="password"
               value={confirmPassword}
@@ -175,11 +175,11 @@ export function Account() {
                 setPasswordError("");
                 setPasswordSaved(false);
                 if (newPassword !== confirmPassword) {
-                  setPasswordError("New passwords do not match");
+                  setPasswordError(t("account.password.errors.mismatch"));
                   return;
                 }
                 if (!meetsPasswordRequirements(newPassword)) {
-                  setPasswordError("Please meet all password requirements");
+                  setPasswordError(t("account.password.errors.requirements"));
                   return;
                 }
                 setPasswordSaving(true);
@@ -194,15 +194,15 @@ export function Account() {
                   setConfirmPassword("");
                   setTimeout(() => setPasswordSaved(false), 3000);
                 } catch (e) {
-                  setPasswordError(e instanceof Error ? e.message : "Failed to change password");
+                  setPasswordError(e instanceof Error ? e.message : t("account.password.errors.changeFailed"));
                 } finally {
                   setPasswordSaving(false);
                 }
               }}
             >
-              {passwordSaving ? "Saving..." : "Change Password"}
+              {passwordSaving ? t("account.profile.saving") : t("account.password.change")}
             </button>
-            {passwordSaved && <span className="settings-success">Password changed!</span>}
+            {passwordSaved && <span className="settings-success">{t("account.password.saved")}</span>}
             {passwordError && <span className="auth-error">{passwordError}</span>}
           </div>
         </div>
@@ -228,6 +228,7 @@ function formatBytes(bytes: number): string {
 }
 
 function StorageSection() {
+  const { t } = useTranslation();
   const [usage, setUsage] = useState<{ usedBytes: number; quotaBytes: number; fileCount: number; uploadLimitBytes: number } | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -246,16 +247,16 @@ function StorageSection() {
 
   return (
     <section className="settings-section">
-      <h3>Storage</h3>
+      <h3>{t("account.storage.title")}</h3>
       {loading ? (
-        <p style={{ color: "var(--color-text-muted)" }}>Loading…</p>
+        <p style={{ color: "var(--color-text-muted)" }}>{t("common.loading")}</p>
       ) : !usage ? (
-        <p style={{ color: "var(--color-text-muted)" }}>Usage unavailable.</p>
+        <p style={{ color: "var(--color-text-muted)" }}>{t("account.storage.unavailable")}</p>
       ) : (
         <div className="settings-form">
           <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.9rem", marginBottom: "0.4rem" }}>
             <span style={{ fontWeight: 600 }}>
-              {formatBytes(usage.usedBytes)} of {formatBytes(usage.quotaBytes)} used
+              {t("account.storage.usedOf", { used: formatBytes(usage.usedBytes), quota: formatBytes(usage.quotaBytes) })}
             </span>
             <span style={{ color: "var(--color-text-muted)" }}>{pct}%</span>
           </div>
@@ -263,8 +264,8 @@ function StorageSection() {
             <div style={{ width: `${pct}%`, height: "100%", background: barColor, transition: "width 0.3s" }} />
           </div>
           <p style={{ fontSize: "0.85rem", color: "var(--color-text-muted)", margin: "0.5rem 0 0" }}>
-            {usage.fileCount} file{usage.fileCount === 1 ? "" : "s"} · up to {formatBytes(usage.uploadLimitBytes)} per upload
-            {near && <span style={{ color: barColor, fontWeight: 600 }}> · running low on space</span>}
+            {t("account.storage.fileCount", { count: usage.fileCount, limit: formatBytes(usage.uploadLimitBytes) })}
+            {near && <span style={{ color: barColor, fontWeight: 600 }}> {t("account.storage.lowSpace")}</span>}
           </p>
         </div>
       )}
@@ -273,6 +274,7 @@ function StorageSection() {
 }
 
 function BillingSection() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [data, setData] = useState<BillingStatus | null>(null);
   const [plans, setPlans] = useState<BillingPlanDetails[]>([]);
@@ -343,7 +345,7 @@ function BillingSection() {
       const { url } = await billing.createCheckoutSession(window.location.href, plan);
       window.location.href = url;
     } catch (e) {
-      alert(e instanceof Error ? e.message : "Failed to create checkout session");
+      alert(e instanceof Error ? e.message : t("account.billing.errors.checkoutFailed"));
     } finally {
       setActionLoading("");
     }
@@ -352,8 +354,8 @@ function BillingSection() {
   if (loading) {
     return (
       <section className="settings-section">
-        <h3>Billing</h3>
-        <p>Loading billing information...</p>
+        <h3>{t("account.billing.title")}</h3>
+        <p>{t("account.billing.loading")}</p>
       </section>
     );
   }
@@ -361,8 +363,8 @@ function BillingSection() {
   if (activating) {
     return (
       <section className="settings-section">
-        <h3>Billing</h3>
-        <p>Activating your plan… this can take a few seconds after checkout.</p>
+        <h3>{t("account.billing.title")}</h3>
+        <p>{t("account.billing.activating")}</p>
       </section>
     );
   }
@@ -375,19 +377,19 @@ function BillingSection() {
     const planLabel = data.plan === "annual" ? "Annual" : data.plan === "monthly" ? "Monthly" : "Comped";
     return (
       <section className="settings-section">
-        <h3>Billing</h3>
+        <h3>{t("account.billing.title")}</h3>
         <div className="settings-form">
           <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.75rem" }}>
             <span style={{ display: "inline-block", width: 8, height: 8, borderRadius: "50%", background: "#16a34a" }} />
-            <span style={{ fontWeight: 600 }}>{isCompedPlan ? "All features unlocked" : `${planLabel} Plan`}</span>
+            <span style={{ fontWeight: 600 }}>{isCompedPlan ? t("account.billing.compedAllUnlocked") : t("account.billing.planSuffix", { plan: planLabel })}</span>
             <span style={{ fontSize: "0.75rem", fontWeight: 600, color: "#2563eb", background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: 999, padding: "0.1rem 0.5rem" }}>
-              Staff override
+              {t("account.billing.staffOverride")}
             </span>
           </div>
           <p style={{ color: "var(--color-text-muted)", lineHeight: 1.5 }}>
             {isCompedPlan
-              ? "This site has been comped by a Cadmus administrator — every feature is unlocked and there's no Stripe subscription to manage."
-              : `This site has been granted the ${planLabel.toLowerCase()} plan by a Cadmus administrator — all paid features are unlocked. There's no Stripe subscription to manage.`}
+              ? t("account.billing.compedBodyAll")
+              : t("account.billing.compedBodyPlan", { plan: planLabel.toLowerCase() })}
           </p>
         </div>
       </section>
@@ -397,7 +399,7 @@ function BillingSection() {
   if (data?.billing === "free") {
     return (
       <section className="settings-section">
-        <h3>Billing</h3>
+        <h3>{t("account.billing.title")}</h3>
         <div className="settings-form">
           <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.75rem" }}>
             <span
@@ -409,11 +411,10 @@ function BillingSection() {
                 background: "#16a34a",
               }}
             />
-            <span style={{ fontWeight: 600 }}>Free Plan</span>
+            <span style={{ fontWeight: 600 }}>{t("account.billing.freePlan")}</span>
           </div>
           <p style={{ color: "var(--color-text-muted)", marginBottom: "1rem", lineHeight: 1.5 }}>
-            You're currently on the free plan. Upgrade to unlock custom domains, unlimited team
-            members, and more.
+            {t("account.billing.freeBody")}
           </p>
           {isOwnerOrAdmin && plans.length > 0 && (
             <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
@@ -443,7 +444,7 @@ function BillingSection() {
                 disabled={!!actionLoading}
                 onClick={() => handleAddPayment(selectedUpgradePlan)}
               >
-                {actionLoading === "checkout" ? "Redirecting to checkout..." : `Upgrade to ${selectedUpgradePlan}`}
+                {actionLoading === "checkout" ? t("account.billing.redirectingCheckout") : t("account.billing.upgradeTo", { plan: selectedUpgradePlan })}
               </button>
             </div>
           )}
@@ -453,7 +454,7 @@ function BillingSection() {
               disabled={!!actionLoading}
               onClick={() => handleAddPayment("monthly")}
             >
-              {actionLoading === "checkout" ? "Redirecting..." : "Upgrade Plan"}
+              {actionLoading === "checkout" ? t("account.billing.redirecting") : t("account.billing.upgradePlan")}
             </button>
           )}
         </div>
@@ -465,7 +466,7 @@ function BillingSection() {
   if (!data?.subscription) {
     return (
       <section className="settings-section">
-        <h3>Billing</h3>
+        <h3>{t("account.billing.title")}</h3>
         <div className="settings-form">
           <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.75rem" }}>
             <span
@@ -477,11 +478,10 @@ function BillingSection() {
                 background: "#2563eb",
               }}
             />
-            <span style={{ fontWeight: 600 }}>Free Plan</span>
+            <span style={{ fontWeight: 600 }}>{t("account.billing.freePlan")}</span>
           </div>
           <p style={{ color: "var(--color-text-muted)", marginBottom: "1rem", lineHeight: 1.5 }}>
-            You're currently on the free plan. Upgrade to unlock custom domains, unlimited team
-            members, and more.
+            {t("account.billing.freeBody")}
           </p>
           {isOwnerOrAdmin && (
             <button
@@ -489,7 +489,7 @@ function BillingSection() {
               disabled={!!actionLoading}
               onClick={() => handleAddPayment("monthly")}
             >
-              {actionLoading === "checkout" ? "Redirecting..." : "Upgrade Plan"}
+              {actionLoading === "checkout" ? t("account.billing.redirecting") : t("account.billing.upgradePlan")}
             </button>
           )}
         </div>
@@ -500,12 +500,12 @@ function BillingSection() {
   const sub = data.subscription;
 
   const statusLabel: Record<string, string> = {
-    trialing: "Free Plan",
-    active: "Active",
-    past_due: "Past Due",
-    canceled: "Canceled",
-    unpaid: "Unpaid",
-    paused: "Paused",
+    trialing: t("account.billing.freePlan"),
+    active: t("account.billing.statusActive"),
+    past_due: t("account.billing.statusPastDue"),
+    canceled: t("account.billing.statusCanceled"),
+    unpaid: t("account.billing.statusUnpaid"),
+    paused: t("account.billing.statusPaused"),
   };
 
   const statusColor: Record<string, string> = {
@@ -527,7 +527,7 @@ function BillingSection() {
       const { url } = await billing.createPortalSession(window.location.href);
       window.location.href = url;
     } catch (e) {
-      alert(e instanceof Error ? e.message : "Failed to open billing portal");
+      alert(e instanceof Error ? e.message : t("account.billing.errors.portalFailed"));
     } finally {
       setActionLoading("");
     }
@@ -544,7 +544,7 @@ function BillingSection() {
       );
       setConfirmCancel(false);
     } catch (e) {
-      alert(e instanceof Error ? e.message : "Failed to cancel subscription");
+      alert(e instanceof Error ? e.message : t("account.billing.errors.cancelFailed"));
     } finally {
       setActionLoading("");
     }
@@ -558,7 +558,7 @@ function BillingSection() {
       await reloadStatus();
       setConfirmPlanSwitch(null);
     } catch (e) {
-      setPlanError(e instanceof Error ? e.message : "Failed to change plan");
+      setPlanError(e instanceof Error ? e.message : t("account.billing.errors.planChangeFailed"));
     } finally {
       setActionLoading("");
     }
@@ -574,7 +574,7 @@ function BillingSection() {
           : null
       );
     } catch (e) {
-      alert(e instanceof Error ? e.message : "Failed to reactivate subscription");
+      alert(e instanceof Error ? e.message : t("account.billing.errors.reactivateFailed"));
     } finally {
       setActionLoading("");
     }
@@ -582,11 +582,11 @@ function BillingSection() {
 
   return (
     <section className="settings-section">
-      <h3>Billing</h3>
+      <h3>{t("account.billing.title")}</h3>
       <div className="settings-form">
         <div style={{ display: "flex", gap: "2rem", flexWrap: "wrap" }}>
           <div>
-            <div style={{ fontSize: "0.8125rem", color: "#6b7280", marginBottom: "0.25rem" }}>Plan Status</div>
+            <div style={{ fontSize: "0.8125rem", color: "#6b7280", marginBottom: "0.25rem" }}>{t("account.billing.planStatus")}</div>
             <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
               <span
                 style={{
@@ -600,12 +600,12 @@ function BillingSection() {
               <span style={{ fontWeight: 600 }}>{statusLabel[sub.status] || sub.status}</span>
               {sub.status === "trialing" && daysLeft !== null && (
                 <span style={{ color: "#6b7280", fontSize: "0.8125rem" }}>
-                  ({daysLeft} day{daysLeft === 1 ? "" : "s"} remaining)
+                  {t("account.billing.daysRemaining", { count: daysLeft })}
                 </span>
               )}
               {sub.cancelAtPeriodEnd && (
                 <span style={{ color: "#dc2626", fontSize: "0.8125rem" }}>
-                  (cancels at end of period)
+                  {t("account.billing.cancelsAtEnd")}
                 </span>
               )}
             </div>
@@ -613,11 +613,11 @@ function BillingSection() {
 
           {sub.plan && (
             <div>
-              <div style={{ fontSize: "0.8125rem", color: "#6b7280", marginBottom: "0.25rem" }}>Plan</div>
+              <div style={{ fontSize: "0.8125rem", color: "#6b7280", marginBottom: "0.25rem" }}>{t("account.billing.plan")}</div>
               <div style={{ fontWeight: 600 }}>
                 {(() => {
                   const current = plans.find((p) => p.plan === sub.plan);
-                  if (!current) return sub.plan === "annual" ? "Annual" : "Monthly";
+                  if (!current) return sub.plan === "annual" ? t("account.billing.planAnnual") : t("account.billing.planMonthly");
                   const price = current.interval === "year" ? `$${current.amountUsd}/yr` : `$${current.amountUsd}/mo`;
                   return `${current.label} (${price})`;
                 })()}
@@ -628,7 +628,7 @@ function BillingSection() {
           {sub.currentPeriodEnd && (
             <div>
               <div style={{ fontSize: "0.8125rem", color: "#6b7280", marginBottom: "0.25rem" }}>
-                {sub.status === "trialing" ? "Trial Ends" : "Current Period Ends"}
+                {sub.status === "trialing" ? t("account.billing.trialEnds") : t("account.billing.periodEnds")}
               </div>
               <div style={{ fontWeight: 600 }}>
                 {new Date(sub.status === "trialing" && sub.trialEndsAt ? sub.trialEndsAt : sub.currentPeriodEnd).toLocaleDateString()}
@@ -637,26 +637,29 @@ function BillingSection() {
           )}
 
           <div>
-            <div style={{ fontSize: "0.8125rem", color: "#6b7280", marginBottom: "0.25rem" }}>Payment Method</div>
+            <div style={{ fontSize: "0.8125rem", color: "#6b7280", marginBottom: "0.25rem" }}>{t("account.billing.paymentMethod")}</div>
             <div style={{ fontWeight: 600 }}>
               {data.paymentMethod
-                ? `${(data.paymentMethod.brand || "Card").charAt(0).toUpperCase() + (data.paymentMethod.brand || "card").slice(1)} ending in ${data.paymentMethod.last4}${
+                ? `${t("account.billing.cardEndingIn", {
+                    brand: (data.paymentMethod.brand || "Card").charAt(0).toUpperCase() + (data.paymentMethod.brand || "card").slice(1),
+                    last4: data.paymentMethod.last4,
+                  })}${
                     data.paymentMethod.expiryMonth && data.paymentMethod.expiryYear
                       ? ` (${String(data.paymentMethod.expiryMonth).padStart(2, "0")}/${data.paymentMethod.expiryYear})`
                       : ""
                   }`
-                : "None on file"}
+                : t("account.billing.noPaymentMethod")}
             </div>
           </div>
 
           {data.billingUser && (
             <div>
-              <div style={{ fontSize: "0.8125rem", color: "#6b7280", marginBottom: "0.25rem" }}>Billed To</div>
+              <div style={{ fontSize: "0.8125rem", color: "#6b7280", marginBottom: "0.25rem" }}>{t("account.billing.billedTo")}</div>
               <div style={{ fontWeight: 600 }}>
                 {data.billingUser.name}
                 {data.billingPartner && (
                   <span style={{ marginLeft: "0.5rem", fontSize: "0.75rem", padding: "0.1rem 0.4rem", borderRadius: "4px", background: "#ede9fe", color: "#6d28d9" }}>
-                    Partner: {data.billingPartner.name}
+                    {t("account.billing.partnerLabel", { name: data.billingPartner.name })}
                   </span>
                 )}
               </div>
@@ -667,7 +670,7 @@ function BillingSection() {
 
         {data.addons && data.addons.length > 0 && (
           <div style={{ marginTop: "1.25rem" }}>
-            <div style={{ fontSize: "0.8125rem", color: "#6b7280", marginBottom: "0.4rem" }}>Add-ons</div>
+            <div style={{ fontSize: "0.8125rem", color: "#6b7280", marginBottom: "0.4rem" }}>{t("account.billing.addons")}</div>
             <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
               {data.addons.map((a) => (
                 <div key={a.slug} style={{ fontSize: "0.9rem" }}>
@@ -690,7 +693,7 @@ function BillingSection() {
                 disabled={!!actionLoading}
                 onClick={() => handleAddPayment()}
               >
-                {actionLoading === "checkout" ? "Redirecting..." : "Add Payment Method"}
+                {actionLoading === "checkout" ? t("account.billing.redirecting") : t("account.billing.addPaymentMethod")}
               </button>
             )}
 
@@ -700,7 +703,7 @@ function BillingSection() {
                 disabled={!!actionLoading}
                 onClick={handleManageBilling}
               >
-                {actionLoading === "portal" ? "Redirecting..." : "Manage Billing"}
+                {actionLoading === "portal" ? t("account.billing.redirecting") : t("account.billing.manageBilling")}
               </button>
             )}
 
@@ -718,7 +721,7 @@ function BillingSection() {
                       setConfirmPlanSwitch(otherPlan);
                     }}
                   >
-                    Switch to {otherDetails.label}
+                    {t("account.billing.switchTo", { plan: otherDetails.label })}
                   </button>
                 );
               })()
@@ -731,7 +734,7 @@ function BillingSection() {
                 disabled={!!actionLoading}
                 onClick={() => setConfirmCancel(true)}
               >
-                Cancel Subscription
+                {t("account.billing.cancelSubscription")}
               </button>
             )}
 
@@ -741,7 +744,7 @@ function BillingSection() {
                 disabled={!!actionLoading}
                 onClick={handleReactivate}
               >
-                {actionLoading === "reactivate" ? "Reactivating..." : "Reactivate Subscription"}
+                {actionLoading === "reactivate" ? t("account.billing.reactivating") : t("account.billing.reactivateSubscription")}
               </button>
             )}
 
@@ -751,7 +754,7 @@ function BillingSection() {
                 disabled={!!actionLoading}
                 onClick={() => setShowTransfer(true)}
               >
-                Transfer Billing
+                {t("account.billing.transferBilling")}
               </button>
             )}
           </div>
@@ -809,6 +812,7 @@ function TransferBillingModal({
   onClose: () => void;
   onSuccess: () => void | Promise<void>;
 }) {
+  const { t } = useTranslation();
   const [mode, setMode] = useState<"user" | "partner">("user");
   const [members, setMembers] = useState<TeamMember[]>([]);
   const [loadingMembers, setLoadingMembers] = useState(true);
@@ -830,11 +834,11 @@ function TransferBillingModal({
   const handleSubmit = async () => {
     setError("");
     if (mode === "user" && !targetUserId) {
-      setError("Choose a team member.");
+      setError(t("account.billing.transferModal.errors.chooseMember"));
       return;
     }
     if (mode === "partner" && !partnerCode.trim()) {
-      setError("Enter a partner code.");
+      setError(t("account.billing.transferModal.errors.enterCode"));
       return;
     }
     setSubmitting(true);
@@ -844,7 +848,7 @@ function TransferBillingModal({
       );
       await onSuccess();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Transfer failed");
+      setError(e instanceof Error ? e.message : t("account.billing.transferModal.errors.transferFailed"));
     } finally {
       setSubmitting(false);
     }
@@ -865,9 +869,9 @@ function TransferBillingModal({
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        <h3 style={{ marginTop: 0 }}>Transfer Billing</h3>
+        <h3 style={{ marginTop: 0 }}>{t("account.billing.transferModal.title")}</h3>
         <p style={{ color: "#6b7280", fontSize: "0.9rem" }}>
-          Move billing responsibility to another team member or a partner. They'll be charged for future invoices.
+          {t("account.billing.transferModal.description")}
         </p>
 
         <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1rem" }}>
@@ -876,38 +880,38 @@ function TransferBillingModal({
             className={`btn btn-sm${mode === "user" ? " btn-primary" : ""}`}
             onClick={() => setMode("user")}
           >
-            Team Member
+            {t("account.billing.transferModal.teamMemberTab")}
           </button>
           <button
             type="button"
             className={`btn btn-sm${mode === "partner" ? " btn-primary" : ""}`}
             onClick={() => setMode("partner")}
           >
-            Partner Code
+            {t("account.billing.transferModal.partnerCodeTab")}
           </button>
         </div>
 
         {mode === "user" ? (
           <label style={{ display: "block", marginBottom: "1rem" }}>
             <span style={{ fontSize: "0.85rem", fontWeight: 600, display: "block", marginBottom: "0.25rem" }}>
-              Choose a team member
+              {t("account.billing.transferModal.chooseTeamMember")}
             </span>
             {loadingMembers ? (
-              <span style={{ color: "#6b7280" }}>Loading team...</span>
+              <span style={{ color: "#6b7280" }}>{t("account.billing.transferModal.loadingTeam")}</span>
             ) : members.length === 0 ? (
-              <span style={{ color: "#6b7280" }}>No eligible team members. Invite someone first or use a partner code.</span>
+              <span style={{ color: "#6b7280" }}>{t("account.billing.transferModal.noEligibleMembers")}</span>
             ) : (
               <select
                 value={targetUserId}
                 onChange={(e) => setTargetUserId(e.target.value)}
                 style={{ width: "100%", padding: "0.5rem", fontSize: "0.9rem" }}
               >
-                <option value="">— Select —</option>
+                <option value="">{t("account.billing.transferModal.selectPlaceholder")}</option>
                 {members.map((m) => {
                   const name = [m.firstName, m.lastName].filter(Boolean).join(" ");
                   return (
                     <option key={m.userId} value={m.userId}>
-                      {name ? `${name} (${m.email})` : m.email} · {m.role}
+                      {name ? `${name} (${m.email})` : m.email} · {t(`team.roles.${m.role}`)}
                     </option>
                   );
                 })}
@@ -917,17 +921,17 @@ function TransferBillingModal({
         ) : (
           <label style={{ display: "block", marginBottom: "1rem" }}>
             <span style={{ fontSize: "0.85rem", fontWeight: 600, display: "block", marginBottom: "0.25rem" }}>
-              Partner code
+              {t("account.billing.transferModal.partnerCodeLabel")}
             </span>
             <input
               type="text"
               value={partnerCode}
               onChange={(e) => setPartnerCode(e.target.value)}
-              placeholder="e.g. WEBDEV2026"
+              placeholder={t("account.billing.transferModal.partnerCodePlaceholder")}
               style={{ width: "100%", padding: "0.5rem", fontSize: "0.9rem", textTransform: "uppercase" }}
             />
             <span style={{ fontSize: "0.8rem", color: "#6b7280", display: "block", marginTop: "0.25rem" }}>
-              The partner will be billed going forward. Ask your partner for their code.
+              {t("account.billing.transferModal.partnerCodeHint")}
             </span>
           </label>
         )}
@@ -938,7 +942,7 @@ function TransferBillingModal({
 
         <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.5rem" }}>
           <button type="button" className="btn" onClick={onClose} disabled={submitting}>
-            Cancel
+            {t("common.cancel")}
           </button>
           <button
             type="button"
@@ -946,7 +950,7 @@ function TransferBillingModal({
             onClick={handleSubmit}
             disabled={submitting}
           >
-            {submitting ? "Transferring..." : "Transfer"}
+            {submitting ? t("account.billing.transferModal.transferring") : t("account.billing.transferModal.transfer")}
           </button>
         </div>
       </div>
@@ -969,10 +973,11 @@ function PlanSwitchModal({
   onClose: () => void;
   onConfirm: () => void;
 }) {
+  const { t } = useTranslation();
   const proratedNote =
     targetPlan === "annual"
-      ? "You'll be charged the prorated annual amount today and billed yearly going forward."
-      : "You'll receive a prorated credit and be billed monthly going forward.";
+      ? t("account.billing.planSwitchModal.annualNote")
+      : t("account.billing.planSwitchModal.monthlyNote");
   const price =
     targetDetails.interval === "year"
       ? `$${targetDetails.amountUsd}/yr`
@@ -993,7 +998,7 @@ function PlanSwitchModal({
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        <h3 style={{ marginTop: 0 }}>Switch to {targetDetails.label} ({price})</h3>
+        <h3 style={{ marginTop: 0 }}>{t("account.billing.planSwitchModal.title", { plan: targetDetails.label, price })}</h3>
         <p style={{ color: "#374151", fontSize: "0.95rem", lineHeight: 1.5 }}>{proratedNote}</p>
 
         {error && (
@@ -1002,7 +1007,7 @@ function PlanSwitchModal({
 
         <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.5rem", marginTop: "1.25rem" }}>
           <button type="button" className="btn" onClick={onClose} disabled={submitting}>
-            Cancel
+            {t("common.cancel")}
           </button>
           <button
             type="button"
@@ -1010,7 +1015,7 @@ function PlanSwitchModal({
             onClick={onConfirm}
             disabled={submitting}
           >
-            {submitting ? "Switching..." : `Confirm ${targetDetails.label}`}
+            {submitting ? t("account.billing.planSwitchModal.switching") : t("account.billing.planSwitchModal.confirm", { plan: targetDetails.label })}
           </button>
         </div>
       </div>
@@ -1031,10 +1036,15 @@ function CancelSubscriptionModal({
   onClose: () => void;
   onConfirm: () => void;
 }) {
+  const { t } = useTranslation();
   const endDate = periodEnd ? new Date(periodEnd).toLocaleDateString() : null;
   const message = isTrialing
-    ? `Your site will remain active through your trial${endDate ? ` (until ${endDate})` : ""}. You won't be charged.`
-    : `Your site will remain active until the end of the current billing period${endDate ? ` (${endDate})` : ""}. After that, your subscription will end.`;
+    ? (endDate
+        ? t("account.billing.cancelModal.trialMessageWithDate", { date: endDate })
+        : t("account.billing.cancelModal.trialMessageNoDate"))
+    : (endDate
+        ? t("account.billing.cancelModal.activeMessageWithDate", { date: endDate })
+        : t("account.billing.cancelModal.activeMessageNoDate"));
 
   return (
     <div
@@ -1051,12 +1061,12 @@ function CancelSubscriptionModal({
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        <h3 style={{ marginTop: 0 }}>Cancel subscription?</h3>
+        <h3 style={{ marginTop: 0 }}>{t("account.billing.cancelModal.title")}</h3>
         <p style={{ color: "#374151", fontSize: "0.95rem", lineHeight: 1.5 }}>{message}</p>
 
         <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.5rem", marginTop: "1.25rem" }}>
           <button type="button" className="btn" onClick={onClose} disabled={submitting}>
-            Keep Subscription
+            {t("account.billing.cancelModal.keepSubscription")}
           </button>
           <button
             type="button"
@@ -1065,7 +1075,7 @@ function CancelSubscriptionModal({
             onClick={onConfirm}
             disabled={submitting}
           >
-            {submitting ? "Canceling..." : "Confirm Cancel"}
+            {submitting ? t("account.billing.cancelModal.canceling") : t("account.billing.cancelModal.confirmCancel")}
           </button>
         </div>
       </div>

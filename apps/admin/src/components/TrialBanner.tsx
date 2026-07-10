@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { billing, type BillingStatus } from "../lib/api";
 
 export function TrialBanner() {
+  const { t } = useTranslation();
   const [data, setData] = useState<BillingStatus | null>(null);
   const [dismissed, setDismissed] = useState(false);
 
@@ -49,8 +51,8 @@ export function TrialBanner() {
     >
       <span>
         {daysLeft === 0
-          ? "Your free trial ends today."
-          : `${daysLeft} day${daysLeft === 1 ? "" : "s"} left in your free trial.`}
+          ? t("trialBanner.endsToday")
+          : t("trialBanner.daysLeft", { count: daysLeft })}
       </span>
       <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
         <button
@@ -66,7 +68,7 @@ export function TrialBanner() {
             fontWeight: 600,
           }}
         >
-          Add payment method
+          {t("trialBanner.addPaymentMethod")}
         </button>
         {!urgent && (
           <button
@@ -80,7 +82,7 @@ export function TrialBanner() {
               lineHeight: 1,
               padding: "0 0.25rem",
             }}
-            aria-label="Dismiss"
+            aria-label={t("common.dismiss")}
           >
             x
           </button>

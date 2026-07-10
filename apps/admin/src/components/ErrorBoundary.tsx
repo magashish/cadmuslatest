@@ -1,5 +1,6 @@
 import { Component, type ErrorInfo, type ReactNode } from "react";
 import * as Sentry from "@sentry/react";
+import { withTranslation, type WithTranslation } from "react-i18next";
 
 interface Props {
   children: ReactNode;
@@ -9,7 +10,7 @@ interface State {
   error: Error | null;
 }
 
-export class ErrorBoundary extends Component<Props, State> {
+class ErrorBoundaryBase extends Component<Props & WithTranslation, State> {
   state: State = { error: null };
 
   static getDerivedStateFromError(error: Error): State {
@@ -25,12 +26,13 @@ export class ErrorBoundary extends Component<Props, State> {
 
   render() {
     if (!this.state.error) return this.props.children;
+    const { t } = this.props;
 
     return (
       <div className="error-boundary">
         <div className="error-boundary__card">
-          <h1>Something went wrong</h1>
-          <p>The admin app ran into an unexpected error. Reloading usually fixes it.</p>
+          <h1>{t("errorBoundary.title")}</h1>
+          <p>{t("errorBoundary.body")}</p>
           <p className="error-boundary__message">{this.state.error.message}</p>
           <div className="error-boundary__actions">
             <button
@@ -38,14 +40,14 @@ export class ErrorBoundary extends Component<Props, State> {
               className="btn btn-primary"
               onClick={() => window.location.reload()}
             >
-              Reload
+              {t("errorBoundary.reload")}
             </button>
             <button
               type="button"
               className="btn btn-ghost"
               onClick={() => this.setState({ error: null })}
             >
-              Try again
+              {t("errorBoundary.tryAgain")}
             </button>
           </div>
         </div>
@@ -53,3 +55,5 @@ export class ErrorBoundary extends Component<Props, State> {
     );
   }
 }
+
+export const ErrorBoundary = withTranslation()(ErrorBoundaryBase);

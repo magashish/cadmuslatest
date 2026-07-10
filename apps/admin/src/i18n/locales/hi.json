@@ -33,6 +33,130 @@
       "saving": "सहेजा जा रहा है...",
       "saved": "भाषा अपडेट हो गई!",
       "error": "भाषा सहेजने में विफल"
+    },
+    "title": "खाता",
+    "profile": {
+      "title": "प्रोफ़ाइल",
+      "email": "ईमेल",
+      "firstName": "पहला नाम",
+      "firstNamePlaceholder": "पहला नाम",
+      "lastName": "अंतिम नाम",
+      "lastNamePlaceholder": "अंतिम नाम",
+      "save": "प्रोफ़ाइल सहेजें",
+      "saving": "सहेजा जा रहा है...",
+      "saved": "प्रोफ़ाइल सहेजी गई!",
+      "errors": {
+        "saveFailed": "प्रोफ़ाइल सहेजने में विफल"
+      }
+    },
+    "password": {
+      "title": "पासवर्ड बदलें",
+      "current": "वर्तमान पासवर्ड",
+      "new": "नया पासवर्ड",
+      "newPlaceholder": "कम से कम 12 वर्ण",
+      "confirm": "नए पासवर्ड की पुष्टि करें",
+      "change": "पासवर्ड बदलें",
+      "saved": "पासवर्ड बदल गया!",
+      "errors": {
+        "mismatch": "नए पासवर्ड मेल नहीं खाते",
+        "requirements": "कृपया सभी पासवर्ड आवश्यकताओं को पूरा करें",
+        "changeFailed": "पासवर्ड बदलने में विफल"
+      }
+    },
+    "storage": {
+      "title": "स्टोरेज",
+      "unavailable": "उपयोग अनुपलब्ध।",
+      "usedOf": "{{quota}} में से {{used}} उपयोग किया गया",
+      "fileCount_one": "{{count}} फ़ाइल · प्रति अपलोड {{limit}} तक",
+      "fileCount_other": "{{count}} फ़ाइलें · प्रति अपलोड {{limit}} तक",
+      "lowSpace": "· जगह कम हो रही है"
+    },
+    "billing": {
+      "title": "बिलिंग",
+      "loading": "बिलिंग जानकारी लोड हो रही है...",
+      "activating": "आपकी योजना सक्रिय की जा रही है… चेकआउट के बाद इसमें कुछ सेकंड लग सकते हैं।",
+      "compedAllUnlocked": "सभी सुविधाएं अनलॉक हैं",
+      "planSuffix": "{{plan}} योजना",
+      "staffOverride": "स्टाफ़ ओवरराइड",
+      "compedBodyAll": "इस साइट को Cadmus एडमिन द्वारा कॉम्प किया गया है — हर सुविधा अनलॉक है और प्रबंधित करने के लिए कोई Stripe सदस्यता नहीं है।",
+      "compedBodyPlan": "इस साइट को Cadmus एडमिन द्वारा {{plan}} योजना दी गई है — सभी पेड सुविधाएं अनलॉक हैं। प्रबंधित करने के लिए कोई Stripe सदस्यता नहीं है।",
+      "freePlan": "मुफ़्त योजना",
+      "freeBody": "आप वर्तमान में मुफ़्त योजना पर हैं। कस्टम डोमेन, असीमित टीम सदस्य और अधिक अनलॉक करने के लिए अपग्रेड करें।",
+      "upgradeTo": "{{plan}} में अपग्रेड करें",
+      "redirectingCheckout": "चेकआउट पर रीडायरेक्ट हो रहा है...",
+      "redirecting": "रीडायरेक्ट हो रहा है...",
+      "upgradePlan": "प्लान अपग्रेड करें",
+      "statusActive": "सक्रिय",
+      "statusPastDue": "अतिदेय",
+      "statusCanceled": "रद्द किया गया",
+      "statusUnpaid": "अवैतनिक",
+      "statusPaused": "रोका गया",
+      "planStatus": "प्लान स्थिति",
+      "daysRemaining_one": "({{count}} दिन शेष)",
+      "daysRemaining_other": "({{count}} दिन शेष)",
+      "cancelsAtEnd": "(अवधि के अंत में रद्द होगा)",
+      "plan": "प्लान",
+      "planAnnual": "वार्षिक",
+      "planMonthly": "मासिक",
+      "trialEnds": "ट्रायल समाप्ति",
+      "periodEnds": "वर्तमान अवधि समाप्ति",
+      "paymentMethod": "भुगतान विधि",
+      "cardEndingIn": "{{brand}} जो {{last4}} पर समाप्त होता है",
+      "noPaymentMethod": "कोई फ़ाइल में नहीं",
+      "billedTo": "इसे बिल किया गया",
+      "partnerLabel": "पार्टनर: {{name}}",
+      "addons": "ऐड-ऑन",
+      "addPaymentMethod": "भुगतान विधि जोड़ें",
+      "manageBilling": "बिलिंग प्रबंधित करें",
+      "switchTo": "{{plan}} पर स्विच करें",
+      "cancelSubscription": "सदस्यता रद्द करें",
+      "reactivateSubscription": "सदस्यता पुनः सक्रिय करें",
+      "reactivating": "पुनः सक्रिय हो रहा है...",
+      "transferBilling": "बिलिंग स्थानांतरित करें",
+      "errors": {
+        "checkoutFailed": "चेकआउट सत्र बनाने में विफल",
+        "portalFailed": "बिलिंग पोर्टल खोलने में विफल",
+        "cancelFailed": "सदस्यता रद्द करने में विफल",
+        "planChangeFailed": "प्लान बदलने में विफल",
+        "reactivateFailed": "सदस्यता पुनः सक्रिय करने में विफल"
+      },
+      "transferModal": {
+        "title": "बिलिंग स्थानांतरित करें",
+        "description": "बिलिंग की ज़िम्मेदारी किसी अन्य टीम सदस्य या पार्टनर को स्थानांतरित करें। भविष्य के इनवॉइस के लिए उनसे शुल्क लिया जाएगा।",
+        "teamMemberTab": "टीम सदस्य",
+        "partnerCodeTab": "पार्टनर कोड",
+        "chooseTeamMember": "एक टीम सदस्य चुनें",
+        "loadingTeam": "टीम लोड हो रही है...",
+        "noEligibleMembers": "कोई योग्य टीम सदस्य नहीं है। पहले किसी को आमंत्रित करें या पार्टनर कोड का उपयोग करें।",
+        "selectPlaceholder": "— चुनें —",
+        "partnerCodeLabel": "पार्टनर कोड",
+        "partnerCodePlaceholder": "जैसे WEBDEV2026",
+        "partnerCodeHint": "पार्टनर को आगे से बिल किया जाएगा। अपने पार्टनर से उनका कोड मांगें।",
+        "errors": {
+          "chooseMember": "एक टीम सदस्य चुनें।",
+          "enterCode": "एक पार्टनर कोड दर्ज करें।",
+          "transferFailed": "स्थानांतरण विफल"
+        },
+        "transferring": "स्थानांतरित हो रहा है...",
+        "transfer": "स्थानांतरित करें"
+      },
+      "planSwitchModal": {
+        "title": "{{plan}} ({{price}}) पर स्विच करें",
+        "annualNote": "आज आपसे प्रोरेटेड वार्षिक राशि ली जाएगी और आगे से आपको सालाना बिल किया जाएगा।",
+        "monthlyNote": "आपको एक प्रोरेटेड क्रेडिट मिलेगा और आगे से आपको मासिक बिल किया जाएगा।",
+        "confirm": "{{plan}} की पुष्टि करें",
+        "switching": "स्विच हो रहा है..."
+      },
+      "cancelModal": {
+        "title": "सदस्यता रद्द करें?",
+        "trialMessageWithDate": "आपकी साइट आपके ट्रायल के दौरान सक्रिय रहेगी (जब तक {{date}})। आपसे शुल्क नहीं लिया जाएगा।",
+        "trialMessageNoDate": "आपकी साइट आपके ट्रायल के दौरान सक्रिय रहेगी। आपसे शुल्क नहीं लिया जाएगा।",
+        "activeMessageWithDate": "आपकी साइट वर्तमान बिलिंग अवधि ({{date}}) के अंत तक सक्रिय रहेगी। उसके बाद, आपकी सदस्यता समाप्त हो जाएगी।",
+        "activeMessageNoDate": "आपकी साइट वर्तमान बिलिंग अवधि के अंत तक सक्रिय रहेगी। उसके बाद, आपकी सदस्यता समाप्त हो जाएगी।",
+        "keepSubscription": "सदस्यता रखें",
+        "confirmCancel": "रद्द करने की पुष्टि करें",
+        "canceling": "रद्द हो रहा है..."
+      }
     }
   },
   "languages": {
@@ -76,7 +200,11 @@
     "copied": "कॉपी हो गया",
     "failedToSave": "सहेजने में विफल",
     "generateWithAi": "AI से जनरेट करें",
-    "reRollWithAi": "AI से फिर से बनाएं"
+    "reRollWithAi": "AI से फिर से बनाएं",
+    "dismiss": "खारिज करें",
+    "previous": "पिछला",
+    "next": "अगला",
+    "pageOf": "{{total}} में से पेज {{page}}"
   },
   "onboardingBanner": {
     "message": "आपकी साइट अभी तक नहीं बनी है। Cadmus को इसे आपके लिए बनाने दें — इसमें बस कुछ ही मिनट लगते हैं।",
@@ -1278,5 +1406,285 @@
       "upgradePlanButton": "प्लान अपग्रेड करें",
       "unlockText": "पेड प्लान के साथ असीमित एक्सेस अनलॉक करें।"
     }
+  },
+  "team": {
+    "roles": {
+      "owner": "मालिक",
+      "admin": "एडमिन",
+      "editor": "संपादक",
+      "viewer": "दर्शक"
+    },
+    "inviteMember": {
+      "title": "सदस्य आमंत्रित करें",
+      "emailLabel": "ईमेल",
+      "emailPlaceholder": "colleague@example.com",
+      "roleLabel": "भूमिका",
+      "send": "आमंत्रण भेजें",
+      "sending": "भेजा जा रहा है...",
+      "success": "{{email}} को आमंत्रण भेजा गया"
+    },
+    "errors": {
+      "inviteFailed": "आमंत्रण भेजने में विफल",
+      "roleChangeFailed": "भूमिका बदलने में विफल",
+      "removeFailed": "सदस्य हटाने में विफल"
+    },
+    "confirmLeave": "इस साइट को छोड़ें? आप एक्सेस खो देंगे।",
+    "confirmRemove": "{{name}} को इस साइट से हटाएं?",
+    "members": {
+      "title_one": "सदस्य ({{count}})",
+      "title_other": "सदस्य ({{count}})",
+      "columns": {
+        "name": "नाम",
+        "email": "ईमेल",
+        "role": "भूमिका",
+        "joined": "शामिल हुए"
+      },
+      "you": "(आप)",
+      "pending": "लंबित",
+      "billingBadge": "बिलिंग",
+      "billingTooltip": "यह सदस्य बिलिंग संपर्क है",
+      "remove": "हटाएं",
+      "leave": "छोड़ें"
+    }
+  },
+  "auditLog": {
+    "title": "एक्टिविटी लॉग",
+    "totalTurns_one": "{{count}} टर्न",
+    "totalTurns_other": "{{count}} टर्न",
+    "totalEntries_one": "{{count}} एंट्री",
+    "totalEntries_other": "{{count}} एंट्री",
+    "filters": {
+      "allActors": "सभी एक्टर",
+      "allTaskTypes": "सभी कार्य प्रकार",
+      "allDecisions": "सभी निर्णय",
+      "allEntities": "सभी इकाइयां"
+    },
+    "actorTypes": {
+      "user": "यूज़र",
+      "ai": "AI",
+      "cron": "क्रॉन",
+      "addon": "ऐड-ऑन"
+    },
+    "decisions": {
+      "accepted": "स्वीकृत",
+      "rejected": "अस्वीकृत",
+      "modified": "संशोधित",
+      "partial": "आंशिक"
+    },
+    "entityTypes": {
+      "content": "कॉन्टेंट",
+      "media": "मीडिया",
+      "site": "साइट",
+      "navigation": "नेविगेशन",
+      "user": "यूज़र",
+      "collection": "संग्रह"
+    },
+    "noAiActivity": "कोई AI गतिविधि नहीं मिली।",
+    "noActivity": "कोई गतिविधि नहीं मिली।",
+    "actionsCount_one": "{{count}} कार्रवाई",
+    "actionsCount_other": "{{count}} कार्रवाइयां",
+    "actions": {
+      "keep": "रखें",
+      "undo": "पूर्ववत करें",
+      "undoing": "पूर्ववत हो रहा है..."
+    },
+    "fallbackBadge": "फ़ॉलबैक",
+    "onEntity": "{{type}}:{{id}} पर",
+    "byActor": "{{name}} द्वारा",
+    "errors": {
+      "decisionFailed": "निर्णय विफल रहा"
+    },
+    "time": {
+      "justNow": "अभी अभी"
+    },
+    "actionLabels": {
+      "site_provisioned": "साइट बनाई गई",
+      "site_updated": "साइट अपडेट की गई",
+      "site_activated": "साइट सक्रिय की गई",
+      "site_billing_changed": "बिलिंग अपडेट की गई",
+      "site_domain_connected": "डोमेन कनेक्ट किया गया",
+      "site_domain_disconnected": "डोमेन डिस्कनेक्ट किया गया",
+      "site_subdomain_set": "सबडोमेन सेट किया गया",
+      "site_subdomain_changed": "सबडोमेन बदला गया",
+      "content_created": "कॉन्टेंट बनाया गया",
+      "content_imported": "कॉन्टेंट आयात किया गया",
+      "content_imported_html": "HTML कॉन्टेंट आयात किया गया",
+      "content_imported_stitch_html": "Stitch HTML आयात किया गया",
+      "content_metadata_updated": "कॉन्टेंट मेटाडेटा अपडेट किया गया",
+      "content_updated": "कॉन्टेंट अपडेट किया गया",
+      "content_archived": "कॉन्टेंट आर्काइव किया गया",
+      "content_version_restored": "वर्शन पुनर्स्थापित किया गया",
+      "favicon_generated": "फ़ेविकॉन जनरेट किया गया",
+      "media_uploaded": "मीडिया अपलोड किया गया",
+      "media_deleted": "मीडिया हटाया गया",
+      "media_generated": "मीडिया जनरेट किया गया",
+      "footer_updated": "फ़ूटर अपडेट किया गया",
+      "header_updated": "हेडर अपडेट किया गया",
+      "theme_extract_fields": "संपादन योग्य फ़ील्ड निकाले गए",
+      "navigation_updated": "नेविगेशन अपडेट किया गया",
+      "collection_created": "संग्रह बनाया गया",
+      "collection_updated": "संग्रह अपडेट किया गया",
+      "collection_deleted": "संग्रह हटाया गया",
+      "content_unarchived": "कॉन्टेंट पुनर्स्थापित किया गया",
+      "media_updated": "मीडिया अपडेट किया गया",
+      "redirect_created": "रीडायरेक्ट बनाया गया",
+      "redirect_imported": "रीडायरेक्ट आयात किया गया",
+      "redirect_updated": "रीडायरेक्ट अपडेट किया गया",
+      "redirect_deleted": "रीडायरेक्ट हटाया गया",
+      "navigation_created": "नेविगेशन बनाया गया",
+      "navigation_deleted": "नेविगेशन हटाया गया",
+      "scheduled_task_created": "कार्य शेड्यूल किया गया",
+      "scheduled_task_cancelled": "कार्य रद्द किया गया",
+      "billing_transferred": "बिलिंग स्थानांतरित की गई",
+      "billing_cancelled": "सदस्यता रद्द की गई",
+      "billing_reactivated": "सदस्यता पुनः सक्रिय की गई",
+      "billing_plan_changed": "सदस्यता अपडेट की गई",
+      "account_password_changed": "पासवर्ड बदला गया",
+      "account_password_reset": "पासवर्ड रीसेट किया गया",
+      "account_profile_updated": "प्रोफ़ाइल अपडेट की गई",
+      "site_restart_onboarding": "ऑनबोर्डिंग फिर से शुरू की गई",
+      "site_reset": "साइट रीसेट की गई",
+      "team_invited": "सदस्य को आमंत्रित किया गया",
+      "team_joined": "सदस्य शामिल हुआ",
+      "team_role_changed": "भूमिका बदली गई",
+      "team_removed": "सदस्य हटाया गया",
+      "theme_recompile": "थीम CSS पुनः कंपाइल किया गया"
+    }
+  },
+  "formSubmissions": {
+    "title": "फ़ॉर्म सबमिशन",
+    "total_one": "{{count}} कुल",
+    "total_other": "{{count}} कुल",
+    "export": "CSV एक्सपोर्ट करें",
+    "exporting": "एक्सपोर्ट हो रहा है...",
+    "allForms": "सभी फ़ॉर्म",
+    "untitledForm": "शीर्षकहीन फ़ॉर्म",
+    "from": "से",
+    "to": "तक",
+    "searchPlaceholder": "ईमेल, URL, फ़ील्ड डेटा खोजें",
+    "search": "खोजें",
+    "clear": "साफ़ करें",
+    "noResults": "कोई सबमिशन नहीं मिला।",
+    "columns": {
+      "date": "तारीख़",
+      "form": "फ़ॉर्म",
+      "email": "ईमेल",
+      "source": "स्रोत"
+    },
+    "delete": "हटाएं",
+    "confirmDelete": "यह सबमिशन हटाएं?",
+    "resendWebhook": "वेबहुक फिर से भेजें",
+    "resending": "फिर से भेजा जा रहा है…",
+    "attachments": "अटैचमेंट",
+    "ipLabel": "IP:",
+    "errors": {
+      "deleteFailed": "सबमिशन हटाने में विफल",
+      "resendFailed": "वेबहुक फिर से भेजने में विफल",
+      "exportFailed": "एक्सपोर्ट विफल",
+      "downloadFailed": "डाउनलोड विफल"
+    },
+    "webhookStatus": {
+      "pending": "वेबहुक लंबित",
+      "success": "वेबहुक भेजा गया",
+      "failed": "वेबहुक विफल"
+    }
+  },
+  "help": {
+    "title": "सहायता और समर्थन",
+    "intro": "कोई सवाल है, कुछ अप्रत्याशित हुआ है, या कोई विचार है? हम मदद के लिए यहां हैं।",
+    "tabs": {
+      "submit": "अनुरोध सबमिट करें",
+      "myTickets": "मेरे अनुरोध"
+    },
+    "submitted": {
+      "title": "अनुरोध प्राप्त हुआ",
+      "body": "हम ईमेल द्वारा फ़ॉलो अप करेंगे। आप स्थिति को यहां ट्रैक कर सकते हैं",
+      "another": "एक और अनुरोध सबमिट करें"
+    },
+    "form": {
+      "typeLabel": "अनुरोध प्रकार",
+      "typeSupport": "सहायता टिकट",
+      "typeFeature": "फ़ीचर अनुरोध",
+      "subjectLabel": "विषय",
+      "subjectPlaceholderSupport": "समस्या का संक्षेप में वर्णन करें",
+      "subjectPlaceholderFeature": "अपने विचार का संक्षेप में वर्णन करें",
+      "bodyLabelSupport": "क्या हो रहा है?",
+      "bodyLabelFeature": "हमें और बताएं",
+      "bodyPlaceholderSupport": "वर्णन करें कि आपने क्या किया, आपने क्या होने की उम्मीद की थी, और इसके बजाय क्या हुआ।",
+      "bodyPlaceholderFeature": "फ़ीचर का वर्णन करें और यह आपकी कैसे मदद करेगा।",
+      "priorityLabel": "प्राथमिकता",
+      "priorityLow": "कम — मामूली असुविधा",
+      "priorityNormal": "सामान्य — कुछ ठीक से काम नहीं कर रहा है",
+      "priorityHigh": "उच्च — मेरी साइट टूटी हुई या अनुपयोगी है",
+      "submit": "अनुरोध सबमिट करें",
+      "submitting": "सबमिट हो रहा है…"
+    },
+    "errors": {
+      "submitFailed": "टिकट सबमिट करने में विफल"
+    },
+    "tickets": {
+      "empty": "अभी तक कोई अनुरोध नहीं है। यहां एक सबमिट करें",
+      "loadingReplies": "जवाब लोड हो रहे हैं…",
+      "repliesHeading": "समर्थन से जवाब"
+    },
+    "status": {
+      "open": "खुला",
+      "inProgress": "प्रगति पर",
+      "resolved": "हल हो गया",
+      "closed": "बंद"
+    }
+  },
+  "insights": {
+    "openCount_one": "{{count}} खुला",
+    "openCount_other": "{{count}} खुले",
+    "dismissedSuffix_one": " · {{count}} खारिज किया गया",
+    "dismissedSuffix_other": " · {{count}} खारिज किए गए",
+    "rescan": "फिर से स्कैन करें",
+    "scanning": "स्कैन हो रहा है…",
+    "intro": "आपकी साइट पर ऐसी चीज़ें जो अधूरी, टूटी हुई, या दोबारा देखने लायक लगती हैं। इसे सीधे ठीक करने के लिए पेज खोलें, या वहां मदद के लिए AI सहायक का उपयोग करें।",
+    "errors": {
+      "loadFailed": "इनसाइट्स लोड नहीं हो सके। कुछ समय बाद पुनः प्रयास करें।"
+    },
+    "empty": {
+      "title": "अभी संबोधित करने के लिए कुछ नहीं है",
+      "body": "कोई खुला इनसाइट नहीं है। अगली बार जब आप फिर से स्कैन करेंगे या किसी ऐसे पेज पर जाएंगे जिसमें ठीक करने योग्य समस्या है, तो हम कुछ भी नया सामने लाएंगे।"
+    },
+    "showDismissed_one": "खारिज किए गए दिखाएं ({{count}})",
+    "showDismissed_other": "खारिज किए गए दिखाएं ({{count}})",
+    "hideDismissed_one": "खारिज किए गए छिपाएं ({{count}})",
+    "hideDismissed_other": "खारिज किए गए छिपाएं ({{count}})",
+    "openPage": "{{page}} खोलें",
+    "restore": "पुनर्स्थापित करें",
+    "dismiss": "खारिज करें"
+  },
+  "passwordStrength": {
+    "minLength": "कम से कम 12 वर्ण",
+    "uppercase": "बड़ा अक्षर (uppercase)",
+    "numberOrSymbol": "संख्या या प्रतीक"
+  },
+  "trialBanner": {
+    "endsToday": "आपका मुफ़्त ट्रायल आज समाप्त हो रहा है।",
+    "daysLeft_one": "आपके मुफ़्त ट्रायल में {{count}} दिन शेष है।",
+    "daysLeft_other": "आपके मुफ़्त ट्रायल में {{count}} दिन शेष हैं।",
+    "addPaymentMethod": "भुगतान विधि जोड़ें"
+  },
+  "pastDueBanner": {
+    "message": "आपका पिछला भुगतान अस्वीकृत हो गया था। Stripe पुनः प्रयास करता रहेगा, लेकिन यदि वे प्रयास भी विफल होते हैं तो आपकी साइट निलंबित कर दी जाएगी — कृपया अपना कार्ड अपडेट करें।",
+    "updatePaymentMethod": "भुगतान विधि अपडेट करें"
+  },
+  "suspensionBanner": {
+    "archivedTitle": "यह साइट आर्काइव की गई है",
+    "suspendedTitle": "यह साइट निलंबित है",
+    "body": "आप अभी भी साइन इन कर सकते हैं और कॉन्टेंट देख सकते हैं, लेकिन संपादन और प्रकाशन अक्षम हैं।",
+    "reasonSuffix": " कारण: {{reason}}",
+    "deletion_one": "{{date}} को स्थायी रूप से हटाने के लिए शेड्यूल किया गया ({{count}} दिन शेष)।",
+    "deletion_other": "{{date}} को स्थायी रूप से हटाने के लिए शेड्यूल किया गया ({{count}} दिन शेष)।",
+    "contactPrefix": "सवाल हैं? संपर्क करें"
+  },
+  "errorBoundary": {
+    "title": "कुछ गड़बड़ हो गई",
+    "body": "एडमिन ऐप में एक अप्रत्याशित त्रुटि आई। रीलोड करने से आमतौर पर यह ठीक हो जाता है।",
+    "reload": "रीलोड करें",
+    "tryAgain": "पुनः प्रयास करें"
   }
 }

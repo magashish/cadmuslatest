@@ -33,6 +33,130 @@
       "saving": "Saving...",
       "saved": "Language updated!",
       "error": "Failed to save language"
+    },
+    "title": "Account",
+    "profile": {
+      "title": "Profile",
+      "email": "Email",
+      "firstName": "First Name",
+      "firstNamePlaceholder": "First name",
+      "lastName": "Last Name",
+      "lastNamePlaceholder": "Last name",
+      "save": "Save Profile",
+      "saving": "Saving...",
+      "saved": "Profile saved!",
+      "errors": {
+        "saveFailed": "Failed to save profile"
+      }
+    },
+    "password": {
+      "title": "Change Password",
+      "current": "Current Password",
+      "new": "New Password",
+      "newPlaceholder": "At least 12 characters",
+      "confirm": "Confirm New Password",
+      "change": "Change Password",
+      "saved": "Password changed!",
+      "errors": {
+        "mismatch": "New passwords do not match",
+        "requirements": "Please meet all password requirements",
+        "changeFailed": "Failed to change password"
+      }
+    },
+    "storage": {
+      "title": "Storage",
+      "unavailable": "Usage unavailable.",
+      "usedOf": "{{used}} of {{quota}} used",
+      "fileCount_one": "{{count}} file · up to {{limit}} per upload",
+      "fileCount_other": "{{count}} files · up to {{limit}} per upload",
+      "lowSpace": "· running low on space"
+    },
+    "billing": {
+      "title": "Billing",
+      "loading": "Loading billing information...",
+      "activating": "Activating your plan… this can take a few seconds after checkout.",
+      "compedAllUnlocked": "All features unlocked",
+      "planSuffix": "{{plan}} Plan",
+      "staffOverride": "Staff override",
+      "compedBodyAll": "This site has been comped by a Cadmus administrator — every feature is unlocked and there's no Stripe subscription to manage.",
+      "compedBodyPlan": "This site has been granted the {{plan}} plan by a Cadmus administrator — all paid features are unlocked. There's no Stripe subscription to manage.",
+      "freePlan": "Free Plan",
+      "freeBody": "You're currently on the free plan. Upgrade to unlock custom domains, unlimited team members, and more.",
+      "upgradeTo": "Upgrade to {{plan}}",
+      "redirectingCheckout": "Redirecting to checkout...",
+      "redirecting": "Redirecting...",
+      "upgradePlan": "Upgrade Plan",
+      "statusActive": "Active",
+      "statusPastDue": "Past Due",
+      "statusCanceled": "Canceled",
+      "statusUnpaid": "Unpaid",
+      "statusPaused": "Paused",
+      "planStatus": "Plan Status",
+      "daysRemaining_one": "({{count}} day remaining)",
+      "daysRemaining_other": "({{count}} days remaining)",
+      "cancelsAtEnd": "(cancels at end of period)",
+      "plan": "Plan",
+      "planAnnual": "Annual",
+      "planMonthly": "Monthly",
+      "trialEnds": "Trial Ends",
+      "periodEnds": "Current Period Ends",
+      "paymentMethod": "Payment Method",
+      "cardEndingIn": "{{brand}} ending in {{last4}}",
+      "noPaymentMethod": "None on file",
+      "billedTo": "Billed To",
+      "partnerLabel": "Partner: {{name}}",
+      "addons": "Add-ons",
+      "addPaymentMethod": "Add Payment Method",
+      "manageBilling": "Manage Billing",
+      "switchTo": "Switch to {{plan}}",
+      "cancelSubscription": "Cancel Subscription",
+      "reactivateSubscription": "Reactivate Subscription",
+      "reactivating": "Reactivating...",
+      "transferBilling": "Transfer Billing",
+      "errors": {
+        "checkoutFailed": "Failed to create checkout session",
+        "portalFailed": "Failed to open billing portal",
+        "cancelFailed": "Failed to cancel subscription",
+        "planChangeFailed": "Failed to change plan",
+        "reactivateFailed": "Failed to reactivate subscription"
+      },
+      "transferModal": {
+        "title": "Transfer Billing",
+        "description": "Move billing responsibility to another team member or a partner. They'll be charged for future invoices.",
+        "teamMemberTab": "Team Member",
+        "partnerCodeTab": "Partner Code",
+        "chooseTeamMember": "Choose a team member",
+        "loadingTeam": "Loading team...",
+        "noEligibleMembers": "No eligible team members. Invite someone first or use a partner code.",
+        "selectPlaceholder": "— Select —",
+        "partnerCodeLabel": "Partner code",
+        "partnerCodePlaceholder": "e.g. WEBDEV2026",
+        "partnerCodeHint": "The partner will be billed going forward. Ask your partner for their code.",
+        "errors": {
+          "chooseMember": "Choose a team member.",
+          "enterCode": "Enter a partner code.",
+          "transferFailed": "Transfer failed"
+        },
+        "transferring": "Transferring...",
+        "transfer": "Transfer"
+      },
+      "planSwitchModal": {
+        "title": "Switch to {{plan}} ({{price}})",
+        "annualNote": "You'll be charged the prorated annual amount today and billed yearly going forward.",
+        "monthlyNote": "You'll receive a prorated credit and be billed monthly going forward.",
+        "confirm": "Confirm {{plan}}",
+        "switching": "Switching..."
+      },
+      "cancelModal": {
+        "title": "Cancel subscription?",
+        "trialMessageWithDate": "Your site will remain active through your trial (until {{date}}). You won't be charged.",
+        "trialMessageNoDate": "Your site will remain active through your trial. You won't be charged.",
+        "activeMessageWithDate": "Your site will remain active until the end of the current billing period ({{date}}). After that, your subscription will end.",
+        "activeMessageNoDate": "Your site will remain active until the end of the current billing period. After that, your subscription will end.",
+        "keepSubscription": "Keep Subscription",
+        "confirmCancel": "Confirm Cancel",
+        "canceling": "Canceling..."
+      }
     }
   },
   "languages": {
@@ -76,7 +200,11 @@
     "copied": "Copied",
     "failedToSave": "Failed to save",
     "generateWithAi": "Generate with AI",
-    "reRollWithAi": "Re-roll with AI"
+    "reRollWithAi": "Re-roll with AI",
+    "dismiss": "Dismiss",
+    "previous": "Previous",
+    "next": "Next",
+    "pageOf": "Page {{page}} of {{total}}"
   },
   "onboardingBanner": {
     "message": "Your site isn't built yet. Let Cadmus create it for you — it only takes a few minutes.",
@@ -1278,5 +1406,285 @@
       "upgradePlanButton": "Upgrade Plan",
       "unlockText": "Unlock unlimited access with a paid plan."
     }
+  },
+  "team": {
+    "roles": {
+      "owner": "Owner",
+      "admin": "Admin",
+      "editor": "Editor",
+      "viewer": "Viewer"
+    },
+    "inviteMember": {
+      "title": "Invite Member",
+      "emailLabel": "Email",
+      "emailPlaceholder": "colleague@example.com",
+      "roleLabel": "Role",
+      "send": "Send Invite",
+      "sending": "Sending...",
+      "success": "Invitation sent to {{email}}"
+    },
+    "errors": {
+      "inviteFailed": "Failed to send invitation",
+      "roleChangeFailed": "Failed to change role",
+      "removeFailed": "Failed to remove member"
+    },
+    "confirmLeave": "Leave this site? You will lose access.",
+    "confirmRemove": "Remove {{name}} from this site?",
+    "members": {
+      "title_one": "Members ({{count}})",
+      "title_other": "Members ({{count}})",
+      "columns": {
+        "name": "Name",
+        "email": "Email",
+        "role": "Role",
+        "joined": "Joined"
+      },
+      "you": "(you)",
+      "pending": "Pending",
+      "billingBadge": "Billing",
+      "billingTooltip": "This member is the billing contact",
+      "remove": "Remove",
+      "leave": "Leave"
+    }
+  },
+  "auditLog": {
+    "title": "Activity Log",
+    "totalTurns_one": "{{count}} turn",
+    "totalTurns_other": "{{count}} turns",
+    "totalEntries_one": "{{count}} entries",
+    "totalEntries_other": "{{count}} entries",
+    "filters": {
+      "allActors": "All actors",
+      "allTaskTypes": "All task types",
+      "allDecisions": "All decisions",
+      "allEntities": "All entities"
+    },
+    "actorTypes": {
+      "user": "User",
+      "ai": "AI",
+      "cron": "Cron",
+      "addon": "Addon"
+    },
+    "decisions": {
+      "accepted": "Accepted",
+      "rejected": "Rejected",
+      "modified": "Modified",
+      "partial": "Partial"
+    },
+    "entityTypes": {
+      "content": "Content",
+      "media": "Media",
+      "site": "Site",
+      "navigation": "Navigation",
+      "user": "User",
+      "collection": "Collection"
+    },
+    "noAiActivity": "No AI activity found.",
+    "noActivity": "No activity found.",
+    "actionsCount_one": "{{count}} action",
+    "actionsCount_other": "{{count}} actions",
+    "actions": {
+      "keep": "Keep",
+      "undo": "Undo",
+      "undoing": "Undoing..."
+    },
+    "fallbackBadge": "fallback",
+    "onEntity": "on {{type}}:{{id}}",
+    "byActor": "by {{name}}",
+    "errors": {
+      "decisionFailed": "Decision failed"
+    },
+    "time": {
+      "justNow": "Just now"
+    },
+    "actionLabels": {
+      "site_provisioned": "Site created",
+      "site_updated": "Site updated",
+      "site_activated": "Site activated",
+      "site_billing_changed": "Billing updated",
+      "site_domain_connected": "Domain connected",
+      "site_domain_disconnected": "Domain disconnected",
+      "site_subdomain_set": "Subdomain set",
+      "site_subdomain_changed": "Subdomain changed",
+      "content_created": "Content created",
+      "content_imported": "Content imported",
+      "content_imported_html": "HTML content imported",
+      "content_imported_stitch_html": "Stitch HTML imported",
+      "content_metadata_updated": "Content metadata updated",
+      "content_updated": "Content updated",
+      "content_archived": "Content archived",
+      "content_version_restored": "Version restored",
+      "favicon_generated": "Favicon generated",
+      "media_uploaded": "Media uploaded",
+      "media_deleted": "Media deleted",
+      "media_generated": "Media generated",
+      "footer_updated": "Footer updated",
+      "header_updated": "Header updated",
+      "theme_extract_fields": "Extracted editable fields",
+      "navigation_updated": "Navigation updated",
+      "collection_created": "Collection created",
+      "collection_updated": "Collection updated",
+      "collection_deleted": "Collection deleted",
+      "content_unarchived": "Content restored",
+      "media_updated": "Media updated",
+      "redirect_created": "Redirect created",
+      "redirect_imported": "Redirect(s) imported",
+      "redirect_updated": "Redirect updated",
+      "redirect_deleted": "Redirect deleted",
+      "navigation_created": "Navigation created",
+      "navigation_deleted": "Navigation deleted",
+      "scheduled_task_created": "Task scheduled",
+      "scheduled_task_cancelled": "Task cancelled",
+      "billing_transferred": "Billing transferred",
+      "billing_cancelled": "Subscription cancelled",
+      "billing_reactivated": "Subscription reactivated",
+      "billing_plan_changed": "Subscription updated",
+      "account_password_changed": "Password changed",
+      "account_password_reset": "Password reset",
+      "account_profile_updated": "Profile updated",
+      "site_restart_onboarding": "Onboarding restarted",
+      "site_reset": "Site reset",
+      "team_invited": "Member invited",
+      "team_joined": "Member joined",
+      "team_role_changed": "Role changed",
+      "team_removed": "Member removed",
+      "theme_recompile": "Recompiled theme CSS"
+    }
+  },
+  "formSubmissions": {
+    "title": "Form Submissions",
+    "total_one": "{{count}} total",
+    "total_other": "{{count}} total",
+    "export": "Export CSV",
+    "exporting": "Exporting...",
+    "allForms": "All forms",
+    "untitledForm": "Untitled form",
+    "from": "From",
+    "to": "To",
+    "searchPlaceholder": "Search email, URL, field data",
+    "search": "Search",
+    "clear": "Clear",
+    "noResults": "No submissions found.",
+    "columns": {
+      "date": "Date",
+      "form": "Form",
+      "email": "Email",
+      "source": "Source"
+    },
+    "delete": "Delete",
+    "confirmDelete": "Delete this submission?",
+    "resendWebhook": "Resend webhook",
+    "resending": "Resending…",
+    "attachments": "Attachments",
+    "ipLabel": "IP:",
+    "errors": {
+      "deleteFailed": "Failed to delete submission",
+      "resendFailed": "Failed to resend webhook",
+      "exportFailed": "Export failed",
+      "downloadFailed": "Download failed"
+    },
+    "webhookStatus": {
+      "pending": "Webhook pending",
+      "success": "Webhook sent",
+      "failed": "Webhook failed"
+    }
+  },
+  "help": {
+    "title": "Help & Support",
+    "intro": "Have a question, ran into something unexpected, or have an idea? We're here to help.",
+    "tabs": {
+      "submit": "Submit a Request",
+      "myTickets": "My Requests"
+    },
+    "submitted": {
+      "title": "Request received",
+      "body": "We'll follow up by email. You can track the status under",
+      "another": "Submit another request"
+    },
+    "form": {
+      "typeLabel": "Request type",
+      "typeSupport": "Support ticket",
+      "typeFeature": "Feature request",
+      "subjectLabel": "Subject",
+      "subjectPlaceholderSupport": "Briefly describe the issue",
+      "subjectPlaceholderFeature": "Briefly describe your idea",
+      "bodyLabelSupport": "What's happening?",
+      "bodyLabelFeature": "Tell us more",
+      "bodyPlaceholderSupport": "Describe what you did, what you expected to happen, and what happened instead.",
+      "bodyPlaceholderFeature": "Describe the feature and how it would help you.",
+      "priorityLabel": "Priority",
+      "priorityLow": "Low — minor inconvenience",
+      "priorityNormal": "Normal — something isn't working right",
+      "priorityHigh": "High — my site is broken or unusable",
+      "submit": "Submit request",
+      "submitting": "Submitting…"
+    },
+    "errors": {
+      "submitFailed": "Failed to submit ticket"
+    },
+    "tickets": {
+      "empty": "No requests yet. Submit one under",
+      "loadingReplies": "Loading replies…",
+      "repliesHeading": "Replies from support"
+    },
+    "status": {
+      "open": "Open",
+      "inProgress": "In Progress",
+      "resolved": "Resolved",
+      "closed": "Closed"
+    }
+  },
+  "insights": {
+    "openCount_one": "{{count}} open",
+    "openCount_other": "{{count}} open",
+    "dismissedSuffix_one": " · {{count}} dismissed",
+    "dismissedSuffix_other": " · {{count}} dismissed",
+    "rescan": "Re-scan",
+    "scanning": "Scanning…",
+    "intro": "Things on your site that look incomplete, broken, or worth a second look. Open the page to fix it directly, or use the AI assistant there to help.",
+    "errors": {
+      "loadFailed": "Couldn't load insights. Try again in a moment."
+    },
+    "empty": {
+      "title": "Nothing to address right now",
+      "body": "No open insights. We'll surface anything new the next time you re-scan or visit a page that has a fixable issue."
+    },
+    "showDismissed_one": "Show dismissed ({{count}})",
+    "showDismissed_other": "Show dismissed ({{count}})",
+    "hideDismissed_one": "Hide dismissed ({{count}})",
+    "hideDismissed_other": "Hide dismissed ({{count}})",
+    "openPage": "Open {{page}}",
+    "restore": "Restore",
+    "dismiss": "Dismiss"
+  },
+  "passwordStrength": {
+    "minLength": "At least 12 characters",
+    "uppercase": "Uppercase letter",
+    "numberOrSymbol": "Number or symbol"
+  },
+  "trialBanner": {
+    "endsToday": "Your free trial ends today.",
+    "daysLeft_one": "{{count}} day left in your free trial.",
+    "daysLeft_other": "{{count}} days left in your free trial.",
+    "addPaymentMethod": "Add payment method"
+  },
+  "pastDueBanner": {
+    "message": "Your last payment was declined. Stripe will keep retrying, but your site will be suspended if those attempts also fail — please update your card.",
+    "updatePaymentMethod": "Update payment method"
+  },
+  "suspensionBanner": {
+    "archivedTitle": "This site is archived",
+    "suspendedTitle": "This site is suspended",
+    "body": "You can still sign in and view content, but editing and publishing are disabled.",
+    "reasonSuffix": " Reason: {{reason}}",
+    "deletion_one": "Scheduled for permanent deletion on {{date}} ({{count}} day remaining).",
+    "deletion_other": "Scheduled for permanent deletion on {{date}} ({{count}} days remaining).",
+    "contactPrefix": "Questions? Contact"
+  },
+  "errorBoundary": {
+    "title": "Something went wrong",
+    "body": "The admin app ran into an unexpected error. Reloading usually fixes it.",
+    "reload": "Reload",
+    "tryAgain": "Try again"
   }
 }

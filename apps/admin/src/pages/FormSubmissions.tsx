@@ -1,8 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { submissions } from "../lib/api";
 import type { FormSubmission } from "../lib/api";
 
 export function FormSubmissions() {
+  const { t } = useTranslation();
   const [items, setItems] = useState<FormSubmission[]>([]);
   const [total, setTotal] = useState(0);
   const [forms, setForms] = useState<{ formIdentifier: string; count: number; name: string | null }[]>([]);
@@ -53,13 +55,13 @@ export function FormSubmissions() {
   const [resendingId, setResendingId] = useState<string | null>(null);
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Delete this submission?")) return;
+    if (!confirm(t("formSubmissions.confirmDelete"))) return;
     try {
       await submissions.delete(id);
       setItems((prev) => prev.filter((s) => s.id !== id));
       setTotal((prev) => prev - 1);
     } catch {
-      alert("Failed to delete submission");
+      alert(t("formSubmissions.errors.deleteFailed"));
     }
   };
 
@@ -69,7 +71,7 @@ export function FormSubmissions() {
       const { submission } = await submissions.resendWebhook(id);
       setItems((prev) => prev.map((s) => (s.id === id ? submission : s)));
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to resend webhook");
+      alert(err instanceof Error ? err.message : t("formSubmissions.errors.resendFailed"));
     } finally {
       setResendingId(null);
     }
@@ -80,7 +82,7 @@ export function FormSubmissions() {
     try {
       await submissions.exportCsv(filters);
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Export failed");
+      alert(err instanceof Error ? err.message : t("formSubmissions.errors.exportFailed"));
     } finally {
       setExporting(false);
     }
@@ -104,7 +106,7 @@ export function FormSubmissions() {
   const hasFilters = Boolean(selectedForm || from || to || search);
 
   const nameByIdentifier = new Map(forms.map((f) => [f.formIdentifier, f.name]));
-  const formLabel = (identifier: string) => nameByIdentifier.get(identifier) || "Untitled form";
+  const formLabel = (identifier: string) => nameByIdentifier.get(identifier) || t("formSubmissions.untitledForm");
 
   const prettifyKey = (key: string) =>
     key
@@ -116,16 +118,16 @@ export function FormSubmissions() {
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem", flexWrap: "wrap", gap: "0.75rem" }}>
-        <h1>Form Submissions</h1>
+        <h1>{t("formSubmissions.title")}</h1>
         <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-          <span style={{ fontSize: "0.85rem", color: "#888" }}>{total} total</span>
+          <span style={{ fontSize: "0.85rem", color: "#888" }}>{t("formSubmissions.total", { count: total })}</span>
           <button
             type="button"
             className="btn btn-sm"
             onClick={handleExport}
             disabled={exporting || total === 0}
           >
-            {exporting ? "Exporting..." : "Export CSV"}
+            {exporting ? t("formSubmissions.exporting") : t("formSubmissions.export")}
           </button>
         </div>
       </div>
@@ -136,15 +138,15 @@ export function FormSubmissions() {
           onChange={(e) => setSelectedForm(e.target.value)}
           style={{ fontSize: "0.9rem", padding: "0.4rem 0.6rem" }}
         >
-          <option value="">All forms</option>
+          <option value="">{t("formSubmissions.allForms")}</option>
           {forms.map((f) => (
             <option key={f.formIdentifier} value={f.formIdentifier}>
-              {f.name || "Untitled form"} ({f.count})
+              {f.name || t("formSubmissions.untitledForm")} ({f.count})
             </option>
           ))}
         </select>
         <label style={{ fontSize: "0.85rem", color: "#555", display: "flex", alignItems: "center", gap: "0.25rem" }}>
-          From
+          {t("formSubmissions.from")}
           <input
             type="date"
             value={from}
@@ -153,7 +155,7 @@ export function FormSubmissions() {
           />
         </label>
         <label style={{ fontSize: "0.85rem", color: "#555", display: "flex", alignItems: "center", gap: "0.25rem" }}>
-          To
+          {t("formSubmissions.to")}
           <input
             type="date"
             value={to}
@@ -164,33 +166,33 @@ export function FormSubmissions() {
         <form onSubmit={handleSearchSubmit} style={{ display: "flex", gap: "0.25rem" }}>
           <input
             type="search"
-            placeholder="Search email, URL, field data"
+            placeholder={t("formSubmissions.searchPlaceholder")}
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             style={{ fontSize: "0.9rem", padding: "0.4rem 0.6rem", minWidth: "220px" }}
           />
-          <button type="submit" className="btn btn-sm">Search</button>
+          <button type="submit" className="btn btn-sm">{t("formSubmissions.search")}</button>
         </form>
         {hasFilters && (
           <button type="button" className="btn btn-sm" onClick={handleClearFilters}>
-            Clear
+            {t("formSubmissions.clear")}
           </button>
         )}
       </div>
 
       {loading ? (
-        <p style={{ color: "#888" }}>Loading...</p>
+        <p style={{ color: "#888" }}>{t("common.loading")}</p>
       ) : items.length === 0 ? (
-        <p style={{ color: "#888" }}>No submissions found.</p>
+        <p style={{ color: "#888" }}>{t("formSubmissions.noResults")}</p>
       ) : (
         <>
           <table className="data-table" style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
               <tr>
-                <th style={thStyle}>Date</th>
-                <th style={thStyle}>Form</th>
-                <th style={thStyle}>Email</th>
-                <th style={thStyle}>Source</th>
+                <th style={thStyle}>{t("formSubmissions.columns.date")}</th>
+                <th style={thStyle}>{t("formSubmissions.columns.form")}</th>
+                <th style={thStyle}>{t("formSubmissions.columns.email")}</th>
+                <th style={thStyle}>{t("formSubmissions.columns.source")}</th>
                 <th style={{ ...thStyle, width: "60px" }}></th>
               </tr>
             </thead>
@@ -223,7 +225,7 @@ export function FormSubmissions() {
                         className="btn btn-sm danger"
                         onClick={(e) => { e.stopPropagation(); handleDelete(sub.id); }}
                       >
-                        Delete
+                        {t("formSubmissions.delete")}
                       </button>
                     </td>
                   </tr>
@@ -242,7 +244,7 @@ export function FormSubmissions() {
                         </table>
                         {(sub.attachments?.length ?? 0) > 0 && (
                           <div style={{ marginTop: "0.75rem", paddingTop: "0.75rem", borderTop: "1px solid #eee" }}>
-                            <span style={{ fontWeight: 600, fontSize: "0.85rem" }}>Attachments</span>
+                            <span style={{ fontWeight: 600, fontSize: "0.85rem" }}>{t("formSubmissions.attachments")}</span>
                             <ul style={{ margin: "0.4rem 0 0", paddingLeft: "1.2rem", fontSize: "0.85rem" }}>
                               {sub.attachments!.map((att, i) => (
                                 <li key={i} style={{ marginBottom: "0.25rem" }}>
@@ -253,7 +255,7 @@ export function FormSubmissions() {
                                     onClick={(e) => {
                                       e.stopPropagation();
                                       submissions.downloadAttachment(sub.id, i, att.filename).catch((err) => {
-                                        alert(err instanceof Error ? err.message : "Download failed");
+                                        alert(err instanceof Error ? err.message : t("formSubmissions.errors.downloadFailed"));
                                       });
                                     }}
                                   >
@@ -267,7 +269,7 @@ export function FormSubmissions() {
                         )}
                         {sub.ipAddress && (
                           <p style={{ fontSize: "0.8rem", color: "#999", marginTop: "0.5rem", marginBottom: 0 }}>
-                            IP: {sub.ipAddress}
+                            {t("formSubmissions.ipLabel")} {sub.ipAddress}
                           </p>
                         )}
                         {sub.webhookStatus && (
@@ -283,7 +285,7 @@ export function FormSubmissions() {
                                 disabled={resendingId === sub.id}
                                 onClick={(e) => { e.stopPropagation(); handleResendWebhook(sub.id); }}
                               >
-                                {resendingId === sub.id ? "Resending…" : "Resend webhook"}
+                                {resendingId === sub.id ? t("formSubmissions.resending") : t("formSubmissions.resendWebhook")}
                               </button>
                             )}
                           </div>
@@ -304,10 +306,10 @@ export function FormSubmissions() {
                 disabled={currentPage <= 1}
                 onClick={() => setOffset(Math.max(0, offset - limit))}
               >
-                Previous
+                {t("common.previous")}
               </button>
               <span style={{ lineHeight: "2rem", fontSize: "0.9rem" }}>
-                Page {currentPage} of {totalPages}
+                {t("common.pageOf", { page: currentPage, total: totalPages })}
               </span>
               <button
                 type="button"
@@ -315,7 +317,7 @@ export function FormSubmissions() {
                 disabled={currentPage >= totalPages}
                 onClick={() => setOffset(offset + limit)}
               >
-                Next
+                {t("common.next")}
               </button>
             </div>
           )}
@@ -340,19 +342,20 @@ const tdStyle: React.CSSProperties = {
   fontSize: "0.9rem",
 };
 
-const WEBHOOK_BADGE: Record<string, { label: string; color: string; bg: string }> = {
-  pending: { label: "Webhook pending", color: "#92400e", bg: "#fef3c7" },
-  success: { label: "Webhook sent", color: "#065f46", bg: "#d1fae5" },
-  failed: { label: "Webhook failed", color: "#991b1b", bg: "#fee2e2" },
+const WEBHOOK_BADGE: Record<string, { labelKey: string; color: string; bg: string }> = {
+  pending: { labelKey: "formSubmissions.webhookStatus.pending", color: "#92400e", bg: "#fef3c7" },
+  success: { labelKey: "formSubmissions.webhookStatus.success", color: "#065f46", bg: "#d1fae5" },
+  failed: { labelKey: "formSubmissions.webhookStatus.failed", color: "#991b1b", bg: "#fee2e2" },
 };
 
 function WebhookBadge({ status }: { status: string | null }) {
+  const { t } = useTranslation();
   if (!status) return null;
   const b = WEBHOOK_BADGE[status];
   if (!b) return null;
   return (
     <span style={{ display: "inline-block", padding: "0.1rem 0.45rem", borderRadius: 4, fontSize: "0.72rem", fontWeight: 600, color: b.color, background: b.bg, whiteSpace: "nowrap" }}>
-      {b.label}
+      {t(b.labelKey)}
     </span>
   );
 }
