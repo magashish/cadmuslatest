@@ -38,5 +38,53 @@
   "languages": {
     "en": "English",
     "hi": "हिन्दी (Hindi)"
+  },
+  "common": {
+    "loading": "लोड हो रहा है...",
+    "justNow": "अभी अभी",
+    "minutesAgo_one": "{{count}} मिनट पहले",
+    "minutesAgo_other": "{{count}} मिनट पहले",
+    "hoursAgo_one": "{{count}} घंटे पहले",
+    "hoursAgo_other": "{{count}} घंटे पहले",
+    "daysAgo_one": "{{count}} दिन पहले",
+    "daysAgo_other": "{{count}} दिन पहले"
+  },
+  "onboardingBanner": {
+    "message": "आपकी साइट अभी तक नहीं बनी है। Cadmus को इसे आपके लिए बनाने दें — इसमें बस कुछ ही मिनट लगते हैं।",
+    "setUp": "मेरी साइट सेट अप करें",
+    "starting": "शुरू हो रहा है…",
+    "dismiss": "खारिज करें"
+  },
+  "dashboard": {
+    "pages": "पेज",
+    "posts": "पोस्ट",
+    "media": "मीडिया",
+    "published": "प्रकाशित",
+    "drafts": "ड्राफ़्ट",
+    "newPage": "नया पेज",
+    "newPost": "नई पोस्ट",
+    "uploadMedia": "मीडिया अपलोड करें",
+    "aiAssistant": "AI सहायक",
+    "recentActivity": "हाल की गतिविधि",
+    "noActivity": "अभी तक कोई गतिविधि नहीं।",
+    "activity": {
+      "createdNamed": "\"{{name}}\" बनाया गया",
+      "createdItem": "एक नया कॉन्टेंट आइटम बनाया गया",
+      "updatedNamed": "\"{{name}}\" अपडेट किया गया",
+      "updatedItem": "एक कॉन्टेंट आइटम अपडेट किया गया",
+      "deletedNamed": "\"{{name}}\" हटाया गया",
+      "deletedItem": "एक कॉन्टेंट आइटम हटाया गया",
+      "collectionCreatedNamed": "संग्रह \"{{name}}\" बनाया गया",
+      "collectionCreated": "संग्रह बनाया गया",
+      "collectionUpdatedNamed": "संग्रह \"{{name}}\" अपडेट किया गया{{suffix}}",
+      "collectionUpdated": "संग्रह अपडेट किया गया{{suffix}}",
+      "collectionDeletedNamed": "संग्रह \"{{name}}\" हटाया गया",
+      "collectionDeleted": "संग्रह हटाया गया",
+      "uploadedNamed": "\"{{name}}\" अपलोड किया गया",
+      "uploadedItem": "एक फ़ाइल अपलोड की गई",
+      "mediaDeletedNamed": "मीडिया \"{{name}}\" हटाया गया",
+      "mediaDeleted": "मीडिया हटाया गया",
+      "siteUpdated": "साइट सेटिंग्स अपडेट की गईं"
+    }
   }
 }

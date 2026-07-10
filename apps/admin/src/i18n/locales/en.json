@@ -38,5 +38,53 @@
   "languages": {
     "en": "English",
     "hi": "हिन्दी (Hindi)"
+  },
+  "common": {
+    "loading": "Loading...",
+    "justNow": "just now",
+    "minutesAgo_one": "{{count}}m ago",
+    "minutesAgo_other": "{{count}}m ago",
+    "hoursAgo_one": "{{count}}h ago",
+    "hoursAgo_other": "{{count}}h ago",
+    "daysAgo_one": "{{count}}d ago",
+    "daysAgo_other": "{{count}}d ago"
+  },
+  "onboardingBanner": {
+    "message": "Your site isn't built yet. Let Cadmus create it for you — it only takes a few minutes.",
+    "setUp": "Set up my site",
+    "starting": "Starting…",
+    "dismiss": "Dismiss"
+  },
+  "dashboard": {
+    "pages": "Pages",
+    "posts": "Posts",
+    "media": "Media",
+    "published": "Published",
+    "drafts": "Drafts",
+    "newPage": "New Page",
+    "newPost": "New Post",
+    "uploadMedia": "Upload Media",
+    "aiAssistant": "AI Assistant",
+    "recentActivity": "Recent Activity",
+    "noActivity": "No activity yet.",
+    "activity": {
+      "createdNamed": "Created \"{{name}}\"",
+      "createdItem": "Created a new content item",
+      "updatedNamed": "Updated \"{{name}}\"",
+      "updatedItem": "Updated a content item",
+      "deletedNamed": "Deleted \"{{name}}\"",
+      "deletedItem": "Deleted a content item",
+      "collectionCreatedNamed": "Created collection \"{{name}}\"",
+      "collectionCreated": "Created collection",
+      "collectionUpdatedNamed": "Updated collection \"{{name}}\"{{suffix}}",
+      "collectionUpdated": "Updated collection{{suffix}}",
+      "collectionDeletedNamed": "Deleted collection \"{{name}}\"",
+      "collectionDeleted": "Deleted collection",
+      "uploadedNamed": "Uploaded \"{{name}}\"",
+      "uploadedItem": "Uploaded a file",
+      "mediaDeletedNamed": "Deleted media \"{{name}}\"",
+      "mediaDeleted": "Deleted media",
+      "siteUpdated": "Updated site settings"
+    }
   }
 }
