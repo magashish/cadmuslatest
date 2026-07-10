@@ -65,7 +65,12 @@
     "restore": "Restore",
     "restoring": "Restoring...",
     "uploadFailed": "Upload failed",
-    "addPaymentMethod": "Add a payment method"
+    "addPaymentMethod": "Add a payment method",
+    "send": "Send",
+    "back": "Back",
+    "continue": "Continue",
+    "change": "Change",
+    "remove": "Remove"
   },
   "onboardingBanner": {
     "message": "Your site isn't built yet. Let Cadmus create it for you — it only takes a few minutes.",
@@ -549,5 +554,125 @@
     "trialLimitMessage": "File exceeds the 100 MB trial limit.",
     "trialLimitSuffix": "to upload up to 500 MB.",
     "noImages": "No images yet. Upload one above."
+  },
+  "onboarding": {
+    "title": "Set up your site",
+    "subtitle": {
+      "choose": "How would you like to set up your site?",
+      "briefPaste": "Paste your brief or copy below.",
+      "interview": "Answer a few questions so we can build your website. The more detailed your answers, the better your site will be!",
+      "review": "Review your site brief.",
+      "launch": "Generating your starter content."
+    },
+    "steps": {
+      "interview": "Interview",
+      "review": "Review",
+      "launch": "Launch"
+    },
+    "choose": {
+      "voiceTitle": "Build my voice",
+      "voiceDesc": "Answer a few questions and we'll craft your site's voice and design",
+      "startInterview": "Start interview",
+      "briefTitle": "I have a brief",
+      "briefDesc": "Paste your copy, brand guidelines, or notes and we'll set everything up",
+      "pasteMyBrief": "Paste my brief",
+      "skipForNow": "Skip for now — I'll set things up later"
+    },
+    "briefPaste": {
+      "pdfNotSupported": "PDF files can't be read directly. Please copy and paste the text content instead.",
+      "parseFailed": "Failed to parse brief. Please try again.",
+      "intro": "Paste any copy, brand guidelines, or notes about your site below. We'll extract the key details automatically.",
+      "textareaPlaceholder": "Paste your brief, copy, or brand notes here…",
+      "uploadFile": "Upload .txt or .md file",
+      "uploadHint": "File contents will be appended to the text above",
+      "analyzing": "Analyzing…"
+    },
+    "interview": {
+      "fallbackGreeting": "Welcome! Let's set up your website. Tell me about your business.",
+      "errorFallback": "Something went wrong. Please try again.",
+      "thinking": "Thinking",
+      "completeCountdown": "Interview complete! Reviewing in {{count}}...",
+      "logoAlt": "Logo",
+      "removeLogo": "Remove logo",
+      "uploadLogo": "Upload Logo (optional)",
+      "answerPlaceholder": "Type your answer...",
+      "backToOptions": "← Back to options"
+    },
+    "pageTypes": {
+      "selectPlaceholder": "Add a page...",
+      "homepage": "Homepage",
+      "about": "About",
+      "services": "Services",
+      "contact": "Contact",
+      "blog": "Blog",
+      "pricing": "Pricing",
+      "faq": "FAQ",
+      "portfolio": "Portfolio",
+      "testimonials": "Testimonials",
+      "features": "Features",
+      "landing": "Landing Page",
+      "custom": "Custom..."
+    },
+    "addPage": {
+      "customNamePlaceholder": "Page name (e.g. careers)",
+      "purposePlaceholder": "Purpose (optional)",
+      "add": "Add"
+    },
+    "review": {
+      "intro": "Review and edit your site brief before we generate your starter content.",
+      "logoLabel": "Logo",
+      "logoAlt": "Logo",
+      "rerollWithAi": "Re-roll with AI",
+      "uploadLogo": "Upload Logo",
+      "generateWithAi": "Generate with AI",
+      "logoGenerationFailed": "Generation failed",
+      "logoHint": "AI generates a simple brand icon (no lettering). You can always upload your own.",
+      "inspirationLabel": "Design Inspiration (optional)",
+      "inspirationHint": "Upload screenshots of websites or designs you like. We'll analyze them to match your site's style. The images will not be included in your new site directly.",
+      "inspirationAlt": "Inspiration {{index}}",
+      "addImage": "Add Image",
+      "addImages": "Add Images",
+      "maxImagesReached": "Maximum 5 images reached.",
+      "businessNameLabel": "Business Name *",
+      "businessDescriptionLabel": "Business Description *",
+      "locationLabel": "Location",
+      "targetAudienceLabel": "Target Audience",
+      "differentiatorsLabel": "Differentiators",
+      "toneLabel": "Tone",
+      "tonePlaceholder": "e.g. Professional, Friendly, Bold",
+      "brandColorsLabel": "Brand Colors",
+      "brandColorsPlaceholder": "e.g. Navy blue and orange, #1a365d, forest green",
+      "primaryGoalLabel": "Primary Goal",
+      "primaryGoalPlaceholder": "e.g. Generate leads, Sell products, Bookings",
+      "constraintsLabel": "Must / Must-not (one per line)",
+      "constraintsPlaceholder": "e.g. Do not use stock photos\nNever add a testimonials section\nAlways show the phone number in the header",
+      "constraintsHint": "Hard rules the design must follow. We pull these from your brief — edit or add any we missed.",
+      "plannedPagesLabel": "Planned Pages ({{count}})",
+      "removePage": "Remove page",
+      "noPagesPlanned": "No pages planned. Add at least one page below, or defaults will be used (Home + About)."
+    },
+    "generate": {
+      "patience": {
+        "0": "Your homepage generation will take longer than additional pages, since we have to create the theme styles first. Other pages will reuse the same styling to make sure the whole site is consistent.",
+        "1": "Most agency websites take 6 – 12 weeks to complete, but yours only will be done in a matter of minutes!",
+        "2": "For each page, we create a design mockup, then convert it to reusable blocks that are easy to edit later on.",
+        "3": "We're crafting unique content tailored to your business — no cookie-cutter templates here.",
+        "4": "Your site is being optimized for search engines right out of the gate.",
+        "5": "Every section is built with conversion in mind — headlines, CTAs, and layout all working together.",
+        "6": "Fun fact: the average small business spends $5,000–$10,000 on a new website. You can redesign yours anytime!"
+      },
+      "statusGeneratingPage": "Generating {{label}} page...",
+      "statusGeneratingParallel_one": "Generating {{count}} page in parallel...",
+      "statusGeneratingParallel_other": "Generating {{count}} pages in parallel...",
+      "statusFinalizing": "Finalizing site styles...",
+      "statusReady": "Your site is ready!",
+      "statusReadyToLaunch": "Ready to launch!",
+      "progressLabel": "{{progress}}% — {{currentIndex}} of {{totalPages}} pages",
+      "createdPagesHeading": "Created {{count}} pages:",
+      "sitePreviewTitle": "Site preview",
+      "viewYourSite": "View Your Site",
+      "launching": "Launching...",
+      "goToDashboard": "Go to Dashboard"
+    }
   }
 }
