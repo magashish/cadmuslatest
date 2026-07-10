@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 import { site, ai, navigation } from "../lib/api";
 import {
@@ -40,6 +41,7 @@ function MenuEditor(props: {
   location: "header" | "footer";
 }) {
   const { items, onChange, loaded, location } = props;
+  const { t } = useTranslation();
   // Which URL field the page/post picker is targeting (parent row, or a child
   // row when childIndex is set), or null when the picker is closed.
   const [picker, setPicker] = useState<{ parentIndex: number; childIndex?: number } | null>(null);
@@ -103,22 +105,23 @@ function MenuEditor(props: {
       ),
     );
 
-  if (!loaded) return <p style={{ color: "var(--color-text-muted)" }}>Loading menu...</p>;
+  if (!loaded) return <p style={{ color: "var(--color-text-muted)" }}>{t("style.menuEditor.loading")}</p>;
+
+  const locationLabel = t(`style.menuEditor.location.${location}`);
 
   return (
     <div>
       <p style={{ marginBottom: "0.75rem", fontSize: "0.85rem", color: "var(--color-text-muted)" }}>
-        These items are woven into the {location} at render time. Save them with the {location} below.
-        Items with children become dropdown menus; their URL can be left empty if they are labels only.
+        {t("style.menuEditor.helpText", { location: locationLabel })}
       </p>
       {items.length === 0 ? (
-        <p style={{ color: "var(--color-text-muted)", marginBottom: "0.75rem" }}>No menu items yet.</p>
+        <p style={{ color: "var(--color-text-muted)", marginBottom: "0.75rem" }}>{t("style.menuEditor.noItems")}</p>
       ) : (
         <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: "0.75rem" }}>
           <thead>
             <tr>
-              <th style={{ textAlign: "left", padding: "0.5rem", borderBottom: "1px solid var(--color-border)" }}>Label</th>
-              <th style={{ textAlign: "left", padding: "0.5rem", borderBottom: "1px solid var(--color-border)" }}>URL</th>
+              <th style={{ textAlign: "left", padding: "0.5rem", borderBottom: "1px solid var(--color-border)" }}>{t("style.menuEditor.labelHeader")}</th>
+              <th style={{ textAlign: "left", padding: "0.5rem", borderBottom: "1px solid var(--color-border)" }}>{t("style.menuEditor.urlHeader")}</th>
               <th style={{ width: "160px", padding: "0.5rem", borderBottom: "1px solid var(--color-border)" }} />
             </tr>
           </thead>
@@ -131,7 +134,7 @@ function MenuEditor(props: {
                       type="text"
                       value={item.label}
                       onChange={(e) => update(index, "label", e.target.value)}
-                      placeholder="Label"
+                      placeholder={t("style.menuEditor.labelPlaceholder")}
                       style={{ width: "100%" }}
                     />
                   </td>
@@ -141,7 +144,7 @@ function MenuEditor(props: {
                         type="text"
                         value={item.url}
                         onChange={(e) => update(index, "url", e.target.value)}
-                        placeholder="/path (optional if has children)"
+                        placeholder={t("style.menuEditor.urlPlaceholder")}
                         style={{ width: "100%" }}
                       />
                       <button
@@ -149,18 +152,18 @@ function MenuEditor(props: {
                         className="btn"
                         style={{ fontSize: "0.75rem", padding: "0.2rem 0.4rem", whiteSpace: "nowrap" }}
                         onClick={() => setPicker({ parentIndex: index })}
-                        title="Link to a published page or post"
+                        title={t("style.menuEditor.pagePostLinkTitle")}
                       >
-                        Page/Post
+                        {t("style.menuEditor.pagePostButton")}
                       </button>
                     </div>
                   </td>
                   <td style={{ padding: "0.5rem", borderBottom: item.children && item.children.length > 0 ? "none" : "1px solid var(--color-border)", textAlign: "right" }}>
                     <div style={{ display: "flex", gap: "0.25rem", justifyContent: "flex-end" }}>
-                      <button type="button" className="btn" style={{ fontSize: "0.75rem", padding: "0.2rem 0.4rem" }} onClick={() => addChild(index)} title="Add child item">+ child</button>
-                      <button type="button" className="btn" style={{ fontSize: "0.8rem", padding: "0.25rem 0.5rem" }} onClick={() => move(index, -1)} disabled={index === 0} title="Move up">▲</button>
-                      <button type="button" className="btn" style={{ fontSize: "0.8rem", padding: "0.25rem 0.5rem" }} onClick={() => move(index, 1)} disabled={index === items.length - 1} title="Move down">▼</button>
-                      <button type="button" className="btn" style={{ fontSize: "0.8rem", padding: "0.25rem 0.5rem" }} onClick={() => remove(index)} title="Remove">✕</button>
+                      <button type="button" className="btn" style={{ fontSize: "0.75rem", padding: "0.2rem 0.4rem" }} onClick={() => addChild(index)} title={t("style.menuEditor.addChildTitle")}>{t("style.menuEditor.addChildButton")}</button>
+                      <button type="button" className="btn" style={{ fontSize: "0.8rem", padding: "0.25rem 0.5rem" }} onClick={() => move(index, -1)} disabled={index === 0} title={t("style.menuEditor.moveUpTitle")}>▲</button>
+                      <button type="button" className="btn" style={{ fontSize: "0.8rem", padding: "0.25rem 0.5rem" }} onClick={() => move(index, 1)} disabled={index === items.length - 1} title={t("style.menuEditor.moveDownTitle")}>▼</button>
+                      <button type="button" className="btn" style={{ fontSize: "0.8rem", padding: "0.25rem 0.5rem" }} onClick={() => remove(index)} title={t("style.menuEditor.removeTitle")}>✕</button>
                     </div>
                   </td>
                 </tr>
@@ -173,7 +176,7 @@ function MenuEditor(props: {
                           type="text"
                           value={child.label}
                           onChange={(e) => updateChild(index, childIndex, "label", e.target.value)}
-                          placeholder="Child label"
+                          placeholder={t("style.menuEditor.childLabelPlaceholder")}
                           style={{ width: "100%", fontSize: "0.875rem" }}
                         />
                       </div>
@@ -184,7 +187,7 @@ function MenuEditor(props: {
                           type="text"
                           value={child.url}
                           onChange={(e) => updateChild(index, childIndex, "url", e.target.value)}
-                          placeholder="/path"
+                          placeholder={t("style.menuEditor.childUrlPlaceholder")}
                           style={{ width: "100%", fontSize: "0.875rem" }}
                         />
                         <button
@@ -192,14 +195,14 @@ function MenuEditor(props: {
                           className="btn"
                           style={{ fontSize: "0.7rem", padding: "0.15rem 0.35rem", whiteSpace: "nowrap" }}
                           onClick={() => setPicker({ parentIndex: index, childIndex })}
-                          title="Link to a published page or post"
+                          title={t("style.menuEditor.pagePostLinkTitle")}
                         >
-                          Page/Post
+                          {t("style.menuEditor.pagePostButton")}
                         </button>
                       </div>
                     </td>
                     <td style={{ padding: "0.25rem 0.5rem", borderBottom: childIndex === (item.children!.length - 1) ? "1px solid var(--color-border)" : "none", textAlign: "right" }}>
-                      <button type="button" className="btn" style={{ fontSize: "0.8rem", padding: "0.2rem 0.4rem" }} onClick={() => removeChild(index, childIndex)} title="Remove child">✕</button>
+                      <button type="button" className="btn" style={{ fontSize: "0.8rem", padding: "0.2rem 0.4rem" }} onClick={() => removeChild(index, childIndex)} title={t("style.menuEditor.removeChildTitle")}>✕</button>
                     </td>
                   </tr>
                 ))}
@@ -208,7 +211,7 @@ function MenuEditor(props: {
           </tbody>
         </table>
       )}
-      <button type="button" className="btn" onClick={add}>+ Add item</button>
+      <button type="button" className="btn" onClick={add}>{t("style.menuEditor.addItem")}</button>
       {picker && (
         <ContentPicker
           onSelect={({ url, title }) => {
@@ -223,6 +226,7 @@ function MenuEditor(props: {
 }
 
 function RecompileCssButton({ siteId }: { siteId: string }) {
+  const { t } = useTranslation();
   const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
 
   const handleRecompile = async () => {
@@ -247,15 +251,16 @@ function RecompileCssButton({ siteId }: { siteId: string }) {
         disabled={status === "loading"}
         style={{ fontSize: "0.8rem" }}
       >
-        {status === "loading" ? "Recompiling…" : "Recompile CSS"}
+        {status === "loading" ? t("style.recompile.recompiling") : t("style.recompile.button")}
       </button>
-      {status === "done" && <span className="settings-success" style={{ marginLeft: "0.75rem" }}>CSS recompiled!</span>}
-      {status === "error" && <span className="auth-error" style={{ marginLeft: "0.75rem" }}>Recompile failed</span>}
+      {status === "done" && <span className="settings-success" style={{ marginLeft: "0.75rem" }}>{t("style.recompile.success")}</span>}
+      {status === "error" && <span className="auth-error" style={{ marginLeft: "0.75rem" }}>{t("style.recompile.error")}</span>}
     </div>
   );
 }
 
 export function Style() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [siteData, setSiteData] = useState<SiteData | null>(null);
@@ -356,7 +361,7 @@ export function Style() {
       setThemeSaved(true);
       setTimeout(() => setThemeSaved(false), 3000);
     } catch (e) {
-      setThemeError(e instanceof Error ? e.message : "Failed to save theme");
+      setThemeError(e instanceof Error ? e.message : t("style.errors.saveTheme"));
     }
   };
 
@@ -382,31 +387,31 @@ export function Style() {
   if (loading) {
     return (
       <div className="page">
-        <h2>Style</h2>
-        <p>Loading...</p>
+        <h2>{t("style.title")}</h2>
+        <p>{t("common.loading")}</p>
       </div>
     );
   }
 
   return (
     <div className="page">
-      <h2>Style</h2>
+      <h2>{t("style.title")}</h2>
 
       {/* Theme */}
       <section className="settings-section">
-        <h3>Theme</h3>
+        <h3>{t("style.theme.title")}</h3>
 
         <div className="settings-form" style={{ marginBottom: "1.5rem" }}>
-          <label>Site Logo</label>
+          <label>{t("style.theme.siteLogo")}</label>
           <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
             {logoUrl ? (
-              <img src={logoUrl} alt="Site logo" style={{ height: 48, width: "auto", borderRadius: 4, background: "#f1f5f9", padding: 4 }} />
+              <img src={logoUrl} alt={t("style.theme.logoAlt")} style={{ height: 48, width: "auto", borderRadius: 4, background: "#f1f5f9", padding: 4 }} />
             ) : (
-              <span style={{ color: "#9ca3af", fontSize: "0.875rem" }}>No logo set</span>
+              <span style={{ color: "#9ca3af", fontSize: "0.875rem" }}>{t("style.theme.noLogo")}</span>
             )}
             <div style={{ display: "flex", gap: "0.5rem" }}>
               <button type="button" className="btn" onClick={() => setShowLogoPicker(true)} disabled={generatingLogo}>
-                {logoUrl ? "Change" : "Upload"}
+                {logoUrl ? t("common.change") : t("common.upload")}
               </button>
               <button
                 type="button"
@@ -422,13 +427,13 @@ export function Style() {
                     const existingSettings = (siteData as unknown as Record<string, unknown>).settings as Record<string, unknown> | undefined;
                     await site.update(siteData.id, { settings: { ...existingSettings, logoUrl: res.url } });
                   } catch (e) {
-                    setLogoGenError(e instanceof Error ? e.message : "Generation failed");
+                    setLogoGenError(e instanceof Error ? e.message : t("style.errors.generationFailed"));
                   } finally {
                     setGeneratingLogo(false);
                   }
                 }}
               >
-                {generatingLogo ? "Generating…" : logoUrl ? "Re-roll with AI" : "Generate with AI"}
+                {generatingLogo ? t("common.generating") : logoUrl ? t("common.reRollWithAi") : t("common.generateWithAi")}
               </button>
               {logoUrl && (
                 <button
@@ -443,7 +448,7 @@ export function Style() {
                     setLogoUrl("");
                   }}
                 >
-                  Remove
+                  {t("common.remove")}
                 </button>
               )}
             </div>
@@ -452,7 +457,7 @@ export function Style() {
             <p style={{ fontSize: "0.8rem", color: "#dc2626", margin: "0.4rem 0 0" }}>{logoGenError}</p>
           )}
           <p style={{ fontSize: "0.8rem", color: "var(--color-text-muted)", margin: "0.4rem 0 0" }}>
-            AI generates a simple brand icon (no lettering). Upload your own anytime.
+            {t("style.theme.logoHelp")}
           </p>
           {showLogoPicker && (
             <MediaPicker
@@ -487,7 +492,7 @@ export function Style() {
           </>
         ) : (
           <>
-            <p style={{ marginBottom: "1rem" }}>Choose a visual theme for your public-facing site.</p>
+            <p style={{ marginBottom: "1rem" }}>{t("style.theme.chooseTheme")}</p>
             <div
               style={{
                 display: "grid",
@@ -542,7 +547,7 @@ export function Style() {
               })}
             </div>
             <div className="settings-actions" style={{ marginTop: "0.75rem" }}>
-              {themeSaved && <span className="settings-success">Saved!</span>}
+              {themeSaved && <span className="settings-success">{t("common.saved")}</span>}
               {themeError && <span className="auth-error">{themeError}</span>}
             </div>
           </>
@@ -552,13 +557,13 @@ export function Style() {
       {/* Header & Footer */}
       {theme && headerDraft && footerDraft && (
         <section className="settings-section">
-          <h3>Header &amp; Footer</h3>
+          <h3>{t("style.headerFooter.title")}</h3>
           <p style={{ marginBottom: "0.75rem", color: "var(--color-text-muted)" }}>
-            Edit the header and footer sections of your theme. Navigation links and logo are wired up automatically — edit layout, copy, and menu items here.
+            {t("style.headerFooter.help")}
           </p>
 
           <div style={{ marginBottom: "2rem" }}>
-            <h4 style={{ marginBottom: "0.75rem" }}>Header</h4>
+            <h4 style={{ marginBottom: "0.75rem" }}>{t("style.headerFooter.headerTitle")}</h4>
             <HtmlSectionEditor
               html={headerDraft.html}
               editableFields={headerDraft.fields}
@@ -570,7 +575,7 @@ export function Style() {
               extraTabs={[
                 {
                   key: "menu",
-                  label: `Menu (${headerMenu.length})`,
+                  label: t("style.headerFooter.menuTabLabel", { count: headerMenu.length }),
                   content: (
                     <MenuEditor
                       items={headerMenu}
@@ -608,21 +613,21 @@ export function Style() {
                     setHeaderSaved(true);
                     setTimeout(() => setHeaderSaved(false), 3000);
                   } catch (e) {
-                    setHeaderError(e instanceof Error ? e.message : "Failed to save header");
+                    setHeaderError(e instanceof Error ? e.message : t("style.errors.saveHeader"));
                   } finally {
                     setHeaderSaving(false);
                   }
                 }}
               >
-                {headerSaving ? "Saving..." : "Save header"}
+                {headerSaving ? t("style.headerFooter.saving") : t("style.headerFooter.saveHeader")}
               </button>
-              {headerSaved && <span className="settings-success">Saved!</span>}
+              {headerSaved && <span className="settings-success">{t("common.saved")}</span>}
               {headerError && <span className="auth-error">{headerError}</span>}
             </div>
           </div>
 
           <div>
-            <h4 style={{ marginBottom: "0.75rem" }}>Footer</h4>
+            <h4 style={{ marginBottom: "0.75rem" }}>{t("style.headerFooter.footerTitle")}</h4>
             <HtmlSectionEditor
               html={footerDraft.html}
               editableFields={footerDraft.fields}
@@ -634,7 +639,7 @@ export function Style() {
               extraTabs={[
                 {
                   key: "menu",
-                  label: `Menu (${footerMenu.length})`,
+                  label: t("style.headerFooter.menuTabLabel", { count: footerMenu.length }),
                   content: (
                     <MenuEditor
                       items={footerMenu}
@@ -672,15 +677,15 @@ export function Style() {
                     setFooterSaved(true);
                     setTimeout(() => setFooterSaved(false), 3000);
                   } catch (e) {
-                    setFooterError(e instanceof Error ? e.message : "Failed to save footer");
+                    setFooterError(e instanceof Error ? e.message : t("style.errors.saveFooter"));
                   } finally {
                     setFooterSaving(false);
                   }
                 }}
               >
-                {footerSaving ? "Saving..." : "Save footer"}
+                {footerSaving ? t("style.headerFooter.saving") : t("style.headerFooter.saveFooter")}
               </button>
-              {footerSaved && <span className="settings-success">Saved!</span>}
+              {footerSaved && <span className="settings-success">{t("common.saved")}</span>}
               {footerError && <span className="auth-error">{footerError}</span>}
             </div>
           </div>

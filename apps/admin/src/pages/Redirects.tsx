@@ -1,4 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
+import { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
 import { redirects as redirectsApi } from "../lib/api";
 
 interface Redirect {
@@ -9,12 +11,14 @@ interface Redirect {
   enabled: boolean;
 }
 
-const STATUS_OPTIONS = [
-  { value: 301, label: "301 — Permanent" },
-  { value: 302, label: "302 — Temporary" },
-  { value: 307, label: "307 — Temporary (preserve method)" },
-  { value: 308, label: "308 — Permanent (preserve method)" },
-];
+function getStatusOptions(t: TFunction) {
+  return [
+    { value: 301, label: t("redirects.statusOptions.301") },
+    { value: 302, label: t("redirects.statusOptions.302") },
+    { value: 307, label: t("redirects.statusOptions.307") },
+    { value: 308, label: t("redirects.statusOptions.308") },
+  ];
+}
 
 function parseCsv(text: string): Array<{ fromPath: string; toUrl: string; statusCode: number }> {
   let lines = text.split(/\r?\n/).filter((l) => l.trim() && !l.startsWith("#"));
@@ -35,6 +39,8 @@ function parseCsv(text: string): Array<{ fromPath: string; toUrl: string; status
 }
 
 export function Redirects() {
+  const { t } = useTranslation();
+  const STATUS_OPTIONS = getStatusOptions(t);
   const [items, setItems] = useState<Redirect[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -79,7 +85,7 @@ export function Redirects() {
       setNewCode(301);
       await load();
     } catch (err) {
-      setCreateError(err instanceof Error ? err.message : "Failed to create redirect");
+      setCreateError(err instanceof Error ? err.message : t("redirects.errors.create"));
     } finally {
       setCreating(false);
     }
@@ -131,7 +137,7 @@ export function Redirects() {
       const text = await file.text();
       const rows = parseCsv(text);
       if (rows.length === 0) {
-        setImportResult({ created: 0, skipped: 0, errors: ["No valid rows found in CSV"] });
+        setImportResult({ created: 0, skipped: 0, errors: [t("redirects.errors.noValidRows")] });
         return;
       }
       const result = await redirectsApi.bulkImport(rows);
@@ -149,7 +155,7 @@ export function Redirects() {
   return (
     <div className="page">
       <div className="page-header" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <h2>URL Redirects</h2>
+        <h2>{t("redirects.title")}</h2>
         <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
           <input
             ref={fileInputRef}
@@ -164,15 +170,15 @@ export function Redirects() {
             onClick={() => fileInputRef.current?.click()}
             disabled={importing}
           >
-            {importing ? "Importing…" : "Import CSV"}
+            {importing ? t("redirects.importing") : t("redirects.importCsv")}
           </button>
         </div>
       </div>
 
       {importResult && (
         <div style={{ marginBottom: "1rem", padding: "0.75rem 1rem", borderRadius: "6px", background: importResult.errors.length > 0 ? "var(--color-warning-bg, #fef9c3)" : "var(--color-success-bg, #dcfce7)", fontSize: "0.875rem" }}>
-          Imported {importResult.created} redirect{importResult.created !== 1 ? "s" : ""}
-          {importResult.skipped > 0 && `, skipped ${importResult.skipped}`}
+          {t("redirects.importResult.created", { count: importResult.created })}
+          {importResult.skipped > 0 && t("redirects.importResult.skipped", { count: importResult.skipped })}
           {importResult.errors.length > 0 && (
             <ul style={{ margin: "0.5rem 0 0", paddingLeft: "1.25rem" }}>
               {importResult.errors.map((e, i) => <li key={i}>{e}</li>)}
@@ -186,14 +192,14 @@ export function Redirects() {
           type="text"
           value={newFrom}
           onChange={(e) => setNewFrom(e.target.value)}
-          placeholder="/old-path"
+          placeholder={t("redirects.fromPlaceholder")}
           disabled={creating}
         />
         <input
           type="text"
           value={newTo}
           onChange={(e) => setNewTo(e.target.value)}
-          placeholder="/new-path or https://…"
+          placeholder={t("redirects.toPlaceholder")}
           disabled={creating}
         />
         <select value={newCode} onChange={(e) => setNewCode(Number(e.target.value))} disabled={creating}>
@@ -202,7 +208,7 @@ export function Redirects() {
           ))}
         </select>
         <button type="submit" className="btn btn-primary" disabled={creating || !newFrom.trim() || !newTo.trim()}>
-          {creating ? "Adding…" : "Add"}
+          {creating ? t("redirects.adding") : t("redirects.add")}
         </button>
       </form>
       {createError && (
@@ -210,21 +216,21 @@ export function Redirects() {
       )}
 
       {loading ? (
-        <p style={{ color: "var(--color-text-secondary, #6b7280)" }}>Loading…</p>
+        <p style={{ color: "var(--color-text-secondary, #6b7280)" }}>{t("redirects.loading")}</p>
       ) : items.length === 0 ? (
         <div style={{ textAlign: "center", padding: "3rem 1rem", color: "var(--color-text-secondary, #6b7280)" }}>
-          <p style={{ marginBottom: "0.5rem" }}>No redirects yet.</p>
-          <p style={{ fontSize: "0.875rem" }}>Add a redirect above or import from a CSV file.</p>
-          <p style={{ fontSize: "0.8rem", marginTop: "1rem", opacity: 0.7 }}>CSV format: <code>from_path, to_url, status_code</code></p>
+          <p style={{ marginBottom: "0.5rem" }}>{t("redirects.emptyState.title")}</p>
+          <p style={{ fontSize: "0.875rem" }}>{t("redirects.emptyState.hint")}</p>
+          <p style={{ fontSize: "0.8rem", marginTop: "1rem", opacity: 0.7 }}>{t("redirects.emptyState.csvFormat")} <code>from_path, to_url, status_code</code></p>
         </div>
       ) : (
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.9rem" }}>
           <thead>
             <tr style={{ borderBottom: "2px solid var(--color-border, #e5e7eb)" }}>
-              <th style={{ ...cellStyle, textAlign: "left", fontWeight: 600 }}>From</th>
-              <th style={{ ...cellStyle, textAlign: "left", fontWeight: 600 }}>To</th>
-              <th style={{ ...cellStyle, textAlign: "center", fontWeight: 600, width: "80px" }}>Code</th>
-              <th style={{ ...cellStyle, textAlign: "center", fontWeight: 600, width: "80px" }}>Active</th>
+              <th style={{ ...cellStyle, textAlign: "left", fontWeight: 600 }}>{t("redirects.tableHeaders.from")}</th>
+              <th style={{ ...cellStyle, textAlign: "left", fontWeight: 600 }}>{t("redirects.tableHeaders.to")}</th>
+              <th style={{ ...cellStyle, textAlign: "center", fontWeight: 600, width: "80px" }}>{t("redirects.tableHeaders.code")}</th>
+              <th style={{ ...cellStyle, textAlign: "center", fontWeight: 600, width: "80px" }}>{t("redirects.tableHeaders.active")}</th>
               <th style={{ ...cellStyle, width: "120px" }} />
             </tr>
           </thead>
@@ -247,20 +253,20 @@ export function Redirects() {
                     </td>
                     <td style={{ ...cellStyle, textAlign: "right" }}>
                       <div style={{ display: "flex", gap: "0.25rem", justifyContent: "flex-end" }}>
-                        <button type="button" className="btn btn-primary" style={{ fontSize: "0.8rem", padding: "0.2rem 0.5rem" }} onClick={() => handleSave(item.id)}>Save</button>
-                        <button type="button" className="btn" style={{ fontSize: "0.8rem", padding: "0.2rem 0.5rem" }} onClick={() => setEditingId(null)}>Cancel</button>
+                        <button type="button" className="btn btn-primary" style={{ fontSize: "0.8rem", padding: "0.2rem 0.5rem" }} onClick={() => handleSave(item.id)}>{t("common.save")}</button>
+                        <button type="button" className="btn" style={{ fontSize: "0.8rem", padding: "0.2rem 0.5rem" }} onClick={() => setEditingId(null)}>{t("common.cancel")}</button>
                       </div>
                     </td>
                   </>
                 ) : deleteConfirm === item.id ? (
                   <>
                     <td colSpan={4} style={cellStyle}>
-                      <span style={{ color: "var(--color-error, #dc2626)" }}>Delete redirect from <code>{item.fromPath}</code>?</span>
+                      <span style={{ color: "var(--color-error, #dc2626)" }}>{t("redirects.deleteConfirm.message")} <code>{item.fromPath}</code>?</span>
                     </td>
                     <td style={{ ...cellStyle, textAlign: "right" }}>
                       <div style={{ display: "flex", gap: "0.25rem", justifyContent: "flex-end" }}>
-                        <button type="button" className="btn btn-danger" style={{ fontSize: "0.8rem", padding: "0.2rem 0.5rem" }} onClick={() => handleDelete(item.id)}>Delete</button>
-                        <button type="button" className="btn" style={{ fontSize: "0.8rem", padding: "0.2rem 0.5rem" }} onClick={() => setDeleteConfirm(null)}>Cancel</button>
+                        <button type="button" className="btn btn-danger" style={{ fontSize: "0.8rem", padding: "0.2rem 0.5rem" }} onClick={() => handleDelete(item.id)}>{t("common.delete")}</button>
+                        <button type="button" className="btn" style={{ fontSize: "0.8rem", padding: "0.2rem 0.5rem" }} onClick={() => setDeleteConfirm(null)}>{t("common.cancel")}</button>
                       </div>
                     </td>
                   </>
@@ -272,7 +278,7 @@ export function Redirects() {
                     <td style={{ ...cellStyle, textAlign: "center" }}>
                       <button
                         type="button"
-                        title={item.enabled ? "Enabled — click to disable" : "Disabled — click to enable"}
+                        title={item.enabled ? t("redirects.toggleEnabled.onTitle") : t("redirects.toggleEnabled.offTitle")}
                         style={{ background: "none", border: "none", cursor: "pointer", fontSize: "1rem", padding: 0 }}
                         onClick={() => handleToggleEnabled(item)}
                       >
@@ -281,8 +287,8 @@ export function Redirects() {
                     </td>
                     <td style={{ ...cellStyle, textAlign: "right" }}>
                       <div style={{ display: "flex", gap: "0.25rem", justifyContent: "flex-end" }}>
-                        <button type="button" className="btn" style={{ fontSize: "0.8rem", padding: "0.2rem 0.5rem" }} onClick={() => startEdit(item)}>Edit</button>
-                        <button type="button" className="btn" style={{ fontSize: "0.8rem", padding: "0.2rem 0.5rem" }} onClick={() => setDeleteConfirm(item.id)}>Delete</button>
+                        <button type="button" className="btn" style={{ fontSize: "0.8rem", padding: "0.2rem 0.5rem" }} onClick={() => startEdit(item)}>{t("common.edit")}</button>
+                        <button type="button" className="btn" style={{ fontSize: "0.8rem", padding: "0.2rem 0.5rem" }} onClick={() => setDeleteConfirm(item.id)}>{t("common.delete")}</button>
                       </div>
                     </td>
                   </>

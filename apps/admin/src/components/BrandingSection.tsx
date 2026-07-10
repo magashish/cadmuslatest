@@ -1,4 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
+import { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
 import { useAuth } from "../context/AuthContext";
 import { site, ai, media } from "../lib/api";
 
@@ -7,10 +9,10 @@ interface SiteData {
   settings?: Record<string, unknown>;
 }
 
-async function validateFaviconFile(file: File): Promise<string | null> {
+async function validateFaviconFile(file: File, t: TFunction): Promise<string | null> {
   const allowed = ["image/png", "image/svg+xml", "image/x-icon", "image/vnd.microsoft.icon"];
   if (!allowed.includes(file.type)) {
-    return "Favicon must be a PNG, SVG, or ICO file.";
+    return t("branding.favicon.errors.invalidType");
   }
   // SVGs are vector, no dimension check needed
   if (file.type === "image/svg+xml") return null;
@@ -20,16 +22,16 @@ async function validateFaviconFile(file: File): Promise<string | null> {
     img.onload = () => {
       URL.revokeObjectURL(url);
       if (img.naturalWidth !== img.naturalHeight) {
-        resolve("Favicon must be square.");
+        resolve(t("branding.favicon.errors.mustBeSquare"));
       } else if (img.naturalWidth < 256) {
-        resolve("Favicon must be at least 256×256 pixels.");
+        resolve(t("branding.favicon.errors.tooSmall"));
       } else {
         resolve(null);
       }
     };
     img.onerror = () => {
       URL.revokeObjectURL(url);
-      resolve("Couldn't read image dimensions.");
+      resolve(t("branding.favicon.errors.readFailed"));
     };
     img.src = url;
   });
@@ -41,6 +43,7 @@ async function validateFaviconFile(file: File): Promise<string | null> {
  * `site.update`. Rendered on the Style page.
  */
 export function BrandingSection() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [siteData, setSiteData] = useState<SiteData | null>(null);
 
@@ -78,7 +81,7 @@ export function BrandingSection() {
   const handleFaviconUpload = async (file: File) => {
     setFaviconError("");
     setFaviconSaved(false);
-    const validationError = await validateFaviconFile(file);
+    const validationError = await validateFaviconFile(file, t);
     if (validationError) {
       setFaviconError(validationError);
       return;
@@ -87,10 +90,10 @@ export function BrandingSection() {
     try {
       const result = await media.upload(file, user?.id);
       const url = (result as { storageUrl?: string }).storageUrl;
-      if (!url) throw new Error("Upload returned no URL");
+      if (!url) throw new Error(t("branding.favicon.errors.uploadNoUrl"));
       setFaviconPreview(url);
     } catch (e) {
-      setFaviconError(e instanceof Error ? e.message : "Upload failed");
+      setFaviconError(e instanceof Error ? e.message : t("branding.favicon.errors.uploadFailed"));
     } finally {
       setFaviconUploading(false);
     }
@@ -104,7 +107,7 @@ export function BrandingSection() {
       const result = await ai.generateFavicon();
       setFaviconPreview(result.url);
     } catch (e) {
-      setFaviconError(e instanceof Error ? e.message : "Generation failed");
+      setFaviconError(e instanceof Error ? e.message : t("branding.favicon.errors.generationFailed"));
     } finally {
       setFaviconGenerating(false);
     }
@@ -125,7 +128,7 @@ export function BrandingSection() {
       setFaviconSaved(true);
       setTimeout(() => setFaviconSaved(false), 3000);
     } catch (e) {
-      setFaviconError(e instanceof Error ? e.message : "Failed to save");
+      setFaviconError(e instanceof Error ? e.message : t("branding.favicon.errors.saveFailed"));
     } finally {
       setFaviconSaving(false);
     }
@@ -146,7 +149,7 @@ export function BrandingSection() {
       setFaviconSaved(true);
       setTimeout(() => setFaviconSaved(false), 3000);
     } catch (e) {
-      setFaviconError(e instanceof Error ? e.message : "Failed to remove");
+      setFaviconError(e instanceof Error ? e.message : t("branding.favicon.errors.removeFailed"));
     } finally {
       setFaviconSaving(false);
     }
@@ -154,9 +157,9 @@ export function BrandingSection() {
 
   return (
     <section className="settings-section">
-      <h3>Branding</h3>
+      <h3>{t("branding.title")}</h3>
       <p style={{ marginBottom: "1rem", fontSize: "0.9rem", color: "var(--color-text-muted)" }}>
-        Control how Cadmus is credited on your public site.
+        {t("branding.subtitle")}
       </p>
       <div className="settings-form">
         <label className="checkbox-label">
@@ -165,7 +168,7 @@ export function BrandingSection() {
             checked={showCadmusByline}
             onChange={(e) => setShowCadmusByline(e.target.checked)}
           />
-          <span>Show "Powered by Cadmus" byline in footer</span>
+          <span>{t("branding.bylineLabel")}</span>
         </label>
         <div className="settings-actions">
           <button
@@ -183,22 +186,22 @@ export function BrandingSection() {
                 setBrandingSaved(true);
                 setTimeout(() => setBrandingSaved(false), 3000);
               } catch (e) {
-                setBrandingError(e instanceof Error ? e.message : "Failed to save");
+                setBrandingError(e instanceof Error ? e.message : t("branding.errors.saveFailed"));
               }
             }}
           >
-            Save
+            {t("common.save")}
           </button>
-          {brandingSaved && <span className="settings-success">Saved!</span>}
+          {brandingSaved && <span className="settings-success">{t("common.saved")}</span>}
           {brandingError && <span className="auth-error">{brandingError}</span>}
         </div>
       </div>
 
       <hr style={{ margin: "1.5rem 0", border: "none", borderTop: "1px solid var(--color-border)" }} />
 
-      <h4 style={{ marginBottom: "0.5rem" }}>Favicon</h4>
+      <h4 style={{ marginBottom: "0.5rem" }}>{t("branding.favicon.title")}</h4>
       <p style={{ marginBottom: "1rem", fontSize: "0.9rem", color: "var(--color-text-muted)" }}>
-        The small icon shown in browser tabs and bookmarks. Square PNG, SVG, or ICO at least 256×256.
+        {t("branding.favicon.subtitle")}
       </p>
       <div className="settings-form">
         <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "0.75rem" }}>
@@ -218,20 +221,20 @@ export function BrandingSection() {
             {(faviconPreview || faviconUrl) ? (
               <img
                 src={faviconPreview || faviconUrl}
-                alt="Favicon"
+                alt={t("branding.favicon.imageAlt")}
                 style={{ maxWidth: "100%", maxHeight: "100%" }}
               />
             ) : (
-              <span style={{ fontSize: "0.75rem", color: "var(--color-text-muted)" }}>None</span>
+              <span style={{ fontSize: "0.75rem", color: "var(--color-text-muted)" }}>{t("branding.favicon.none")}</span>
             )}
           </div>
           <div style={{ fontSize: "0.85rem", color: "var(--color-text-muted)" }}>
             {faviconPreview ? (
-              <span>Preview — not yet saved.</span>
+              <span>{t("branding.favicon.previewNotSaved")}</span>
             ) : faviconUrl ? (
-              <span>Current favicon.</span>
+              <span>{t("branding.favicon.currentFavicon")}</span>
             ) : (
-              <span>Using the default Cadmus icon.</span>
+              <span>{t("branding.favicon.usingDefault")}</span>
             )}
           </div>
         </div>
@@ -247,7 +250,7 @@ export function BrandingSection() {
               minWidth: "10rem",
             }}
           >
-            {faviconUploading ? "Uploading…" : "Upload"}
+            {faviconUploading ? t("branding.favicon.uploading") : t("common.upload")}
             <input
               type="file"
               accept="image/png,image/svg+xml,image/x-icon,image/vnd.microsoft.icon,.ico"
@@ -272,7 +275,7 @@ export function BrandingSection() {
             disabled={faviconUploading || faviconGenerating || faviconSaving}
             onClick={handleFaviconGenerate}
           >
-            {faviconGenerating ? "Generating…" : faviconPreview ? "Re-roll with AI" : "Generate with AI"}
+            {faviconGenerating ? t("common.generating") : faviconPreview ? t("common.reRollWithAi") : t("common.generateWithAi")}
           </button>
           {faviconPreview && (
             <>
@@ -282,7 +285,7 @@ export function BrandingSection() {
                 disabled={faviconSaving}
                 onClick={saveFavicon}
               >
-                {faviconSaving ? "Saving…" : "Save"}
+                {faviconSaving ? t("common.saving") : t("common.save")}
               </button>
               <button
                 type="button"
@@ -293,7 +296,7 @@ export function BrandingSection() {
                   setFaviconError("");
                 }}
               >
-                Discard
+                {t("branding.favicon.discard")}
               </button>
             </>
           )}
@@ -304,11 +307,11 @@ export function BrandingSection() {
               disabled={faviconSaving}
               onClick={removeFavicon}
             >
-              Remove
+              {t("common.remove")}
             </button>
           )}
         </div>
-        {faviconSaved && <span className="settings-success" style={{ marginTop: "0.5rem" }}>Saved!</span>}
+        {faviconSaved && <span className="settings-success" style={{ marginTop: "0.5rem" }}>{t("common.saved")}</span>}
         {faviconError && <span className="auth-error" style={{ marginTop: "0.5rem" }}>{faviconError}</span>}
       </div>
     </section>

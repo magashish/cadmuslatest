@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, type ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 import { addons, ApiError, type MarketplaceAddon } from "../lib/api";
 import { useAuth } from "../context/AuthContext";
 import { UpgradePrompt } from "../components/UpgradePrompt";
@@ -17,6 +18,7 @@ function formatPrice(cents: number | null, interval: "mo" | "yr"): string {
 }
 
 export function Addons() {
+  const { t } = useTranslation();
   const { user, sitePlan } = useAuth();
   const canManage = user?.role === "owner" || user?.role === "admin";
   const annual = sitePlan === "annual";
@@ -38,7 +40,7 @@ export function Addons() {
       const res = await addons.list();
       setItems(res.items);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to load add-ons");
+      setError(e instanceof Error ? e.message : t("addons.errors.load"));
     } finally {
       setLoading(false);
     }
@@ -58,7 +60,7 @@ export function Addons() {
     });
 
   const priceLabel = (a: MarketplaceAddon): string =>
-    a.isFree ? "Free" : formatPrice(annual ? a.priceAnnualCents : a.priceMonthlyCents, annual ? "yr" : "mo");
+    a.isFree ? t("addons.free") : formatPrice(annual ? a.priceAnnualCents : a.priceMonthlyCents, annual ? "yr" : "mo");
 
   const handleInstall = async (a: MarketplaceAddon) => {
     if (!canManage) return;
@@ -83,7 +85,7 @@ export function Addons() {
       if (e instanceof ApiError && e.status === 403) {
         setUpgradeSlug(a.slug);
       } else {
-        setActionError(a.slug, e instanceof Error ? e.message : "Failed to install");
+        setActionError(a.slug, e instanceof Error ? e.message : t("addons.errors.install"));
       }
     } finally {
       setBusySlug(null);
@@ -93,8 +95,8 @@ export function Addons() {
   const handleUninstall = async (a: MarketplaceAddon) => {
     if (!canManage) return;
     const message = a.isFree
-      ? `Uninstall ${a.name}?`
-      : `Uninstall ${a.name}? Paid add-ons are credited pro-rata.`;
+      ? t("addons.confirmUninstall.free", { name: a.name })
+      : t("addons.confirmUninstall.paid", { name: a.name });
     if (!confirm(message)) return;
     clearActionError(a.slug);
     setBusySlug(a.slug);
@@ -109,7 +111,7 @@ export function Addons() {
       );
       if (expandedSlug === a.slug) setExpandedSlug(null);
     } catch (e) {
-      setActionError(a.slug, e instanceof Error ? e.message : "Failed to uninstall");
+      setActionError(a.slug, e instanceof Error ? e.message : t("addons.errors.uninstall"));
     } finally {
       setBusySlug(null);
     }
@@ -123,14 +125,16 @@ export function Addons() {
 
   return (
     <div className="page">
-      <h2>Add-ons</h2>
+      <h2>{t("addons.title")}</h2>
       <p style={{ color: "var(--color-text-muted)", marginTop: "0.25rem" }}>
-        Extend your site with curated, sandboxed add-ons. Install what you need — no plugins to
-        maintain.
+        {t("addons.subtitle")}
       </p>
 
       <div style={{ display: "flex", gap: "0.5rem", marginTop: "1.5rem", borderBottom: "1px solid var(--color-border)" }}>
-        {([["browse", "Browse"], ["installed", `Installed${installed.length ? ` (${installed.length})` : ""}`]] as const).map(
+        {([
+          ["browse", t("addons.tabs.browse")],
+          ["installed", installed.length ? t("addons.tabs.installedWithCount", { count: installed.length }) : t("addons.tabs.installed")],
+        ] as const).map(
           ([key, label]) => (
             <button
               key={key}
@@ -154,14 +158,14 @@ export function Addons() {
       </div>
 
       {loading ? (
-        <p style={{ marginTop: "1.5rem", color: "var(--color-text-muted)" }}>Loading…</p>
+        <p style={{ marginTop: "1.5rem", color: "var(--color-text-muted)" }}>{t("addons.loading")}</p>
       ) : error ? (
         <p className="auth-error" style={{ marginTop: "1.5rem" }}>{error}</p>
       ) : tab === "browse" ? (
         <div style={{ marginTop: "1.5rem", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
           {items.length === 0 ? (
             <div className="card" style={{ padding: "2rem", textAlign: "center", color: "var(--color-text-muted)" }}>
-              No add-ons available yet.
+              {t("addons.noneAvailable")}
             </div>
           ) : (
             items.map((a) => (
@@ -184,7 +188,7 @@ export function Addons() {
         <div style={{ marginTop: "1.5rem", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
           {installed.length === 0 ? (
             <div className="card" style={{ padding: "2rem", textAlign: "center", color: "var(--color-text-muted)" }}>
-              No add-ons installed yet. Find some under <strong>Browse</strong>.
+              {t("addons.noneInstalledPrefix")} <strong>{t("addons.tabs.browse")}</strong>.
             </div>
           ) : (
             installed.map((a) => (
@@ -248,6 +252,7 @@ function BrowseCard({
   onInstall: () => void;
   onDismissUpgrade: () => void;
 }) {
+  const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
   const description = addon.description || "";
   const isLong = description.length > 160;
@@ -292,7 +297,7 @@ function BrowseCard({
               onClick={() => setExpanded((v) => !v)}
               style={{ background: "none", border: "none", padding: 0, color: "var(--color-primary)", cursor: "pointer", fontSize: "0.85rem" }}
             >
-              {expanded ? "Show less" : "Show more"}
+              {expanded ? t("addons.showLess") : t("addons.showMore")}
             </button>
           )}
         </p>
@@ -301,7 +306,7 @@ function BrowseCard({
       <div style={{ marginTop: "1rem" }}>
         {addon.installed ? (
           <button type="button" className="btn" disabled>
-            Installed ✓
+            {t("addons.installed")}
           </button>
         ) : (
           <button
@@ -309,14 +314,14 @@ function BrowseCard({
             className="btn btn-primary"
             disabled={!canManage || busy}
             onClick={onInstall}
-            title={canManage ? undefined : "Only admins can install add-ons"}
+            title={canManage ? undefined : t("addons.installTitleDisabled")}
           >
-            {busy ? "Installing…" : "Install"}
+            {busy ? t("addons.installing") : t("addons.install")}
           </button>
         )}
         {showBillingNote && !addon.installed && (
           <div style={{ fontSize: "0.78rem", color: "var(--color-text-muted)", marginTop: "0.4rem" }}>
-            Billed to your subscription, prorated today.
+            {t("addons.billingNote")}
           </div>
         )}
         {error && (
@@ -332,7 +337,7 @@ function BrowseCard({
             onClick={onDismissUpgrade}
             style={{ background: "none", border: "none", padding: "0.4rem 0 0", color: "var(--color-text-muted)", cursor: "pointer", fontSize: "0.8rem" }}
           >
-            Dismiss
+            {t("addons.dismiss")}
           </button>
         </div>
       )}
@@ -359,6 +364,7 @@ function InstalledRow({
   onUninstall: () => void;
   onConfigSaved: (slug: string, config: Record<string, unknown>) => void;
 }) {
+  const { t } = useTranslation();
   const suspended = addon.installStatus === "suspended";
   return (
     <div className="card" style={{ padding: "1rem 1.25rem" }}>
@@ -380,7 +386,7 @@ function InstalledRow({
                   border: "1px solid #fecaca",
                 }}
               >
-                suspended — billing issue
+                {t("addons.suspendedBadge")}
               </span>
             )}
           </div>
@@ -392,7 +398,7 @@ function InstalledRow({
         </div>
         <div style={{ display: "flex", gap: "0.5rem" }}>
           <button type="button" className="btn" onClick={onToggle}>
-            Configure {expanded ? "▲" : "▼"}
+            {t("addons.configure")} {expanded ? "▲" : "▼"}
           </button>
           <button
             type="button"
@@ -401,7 +407,7 @@ function InstalledRow({
             disabled={!canManage || busy}
             onClick={onUninstall}
           >
-            {busy ? "Working…" : "Uninstall"}
+            {busy ? t("addons.working") : t("addons.uninstall")}
           </button>
         </div>
       </div>
@@ -426,6 +432,7 @@ function ConfigPanel({
   canManage: boolean;
   onSaved: (slug: string, config: Record<string, unknown>) => void;
 }) {
+  const { t } = useTranslation();
   const config = addon.config ?? {};
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -442,7 +449,7 @@ function ConfigPanel({
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to save");
+      setError(e instanceof Error ? e.message : t("addons.errors.saveConfig"));
     } finally {
       setSaving(false);
     }
@@ -450,7 +457,7 @@ function ConfigPanel({
 
   const status = (
     <>
-      {saved && <span className="settings-success" style={{ marginLeft: "0.5rem" }}>Saved</span>}
+      {saved && <span className="settings-success" style={{ marginLeft: "0.5rem" }}>{t("addons.configSaved")}</span>}
       {error && <span className="auth-error" style={{ marginLeft: "0.5rem" }}>{error}</span>}
     </>
   );
@@ -464,13 +471,13 @@ function ConfigPanel({
   if (addon.slug === "mortgage-calculator") {
     return (
       <p style={{ fontSize: "0.875rem", color: "var(--color-text-muted)", margin: 0 }}>
-        Add the Mortgage Calculator block to any page from the editor.
+        {t("addons.mortgageCalculatorHint")}
       </p>
     );
   }
   return (
     <p style={{ fontSize: "0.875rem", color: "var(--color-text-muted)", margin: 0 }}>
-      This add-on has no configurable settings.
+      {t("addons.noConfigurableSettings")}
     </p>
   );
 }
@@ -488,6 +495,7 @@ function VisitorChatbotConfig({
   onSave: (payload: Record<string, unknown>) => void;
   status: ReactNode;
 }) {
+  const { t } = useTranslation();
   const [instructions, setInstructions] = useState((config.instructions as string) ?? "");
   const [greeting, setGreeting] = useState((config.greeting as string) ?? "");
   const [enabled, setEnabled] = useState(config.enabled !== false);
@@ -495,30 +503,30 @@ function VisitorChatbotConfig({
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "0.85rem", maxWidth: 560 }}>
       <label style={{ display: "block", fontSize: "0.875rem" }}>
-        <span style={{ fontWeight: 600, display: "block", marginBottom: "0.25rem" }}>Instructions for the assistant</span>
+        <span style={{ fontWeight: 600, display: "block", marginBottom: "0.25rem" }}>{t("addons.visitorChatbot.instructionsLabel")}</span>
         <textarea
           value={instructions}
           onChange={(e) => setInstructions(e.target.value)}
           rows={5}
           disabled={!canManage}
-          placeholder="Describe how the assistant should talk to visitors, what it should help with, and anything it should avoid."
+          placeholder={t("addons.visitorChatbot.instructionsPlaceholder")}
           style={{ width: "100%", padding: "0.6rem", border: "1px solid #d1d5db", borderRadius: 6, resize: "vertical", fontFamily: "inherit", fontSize: "0.875rem" }}
         />
       </label>
       <label style={{ display: "block", fontSize: "0.875rem" }}>
-        <span style={{ fontWeight: 600, display: "block", marginBottom: "0.25rem" }}>Greeting message</span>
+        <span style={{ fontWeight: 600, display: "block", marginBottom: "0.25rem" }}>{t("addons.visitorChatbot.greetingLabel")}</span>
         <input
           type="text"
           value={greeting}
           onChange={(e) => setGreeting(e.target.value)}
           disabled={!canManage}
-          placeholder="Hi! How can I help you today?"
+          placeholder={t("addons.visitorChatbot.greetingPlaceholder")}
           style={{ width: "100%", padding: "0.5rem", border: "1px solid #d1d5db", borderRadius: 6, fontSize: "0.875rem" }}
         />
       </label>
       <label style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "0.875rem" }}>
         <input type="checkbox" checked={enabled} disabled={!canManage} onChange={(e) => setEnabled(e.target.checked)} />
-        Enabled
+        {t("addons.visitorChatbot.enabled")}
       </label>
       <div className="settings-actions">
         <button
@@ -527,7 +535,7 @@ function VisitorChatbotConfig({
           disabled={!canManage || saving}
           onClick={() => onSave({ instructions, greeting, enabled })}
         >
-          {saving ? "Saving…" : "Save"}
+          {saving ? t("common.saving") : t("common.save")}
         </button>
         {status}
       </div>
@@ -548,6 +556,7 @@ function TurnstileConfig({
   onSave: (payload: Record<string, unknown>) => void;
   status: ReactNode;
 }) {
+  const { t } = useTranslation();
   const [sitekey, setSitekey] = useState((config.sitekey as string) ?? "");
   const [secretKey, setSecretKey] = useState((config.secretKey as string) ?? "");
   const [open, setOpen] = useState(!!config.sitekey || !!config.secretKey);
@@ -559,17 +568,16 @@ function TurnstileConfig({
         onClick={() => setOpen((v) => !v)}
         style={{ background: "none", border: "none", padding: 0, color: "var(--color-primary)", cursor: "pointer", fontSize: "0.875rem", fontWeight: 600 }}
       >
-        Advanced: bring your own Cloudflare Turnstile keys {open ? "▲" : "▼"}
+        {t("addons.turnstile.advancedToggle")} {open ? "▲" : "▼"}
       </button>
 
       {open && (
         <div style={{ display: "flex", flexDirection: "column", gap: "0.85rem", marginTop: "0.85rem" }}>
           <p style={{ fontSize: "0.8125rem", color: "var(--color-text-muted)", margin: 0 }}>
-            Leave these blank to use the platform's shared Turnstile keys. Enter your own to run
-            spam protection on your Cloudflare account.
+            {t("addons.turnstile.description")}
           </p>
           <label style={{ display: "block", fontSize: "0.875rem" }}>
-            <span style={{ fontWeight: 600, display: "block", marginBottom: "0.25rem" }}>Site key</span>
+            <span style={{ fontWeight: 600, display: "block", marginBottom: "0.25rem" }}>{t("addons.turnstile.siteKeyLabel")}</span>
             <input
               type="text"
               value={sitekey}
@@ -580,13 +588,13 @@ function TurnstileConfig({
             />
           </label>
           <label style={{ display: "block", fontSize: "0.875rem" }}>
-            <span style={{ fontWeight: 600, display: "block", marginBottom: "0.25rem" }}>Secret key</span>
+            <span style={{ fontWeight: 600, display: "block", marginBottom: "0.25rem" }}>{t("addons.turnstile.secretKeyLabel")}</span>
             <input
               type="password"
               value={secretKey}
               onChange={(e) => setSecretKey(e.target.value)}
               disabled={!canManage}
-              placeholder="Kept private — never shown to visitors"
+              placeholder={t("addons.turnstile.secretKeyPlaceholder")}
               style={{ width: "100%", padding: "0.5rem", border: "1px solid #d1d5db", borderRadius: 6, fontSize: "0.875rem" }}
             />
           </label>
@@ -597,7 +605,7 @@ function TurnstileConfig({
               disabled={!canManage || saving}
               onClick={() => onSave({ sitekey, secretKey })}
             >
-              {saving ? "Saving…" : "Save"}
+              {saving ? t("common.saving") : t("common.save")}
             </button>
             {status}
           </div>

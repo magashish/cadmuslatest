@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 import { site } from "../lib/api";
 import type { DesignIntent } from "../lib/api";
@@ -15,6 +16,7 @@ interface SiteData {
  * persists via `site.updateDesignIntent`. Rendered on the Style page.
  */
 export function DesignDirectionSection() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [siteData, setSiteData] = useState<SiteData | null>(null);
 
@@ -58,49 +60,49 @@ export function DesignDirectionSection() {
 
   return (
     <section className="settings-section">
-      <h3>Design Direction</h3>
+      <h3>{t("designDirection.title")}</h3>
       <p style={{ marginBottom: "0.75rem", fontSize: "0.9rem", color: "var(--color-text-muted)" }}>
-        The AI references this on every edit and new page so your site stays visually and tonally consistent. It's generated from your homepage and evolves as you make global changes in chat — edit it here to correct anything the AI keeps getting wrong.
+        {t("designDirection.intro")}
         {designIntent && (
           <span style={{ display: "block", marginTop: "0.35rem", fontSize: "0.8rem" }}>
-            Version {designIntent.version} · {designIntent.source === "generated" ? "auto-generated from homepage" : designIntent.source === "refined" ? "refined via AI chat" : "edited by you"}
-            {designIntent.updatedAt ? ` · updated ${new Date(designIntent.updatedAt).toLocaleDateString()}` : ""}
+            {t("designDirection.versionLabel", { version: designIntent.version })} · {designIntent.source === "generated" ? t("designDirection.source.generated") : designIntent.source === "refined" ? t("designDirection.source.refined") : t("designDirection.source.edited")}
+            {designIntent.updatedAt ? ` · ${t("designDirection.updatedOn", { date: new Date(designIntent.updatedAt).toLocaleDateString() })}` : ""}
           </span>
         )}
       </p>
       {!designIntent && (
         <p style={{ marginBottom: "0.75rem", fontSize: "0.85rem", color: "var(--color-text-muted)", fontStyle: "italic" }}>
-          No design direction has been captured yet — it's synthesized automatically after your homepage is generated. You can also fill it in manually below.
+          {t("designDirection.notCapturedYet")}
         </p>
       )}
       <div className="settings-form">
         <label>
-          Aesthetic direction <span style={{ color: "var(--color-text-muted)", fontWeight: 400 }}>(the overall look in a sentence or two)</span>
-          <textarea value={diAesthetic} onChange={(e) => setDiAesthetic(e.target.value)} rows={2} placeholder="e.g. Warm, editorial, and confident — generous whitespace with bold serif headlines over muted earth tones." />
+          {t("designDirection.fields.aesthetic.label")} <span style={{ color: "var(--color-text-muted)", fontWeight: 400 }}>{t("designDirection.fields.aesthetic.hint")}</span>
+          <textarea value={diAesthetic} onChange={(e) => setDiAesthetic(e.target.value)} rows={2} placeholder={t("designDirection.fields.aesthetic.placeholder")} />
         </label>
         <label>
-          Voice &amp; tone <span style={{ color: "var(--color-text-muted)", fontWeight: 400 }}>(how the copy should sound)</span>
-          <input type="text" value={diVoice} onChange={(e) => setDiVoice(e.target.value)} placeholder="e.g. Plain-spoken, benefit-led, lightly playful" />
+          {t("designDirection.fields.voice.label")} <span style={{ color: "var(--color-text-muted)", fontWeight: 400 }}>{t("designDirection.fields.voice.hint")}</span>
+          <input type="text" value={diVoice} onChange={(e) => setDiVoice(e.target.value)} placeholder={t("designDirection.fields.voice.placeholder")} />
         </label>
         <label>
-          Layout &amp; composition
-          <textarea value={diLayout} onChange={(e) => setDiLayout(e.target.value)} rows={2} placeholder="e.g. Alternating light/dark sections, asymmetric hero, roomy card grids" />
+          {t("designDirection.fields.layout.label")}
+          <textarea value={diLayout} onChange={(e) => setDiLayout(e.target.value)} rows={2} placeholder={t("designDirection.fields.layout.placeholder")} />
         </label>
         <label>
-          Imagery <span style={{ color: "var(--color-text-muted)", fontWeight: 400 }}>(used to guide AI-generated images)</span>
-          <textarea value={diImagery} onChange={(e) => setDiImagery(e.target.value)} rows={2} placeholder="e.g. Natural-light photography, real people, candid moments, no stock-cliché handshakes" />
+          {t("designDirection.fields.imagery.label")} <span style={{ color: "var(--color-text-muted)", fontWeight: 400 }}>{t("designDirection.fields.imagery.hint")}</span>
+          <textarea value={diImagery} onChange={(e) => setDiImagery(e.target.value)} rows={2} placeholder={t("designDirection.fields.imagery.placeholder")} />
         </label>
         <label>
-          Color &amp; type
-          <textarea value={diColorType} onChange={(e) => setDiColorType(e.target.value)} rows={2} placeholder="e.g. Accent reserved for CTAs only; headings in the display serif, body in a clean sans" />
+          {t("designDirection.fields.colorType.label")}
+          <textarea value={diColorType} onChange={(e) => setDiColorType(e.target.value)} rows={2} placeholder={t("designDirection.fields.colorType.placeholder")} />
         </label>
         <label>
-          Positioning <span style={{ color: "var(--color-text-muted)", fontWeight: 400 }}>(differentiators to reinforce in copy — optional)</span>
-          <input type="text" value={diPositioning} onChange={(e) => setDiPositioning(e.target.value)} placeholder="e.g. The only locally-owned option with same-day service" />
+          {t("designDirection.fields.positioning.label")} <span style={{ color: "var(--color-text-muted)", fontWeight: 400 }}>{t("designDirection.fields.positioning.hint")}</span>
+          <input type="text" value={diPositioning} onChange={(e) => setDiPositioning(e.target.value)} placeholder={t("designDirection.fields.positioning.placeholder")} />
         </label>
         <label>
-          Constraints <span style={{ color: "var(--color-text-muted)", fontWeight: 400 }}>(hard rules the AI must never break — one per line)</span>
-          <textarea value={diConstraints} onChange={(e) => setDiConstraints(e.target.value)} rows={3} placeholder={"e.g. Never use purple\nNo stock photos of offices\nAlways keep the tagline 'Built to last'"} style={{ fontFamily: "ui-monospace, monospace", fontSize: "0.8rem" }} />
+          {t("designDirection.fields.constraints.label")} <span style={{ color: "var(--color-text-muted)", fontWeight: 400 }}>{t("designDirection.fields.constraints.hint")}</span>
+          <textarea value={diConstraints} onChange={(e) => setDiConstraints(e.target.value)} rows={3} placeholder={t("designDirection.fields.constraints.placeholder")} style={{ fontFamily: "ui-monospace, monospace", fontSize: "0.8rem" }} />
         </label>
         <div className="settings-actions">
           <button
@@ -125,15 +127,15 @@ export function DesignDirectionSection() {
                 setDiSaved(true);
                 setTimeout(() => setDiSaved(false), 3000);
               } catch (e) {
-                setDiError(e instanceof Error ? e.message : "Failed to save");
+                setDiError(e instanceof Error ? e.message : t("designDirection.errors.saveFailed"));
               } finally {
                 setDiSaving(false);
               }
             }}
           >
-            {diSaving ? "Saving…" : "Save Design Direction"}
+            {diSaving ? t("common.saving") : t("designDirection.saveButton")}
           </button>
-          {diSaved && <span className="settings-success">Saved!</span>}
+          {diSaved && <span className="settings-success">{t("common.saved")}</span>}
           {diError && <span className="auth-error">{diError}</span>}
         </div>
       </div>
