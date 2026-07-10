@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { collections } from "../lib/api";
 
 interface Collection {
@@ -11,6 +12,7 @@ interface Props {
 }
 
 export function CollectionPicker({ contentId }: Props) {
+  const { t } = useTranslation();
   const [categories, setCategories] = useState<Collection[]>([]);
   const [assignedIds, setAssignedIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
@@ -60,7 +62,7 @@ export function CollectionPicker({ contentId }: Props) {
   return (
     <div className="editor-meta-row">
       <div className="form-group">
-        <label>Collections</label>
+        <label>{t("collectionPicker.label")}</label>
         <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
           {categories.map((item) => (
             <label key={item.id} style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontWeight: "normal", cursor: "pointer" }}>

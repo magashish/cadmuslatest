@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { content } from "../lib/api";
 
 interface ContentItem {
@@ -23,6 +24,7 @@ function contentUrl(type: "page" | "post", slug: string): string {
 }
 
 export function ContentPicker({ onSelect, onClose }: Props) {
+  const { t } = useTranslation();
   const [type, setType] = useState<"page" | "post">("page");
   const [items, setItems] = useState<ContentItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -47,31 +49,31 @@ export function ContentPicker({ onSelect, onClose }: Props) {
     <div className="block-picker-overlay" onClick={onClose}>
       <div className="media-picker" onClick={(e) => e.stopPropagation()}>
         <div className="page-header">
-          <h3>Select a page or post</h3>
+          <h3>{t("contentPicker.title")}</h3>
         </div>
 
         <div style={{ display: "flex", gap: "0.5rem", marginBottom: "0.75rem" }}>
-          {(["page", "post"] as const).map((t) => (
+          {(["page", "post"] as const).map((ct) => (
             <button
-              key={t}
+              key={ct}
               type="button"
               className="btn"
-              onClick={() => setType(t)}
+              onClick={() => setType(ct)}
               style={{
-                fontWeight: type === t ? 600 : 400,
-                borderBottom: type === t ? "2px solid var(--color-primary)" : undefined,
+                fontWeight: type === ct ? 600 : 400,
+                borderBottom: type === ct ? "2px solid var(--color-primary)" : undefined,
               }}
             >
-              {t === "page" ? "Pages" : "Posts"}
+              {ct === "page" ? t("contentPicker.tabs.pages") : t("contentPicker.tabs.posts")}
             </button>
           ))}
         </div>
 
         {loading ? (
-          <p>Loading...</p>
+          <p>{t("common.loading")}</p>
         ) : items.length === 0 ? (
           <p style={{ color: "var(--color-text-muted)" }}>
-            No published {type === "page" ? "pages" : "posts"} yet.
+            {type === "page" ? t("contentPicker.noPublished.pages") : t("contentPicker.noPublished.posts")}
           </p>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>

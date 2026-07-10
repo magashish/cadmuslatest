@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 import { media } from "../lib/api";
 
@@ -16,6 +17,7 @@ interface Props {
 }
 
 export function MediaPicker({ onSelect, onClose, mimeFilter }: Props) {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [items, setItems] = useState<MediaItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -55,7 +57,7 @@ export function MediaPicker({ onSelect, onClose, mimeFilter }: Props) {
       if (e.code === "trial_limit_exceeded") {
         setTrialLimitHit(true);
       } else {
-        setUploadError(e.message || "Upload failed");
+        setUploadError(e.message || t("common.uploadFailed"));
       }
     } finally {
       setUploading(false);
@@ -66,14 +68,14 @@ export function MediaPicker({ onSelect, onClose, mimeFilter }: Props) {
     <div className="block-picker-overlay" onClick={onClose}>
       <div className="media-picker" onClick={(e) => e.stopPropagation()}>
         <div className="page-header">
-          <h3>Select Media</h3>
+          <h3>{t("mediaPicker.title")}</h3>
           <div>
             <button
               className="btn"
               onClick={() => fileInputRef.current?.click()}
               disabled={uploading}
             >
-              {uploading ? "Uploading..." : "Upload"}
+              {uploading ? t("common.uploading") : t("common.upload")}
             </button>
             <input
               ref={fileInputRef}
@@ -90,17 +92,17 @@ export function MediaPicker({ onSelect, onClose, mimeFilter }: Props) {
         )}
         {trialLimitHit && (
           <div className="auth-error" style={{ margin: "0.5rem 0" }}>
-            File exceeds the 100 MB trial limit.{" "}
+            {t("mediaPicker.trialLimitMessage")}{" "}
             <a href="/settings?tab=billing" style={{ color: "inherit", fontWeight: 600 }}>
-              Add a payment method
+              {t("common.addPaymentMethod")}
             </a>{" "}
-            to upload up to 500 MB.
+            {t("mediaPicker.trialLimitSuffix")}
           </div>
         )}
         {loading ? (
-          <p>Loading...</p>
+          <p>{t("common.loading")}</p>
         ) : items.length === 0 ? (
-          <p>No images yet. Upload one above.</p>
+          <p>{t("mediaPicker.noImages")}</p>
         ) : (
           <div className="media-grid">
             {items.map((item) => (

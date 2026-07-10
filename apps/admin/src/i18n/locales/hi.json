@@ -49,7 +49,23 @@
     "daysAgo_one": "{{count}} दिन पहले",
     "daysAgo_other": "{{count}} दिन पहले",
     "emailLabel": "ईमेल",
-    "passwordLabel": "पासवर्ड"
+    "passwordLabel": "पासवर्ड",
+    "save": "सहेजें",
+    "saving": "सहेजा जा रहा है...",
+    "cancel": "रद्द करें",
+    "delete": "हटाएं",
+    "edit": "संपादित करें",
+    "close": "बंद करें",
+    "add": "जोड़ें",
+    "adding": "जोड़ा जा रहा है...",
+    "upload": "अपलोड करें",
+    "uploading": "अपलोड हो रहा है...",
+    "generate": "जनरेट करें",
+    "generating": "जनरेट हो रहा है...",
+    "restore": "पुनर्स्थापित करें",
+    "restoring": "पुनर्स्थापित हो रहा है...",
+    "uploadFailed": "अपलोड विफल",
+    "addPaymentMethod": "भुगतान विधि जोड़ें"
   },
   "onboardingBanner": {
     "message": "आपकी साइट अभी तक नहीं बनी है। Cadmus को इसे आपके लिए बनाने दें — इसमें बस कुछ ही मिनट लगते हैं।",
@@ -350,5 +366,188 @@
     "yes": "हां",
     "notYet": "अभी नहीं",
     "clientSitesFooter": "आप प्रत्येक क्लाइंट साइट पर एडमिन हैं — इसे प्रबंधित करने या इसके अकाउंट पेज से बिलिंग सेट अप करने के लिए लॉग इन करें और साइट स्विचर से साइट चुनें।"
+  },
+  "contentList": {
+    "title": "सामग्री",
+    "importHtml": "HTML आयात करें",
+    "newItem": "+ नया {{type}}",
+    "tabs": {
+      "page": "पेज",
+      "post": "पोस्ट"
+    },
+    "statuses": {
+      "all": "सभी",
+      "draft": "ड्राफ़्ट",
+      "published": "प्रकाशित",
+      "archive": "आर्काइव"
+    },
+    "emptyState": {
+      "text": "अभी तक कोई {{type}} नहीं।",
+      "createLink": "अपना पहला बनाएं",
+      "orAskAi": "या AI से कॉन्टेंट जनरेट करने के लिए कहें।"
+    },
+    "table": {
+      "title": "शीर्षक",
+      "slug": "स्लग",
+      "collections": "संग्रह",
+      "status": "स्थिति",
+      "updated": "अपडेट किया गया"
+    },
+    "untitled": "शीर्षकहीन",
+    "statusBadge": {
+      "draft": "ड्राफ़्ट",
+      "published": "प्रकाशित",
+      "archived": "आर्काइव किया गया"
+    },
+    "archive": "आर्काइव",
+    "importModal": {
+      "title": "HTML पेज आयात करें",
+      "checkingSite": "साइट जांची जा रही है…",
+      "themeIntro": "आपकी साइट पर अभी तक कोई थीम नहीं है। एक सेट अप करने का तरीका चुनें:",
+      "extractOption": "मेरे पेज से निकालें",
+      "extractDesc": "AI आयातित HTML से आपके रंग, फ़ॉन्ट और हेडर/फ़ूटर का पता लगाएगा।",
+      "briefOption": "मेरे ब्रांड का वर्णन करें",
+      "briefDesc": "अपने ब्रांड के रंग और स्टाइल का वर्णन करें और AI एक थीम जनरेट करेगा।",
+      "briefPlaceholder": "जैसे Modern SaaS, नेवी और सफ़ेद, Inter फ़ॉन्ट, स्वच्छ और सरल",
+      "continue": "जारी रखें",
+      "pageTitleLabel": "पेज शीर्षक",
+      "optional": "(वैकल्पिक)",
+      "titlePlaceholder": "HTML से स्वतः पता लगाएं",
+      "fileSizeClickChange": "{{size}} KB — बदलने के लिए क्लिक करें",
+      "dropZoneText": "यहां एक HTML फ़ाइल छोड़ें, या ब्राउज़ करने के लिए क्लिक करें",
+      "acceptedFiles": ".html और .htm फ़ाइलें स्वीकार करता है",
+      "importingWithTheme": "आपकी थीम आयात और सेट अप की जा रही है…",
+      "importingDefault": "आयात हो रहा है… इमेज डाउनलोड हो रही हैं और आपकी थीम के साथ फिर से लिखा जा रहा है",
+      "back": "वापस",
+      "importingBtn": "आयात हो रहा है…",
+      "importBtn": "आयात करें",
+      "invalidFileError": "कृपया एक HTML फ़ाइल (.html या .htm) छोड़ें।",
+      "importFailed": "आयात विफल"
+    }
+  },
+  "contentEditor": {
+    "unsavedChangesConfirm": "आपके पास असहेजे बदलाव हैं। क्या आप वाकई छोड़ना चाहते हैं?",
+    "unknownError": "अज्ञात त्रुटि",
+    "loadFailed": "कॉन्टेंट लोड करने में विफल: {{message}}",
+    "titleRequired": "शीर्षक आवश्यक है।",
+    "slugRequired": "स्लग आवश्यक है।",
+    "createdSuccess": "कॉन्टेंट सफलतापूर्वक बनाया गया।",
+    "savedSuccess": "कॉन्टेंट सफलतापूर्वक सहेजा गया।",
+    "saveFailed": "सहेजने में विफल: {{message}}",
+    "previewFailed": "पूर्वावलोकन विफल: {{message}}",
+    "historyLoadFailed": "वर्शन इतिहास लोड करने में विफल।",
+    "restoreConfirm": "वर्शन {{version}} पुनर्स्थापित करें? यह वर्तमान कॉन्टेंट को बदल देगा और एक नया वर्शन बनाएगा।",
+    "restoredSuccess": "वर्शन {{version}} पर पुनर्स्थापित किया गया।",
+    "restoreFailed": "पुनर्स्थापित करने में विफल: {{message}}",
+    "imageGenFailed": "इमेज जनरेशन विफल: {{message}}",
+    "newTitle": "नया कॉन्टेंट",
+    "editTitle": "कॉन्टेंट संपादित करें",
+    "history": "इतिहास",
+    "opening": "खुल रहा है...",
+    "preview": "पूर्वावलोकन",
+    "fields": {
+      "title": "शीर्षक",
+      "slug": "स्लग",
+      "contentType": "कॉन्टेंट प्रकार",
+      "status": "स्थिति",
+      "seoTitle": "SEO शीर्षक",
+      "metaDescription": "मेटा विवरण",
+      "featuredImage": "फ़ीचर्ड इमेज"
+    },
+    "titlePlaceholder": "पेज शीर्षक...",
+    "slugPlaceholder": "url-friendly-slug",
+    "contentTypeOptions": {
+      "page": "पेज",
+      "post": "पोस्ट"
+    },
+    "statusOptions": {
+      "draft": "ड्राफ़्ट",
+      "published": "प्रकाशित",
+      "archived": "आर्काइव किया गया"
+    },
+    "seoTitlePlaceholderDefault": "यदि खाली छोड़ा जाए तो पेज शीर्षक डिफ़ॉल्ट होगा",
+    "seoTitleHint": "{{count}}/60 — ब्राउज़र टैब और खोज परिणामों में दिखाया जाता है",
+    "metaDescriptionPlaceholder": "खोज इंजनों के लिए संक्षिप्त विवरण (150-160 वर्ण अनुशंसित)",
+    "metaDescriptionHint": "{{count}}/160",
+    "featuredImageAlt": "फ़ीचर्ड",
+    "change": "बदलें",
+    "generateWithAi": "AI से जनरेट करें",
+    "remove": "हटाएं",
+    "browseMedia": "मीडिया ब्राउज़ करें",
+    "imagePromptPlaceholder": "आप जो इमेज चाहते हैं उसका वर्णन करें...",
+    "versionHistory": {
+      "title": "वर्शन इतिहास",
+      "loading": "वर्शन लोड हो रहे हैं...",
+      "empty": "कोई वर्शन नहीं मिला।",
+      "versionLabel": "वर्शन {{version}}",
+      "current": "वर्तमान",
+      "byAuthor": "{{name}} द्वारा"
+    }
+  },
+  "collections": {
+    "title": "संग्रह",
+    "newNamePlaceholder": "नए संग्रह का नाम...",
+    "createFailed": "संग्रह बनाने में विफल",
+    "empty": "अभी तक कोई संग्रह नहीं।",
+    "table": {
+      "name": "नाम",
+      "slug": "स्लग"
+    }
+  },
+  "mediaLibrary": {
+    "title": "मीडिया लाइब्रेरी",
+    "generateImage": "इमेज जनरेट करें",
+    "generatePromptPlaceholder": "जो इमेज आप जनरेट करना चाहते हैं उसका वर्णन करें...",
+    "generateFailed": "इमेज जनरेशन विफल",
+    "saveMetaFailed": "सहेजने में विफल",
+    "invalidFileType": "\"{{name}}\" एक अनुमत फ़ाइल प्रकार नहीं है। स्वीकृत: इमेज, वीडियो और PDF।",
+    "fileTooLarge": "\"{{name}}\" {{limit}} अपलोड सीमा से अधिक है।",
+    "uploadingFile": "{{name}} अपलोड हो रहा है",
+    "uploadingFileWithCount": "{{name}} अपलोड हो रहा है ({{index}} में से {{total}})",
+    "trialLimitMessage": "यह फ़ाइल ट्रायल खातों के लिए 100 MB सीमा से अधिक है।",
+    "trialLimitSuffix": "500 MB तक फ़ाइलें अपलोड करने के लिए।",
+    "filters": {
+      "all": "सभी",
+      "images": "इमेज",
+      "videos": "वीडियो",
+      "pdfs": "PDF"
+    },
+    "dropZone": "फ़ाइलें यहां छोड़ें या अपलोड पर क्लिक करें",
+    "loadingMedia": "मीडिया लोड हो रहा है...",
+    "empty": "अभी तक कोई मीडिया अपलोड नहीं किया गया। फ़ाइलें अपलोड करें या AI को अपनी साइट के लिए इमेज जनरेट करने दें।",
+    "blockedVideo": "वीडियो को ब्लॉक कर दिया गया है",
+    "blockedFile": "फ़ाइल को ब्लॉक कर दिया गया है",
+    "processing": "प्रोसेस हो रहा है",
+    "underReview": "समीक्षा के अधीन",
+    "blocked": "ब्लॉक किया गया",
+    "displayName": "प्रदर्शन नाम",
+    "altTitle": "Alt / शीर्षक",
+    "altPlaceholder": "इस इमेज का वर्णन करें...",
+    "view": "देखें",
+    "copyUrl": "URL कॉपी करें",
+    "copied": "कॉपी हो गया!",
+    "previous": "पिछला",
+    "next": "अगला",
+    "pageOf": "{{total}} में से पेज {{page}}"
+  },
+  "contentPicker": {
+    "title": "एक पेज या पोस्ट चुनें",
+    "tabs": {
+      "pages": "पेज",
+      "posts": "पोस्ट"
+    },
+    "noPublished": {
+      "pages": "अभी तक कोई प्रकाशित पेज नहीं।",
+      "posts": "अभी तक कोई प्रकाशित पोस्ट नहीं।"
+    }
+  },
+  "collectionPicker": {
+    "label": "संग्रह"
+  },
+  "mediaPicker": {
+    "title": "मीडिया चुनें",
+    "trialLimitMessage": "फ़ाइल 100 MB ट्रायल सीमा से अधिक है।",
+    "trialLimitSuffix": "500 MB तक अपलोड करने के लिए।",
+    "noImages": "अभी तक कोई इमेज नहीं। ऊपर एक अपलोड करें।"
   }
 }

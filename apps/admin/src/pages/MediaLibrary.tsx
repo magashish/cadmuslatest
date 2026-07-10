@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 import { media, ai } from "../lib/api";
 
@@ -40,6 +41,7 @@ function FileTypeIcon({ mimeType }: { mimeType: string }) {
 const PAGE_SIZE = 24;
 
 export function MediaLibrary() {
+  const { t } = useTranslation();
   const { user, siteStatus } = useAuth();
   const [items, setItems] = useState<MediaItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -120,19 +122,23 @@ export function MediaLibrary() {
       const fileArray = Array.from(files);
       for (let index = 0; index < fileArray.length; index++) {
         const file = fileArray[index];
-        if (!ALLOWED_MIME_TYPES.some((t) => file.type.startsWith(t))) {
-          setError(`"${file.name}" is not an allowed file type. Accepted: images, videos, and PDFs.`);
+        if (!ALLOWED_MIME_TYPES.some((mt) => file.type.startsWith(mt))) {
+          setError(t("mediaLibrary.invalidFileType", { name: file.name }));
           continue;
         }
         if (file.size > MAX_BYTES) {
           if (siteStatus === "trialing") {
             setTrialLimitHit(true);
           } else {
-            setError(`"${file.name}" exceeds the ${MAX_LABEL} upload limit.`);
+            setError(t("mediaLibrary.fileTooLarge", { name: file.name, limit: MAX_LABEL }));
           }
           continue;
         }
-        setUploadLabel(`Uploading ${file.name}${fileArray.length > 1 ? ` (${index + 1} of ${fileArray.length})` : ""}`);
+        setUploadLabel(
+          fileArray.length > 1
+            ? t("mediaLibrary.uploadingFileWithCount", { name: file.name, index: index + 1, total: fileArray.length })
+            : t("mediaLibrary.uploadingFile", { name: file.name })
+        );
         const result = (file.type.startsWith("video/") || file.type === "application/pdf")
           ? await media.uploadVideo(file, (pct) => setUploadProgress(pct))
           : await media.upload(file, user.id, (pct) => setUploadProgress(pct));
@@ -147,7 +153,7 @@ export function MediaLibrary() {
       if (e.code === "trial_limit_exceeded") {
         setTrialLimitHit(true);
       } else {
-        setError(e.message || "Upload failed");
+        setError(e.message || t("common.uploadFailed"));
       }
     } finally {
       setUploading(false);
@@ -181,7 +187,7 @@ export function MediaLibrary() {
       setGeneratePrompt("");
       setShowGenerate(false);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Image generation failed");
+      setError(err instanceof Error ? err.message : t("mediaLibrary.generateFailed"));
     } finally {
       setGenerating(false);
     }
@@ -216,7 +222,7 @@ export function MediaLibrary() {
       ));
       setEditingId(null);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to save");
+      setError(err instanceof Error ? err.message : t("mediaLibrary.saveMetaFailed"));
     } finally {
       setSavingMeta(false);
     }
@@ -232,21 +238,21 @@ export function MediaLibrary() {
   return (
     <div className="page">
       <div className="page-header">
-        <h2>Media Library</h2>
+        <h2>{t("mediaLibrary.title")}</h2>
         <div style={{ display: "flex", gap: "0.5rem" }}>
           <button
             className="btn btn-primary"
             onClick={() => fileInputRef.current?.click()}
             disabled={uploading}
           >
-            {uploading ? (uploadProgress !== null ? `${uploadProgress}%` : "Uploading...") : "Upload"}
+            {uploading ? (uploadProgress !== null ? `${uploadProgress}%` : t("common.uploading")) : t("common.upload")}
           </button>
           <button
             className="btn"
             onClick={() => setShowGenerate(!showGenerate)}
             disabled={generating}
           >
-            {generating ? "Generating..." : "Generate Image"}
+            {generating ? t("common.generating") : t("mediaLibrary.generateImage")}
           </button>
         </div>
       </div>
@@ -257,7 +263,7 @@ export function MediaLibrary() {
             type="text"
             value={generatePrompt}
             onChange={(e) => setGeneratePrompt(e.target.value)}
-            placeholder="Describe the image you want to generate..."
+            placeholder={t("mediaLibrary.generatePromptPlaceholder")}
             disabled={generating}
             onKeyDown={(e) => e.key === "Enter" && handleGenerate()}
             style={{ flex: 1 }}
@@ -267,7 +273,7 @@ export function MediaLibrary() {
             onClick={handleGenerate}
             disabled={generating || !generatePrompt.trim()}
           >
-            {generating ? "Generating..." : "Generate"}
+            {generating ? t("common.generating") : t("common.generate")}
           </button>
         </div>
       )}
@@ -284,7 +290,7 @@ export function MediaLibrary() {
       {uploadProgress !== null && (
         <div style={{ marginBottom: "0.75rem" }}>
           <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.8rem", marginBottom: "0.25rem" }}>
-            <span>{uploadLabel ?? "Uploading..."}</span>
+            <span>{uploadLabel ?? t("common.uploading")}</span>
             <span>{uploadProgress}%</span>
           </div>
           <div style={{ background: "#e5e7eb", borderRadius: "4px", height: "6px", overflow: "hidden" }}>
@@ -295,11 +301,11 @@ export function MediaLibrary() {
       {error && <div className="editor-status error">{error}</div>}
       {trialLimitHit && (
         <div className="auth-error" style={{ marginBottom: "1rem" }}>
-          This file exceeds the 100 MB limit for trial accounts.{" "}
+          {t("mediaLibrary.trialLimitMessage")}{" "}
           <a href="/settings?tab=billing" style={{ color: "inherit", fontWeight: 600 }}>
-            Add a payment method
+            {t("common.addPaymentMethod")}
           </a>{" "}
-          to upload files up to 500 MB.
+          {t("mediaLibrary.trialLimitSuffix")}
         </div>
       )}
 
@@ -311,7 +317,7 @@ export function MediaLibrary() {
               className={`btn btn-sm${typeFilter === f ? " btn-primary" : ""}`}
               onClick={() => { setTypeFilter(f); setPage(0); }}
             >
-              {f === "" ? "All" : f === "image" ? "Images" : f === "video" ? "Videos" : "PDFs"}
+              {f === "" ? t("mediaLibrary.filters.all") : f === "image" ? t("mediaLibrary.filters.images") : f === "video" ? t("mediaLibrary.filters.videos") : t("mediaLibrary.filters.pdfs")}
             </button>
           ))}
         </div>
@@ -327,13 +333,13 @@ export function MediaLibrary() {
           handleUpload(e.dataTransfer.files);
         }}
       >
-        Drop files here or click Upload
+        {t("mediaLibrary.dropZone")}
       </div>
 
       {loading ? (
-        <p>Loading media...</p>
+        <p>{t("mediaLibrary.loadingMedia")}</p>
       ) : items.length === 0 ? (
-        <p>No media uploaded yet. Upload files or let the AI generate images for your site.</p>
+        <p>{t("mediaLibrary.empty")}</p>
       ) : (
         <div className="media-grid">
           {items.map((item) => (
@@ -342,7 +348,7 @@ export function MediaLibrary() {
                 <>
                   <div style={{ padding: "0.5rem", background: "var(--color-danger-subtle, #fee2e2)", borderRadius: "4px", marginBottom: "0.35rem" }}>
                     <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-danger, #c33)" }}>
-                      {item.mimeType?.startsWith("video/") ? "Video has been blocked" : "File has been blocked"}
+                      {item.mimeType?.startsWith("video/") ? t("mediaLibrary.blockedVideo") : t("mediaLibrary.blockedFile")}
                     </div>
                     {item.moderationReason && (
                       <div style={{ fontSize: "0.72rem", color: "var(--color-text-muted)", marginTop: "0.2rem" }}>{item.moderationReason}</div>
@@ -353,7 +359,7 @@ export function MediaLibrary() {
                     {item.filename}
                   </div>
                   <div className="media-card-actions">
-                    <button className="btn btn-sm" onClick={() => handleDelete(item.id)}>Delete</button>
+                    <button className="btn btn-sm" onClick={() => handleDelete(item.id)}>{t("common.delete")}</button>
                   </div>
                 </>
               ) : isImage(item.mimeType) ? (
@@ -364,13 +370,13 @@ export function MediaLibrary() {
                     <img src={item.thumbnailUrl} alt={item.filename} />
                   )}
                   {item.moderationStatus === "pending" && (
-                    <div className="media-card-video-badge media-card-video-badge--pending">Processing</div>
+                    <div className="media-card-video-badge media-card-video-badge--pending">{t("mediaLibrary.processing")}</div>
                   )}
                   {item.moderationStatus === "review" && (
-                    <div className="media-card-video-badge media-card-video-badge--review">Under Review</div>
+                    <div className="media-card-video-badge media-card-video-badge--review">{t("mediaLibrary.underReview")}</div>
                   )}
                   {item.moderationStatus === "blocked" && (
-                    <div className="media-card-video-badge media-card-video-badge--blocked">Blocked</div>
+                    <div className="media-card-video-badge media-card-video-badge--blocked">{t("mediaLibrary.blocked")}</div>
                   )}
                   {!item.thumbnailUrl && item.moderationStatus === "pending" && (
                     <div className="media-card-ext" style={{ position: "absolute", inset: 0 }}>
@@ -392,7 +398,7 @@ export function MediaLibrary() {
               {item.moderationStatus !== "blocked" && (editingId === item.id ? (
                 <div className="media-card-edit">
                   <div className="form-group" style={{ marginBottom: "0.5rem" }}>
-                    <label style={{ fontSize: "0.75rem", fontWeight: 600 }}>Display Name</label>
+                    <label style={{ fontSize: "0.75rem", fontWeight: 600 }}>{t("mediaLibrary.displayName")}</label>
                     <input
                       type="text"
                       value={editFilename}
@@ -401,20 +407,20 @@ export function MediaLibrary() {
                     />
                   </div>
                   <div className="form-group" style={{ marginBottom: "0.5rem" }}>
-                    <label style={{ fontSize: "0.75rem", fontWeight: 600 }}>Alt / Title</label>
+                    <label style={{ fontSize: "0.75rem", fontWeight: 600 }}>{t("mediaLibrary.altTitle")}</label>
                     <textarea
                       rows={2}
                       value={editAlt}
                       onChange={(e) => setEditAlt(e.target.value)}
-                      placeholder="Describe this image..."
+                      placeholder={t("mediaLibrary.altPlaceholder")}
                       style={{ fontSize: "0.8rem" }}
                     />
                   </div>
                   <div style={{ display: "flex", gap: "0.25rem" }}>
                     <button className="btn btn-primary btn-sm" onClick={() => saveMeta(item.id)} disabled={savingMeta}>
-                      {savingMeta ? "Saving..." : "Save"}
+                      {savingMeta ? t("common.saving") : t("common.save")}
                     </button>
-                    <button className="btn btn-sm" onClick={cancelEditing}>Cancel</button>
+                    <button className="btn btn-sm" onClick={cancelEditing}>{t("common.cancel")}</button>
                   </div>
                 </div>
               ) : (
@@ -429,14 +435,14 @@ export function MediaLibrary() {
                     </div>
                   )}
                   <div className="media-card-actions">
-                    <button className="btn btn-sm" onClick={() => startEditing(item)}>Edit</button>
+                    <button className="btn btn-sm" onClick={() => startEditing(item)}>{t("common.edit")}</button>
                     {(!item.mimeType?.startsWith("video/") || item.moderationStatus === "approved") && (
                       <>
-                        <button className="btn btn-sm" onClick={() => window.open(item.storageUrl, "_blank")}>View</button>
-                        <button className="btn btn-sm" onClick={() => copyUrl(item.id, item.storageUrl)}>{copiedId === item.id ? "Copied!" : "Copy URL"}</button>
+                        <button className="btn btn-sm" onClick={() => window.open(item.storageUrl, "_blank")}>{t("mediaLibrary.view")}</button>
+                        <button className="btn btn-sm" onClick={() => copyUrl(item.id, item.storageUrl)}>{copiedId === item.id ? t("mediaLibrary.copied") : t("mediaLibrary.copyUrl")}</button>
                       </>
                     )}
-                    <button className="btn btn-sm" onClick={() => handleDelete(item.id)}>Delete</button>
+                    <button className="btn btn-sm" onClick={() => handleDelete(item.id)}>{t("common.delete")}</button>
                   </div>
                 </>
               ))}
@@ -447,11 +453,11 @@ export function MediaLibrary() {
 
       {total > PAGE_SIZE && (
         <div style={{ display: "flex", gap: "0.5rem", justifyContent: "center", alignItems: "center", marginTop: "1.5rem" }}>
-          <button className="btn btn-sm" onClick={() => setPage((p) => p - 1)} disabled={page === 0}>Previous</button>
+          <button className="btn btn-sm" onClick={() => setPage((p) => p - 1)} disabled={page === 0}>{t("mediaLibrary.previous")}</button>
           <span style={{ fontSize: "0.875rem", color: "var(--color-text-muted)" }}>
-            Page {page + 1} of {Math.ceil(total / PAGE_SIZE)}
+            {t("mediaLibrary.pageOf", { page: page + 1, total: Math.ceil(total / PAGE_SIZE) })}
           </span>
-          <button className="btn btn-sm" onClick={() => setPage((p) => p + 1)} disabled={(page + 1) * PAGE_SIZE >= total}>Next</button>
+          <button className="btn btn-sm" onClick={() => setPage((p) => p + 1)} disabled={(page + 1) * PAGE_SIZE >= total}>{t("mediaLibrary.next")}</button>
         </div>
       )}
     </div>

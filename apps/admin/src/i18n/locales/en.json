@@ -49,7 +49,23 @@
     "daysAgo_one": "{{count}}d ago",
     "daysAgo_other": "{{count}}d ago",
     "emailLabel": "Email",
-    "passwordLabel": "Password"
+    "passwordLabel": "Password",
+    "save": "Save",
+    "saving": "Saving...",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "add": "Add",
+    "adding": "Adding...",
+    "upload": "Upload",
+    "uploading": "Uploading...",
+    "generate": "Generate",
+    "generating": "Generating...",
+    "restore": "Restore",
+    "restoring": "Restoring...",
+    "uploadFailed": "Upload failed",
+    "addPaymentMethod": "Add a payment method"
   },
   "onboardingBanner": {
     "message": "Your site isn't built yet. Let Cadmus create it for you — it only takes a few minutes.",
@@ -350,5 +366,188 @@
     "yes": "Yes",
     "notYet": "Not yet",
     "clientSitesFooter": "You're an admin on each client site — log in and pick the site from the site switcher to manage it or set up billing from its Account page."
+  },
+  "contentList": {
+    "title": "Content",
+    "importHtml": "Import HTML",
+    "newItem": "+ New {{type}}",
+    "tabs": {
+      "page": "Pages",
+      "post": "Posts"
+    },
+    "statuses": {
+      "all": "All",
+      "draft": "Draft",
+      "published": "Published",
+      "archive": "Archive"
+    },
+    "emptyState": {
+      "text": "No {{type}}s yet.",
+      "createLink": "Create your first one",
+      "orAskAi": "or ask the AI to generate content."
+    },
+    "table": {
+      "title": "Title",
+      "slug": "Slug",
+      "collections": "Collections",
+      "status": "Status",
+      "updated": "Updated"
+    },
+    "untitled": "Untitled",
+    "statusBadge": {
+      "draft": "Draft",
+      "published": "Published",
+      "archived": "Archived"
+    },
+    "archive": "Archive",
+    "importModal": {
+      "title": "Import HTML Page",
+      "checkingSite": "Checking site…",
+      "themeIntro": "Your site doesn't have a theme yet. Choose how to set one up:",
+      "extractOption": "Extract from my page",
+      "extractDesc": "AI will detect your colors, fonts, and header/footer from the imported HTML.",
+      "briefOption": "Describe my brand",
+      "briefDesc": "Describe your brand colors and style and AI will generate a theme.",
+      "briefPlaceholder": "e.g. Modern SaaS, navy and white, Inter font, clean and minimal",
+      "continue": "Continue",
+      "pageTitleLabel": "Page Title",
+      "optional": "(optional)",
+      "titlePlaceholder": "Auto-detect from HTML",
+      "fileSizeClickChange": "{{size}} KB — click to change",
+      "dropZoneText": "Drop an HTML file here, or click to browse",
+      "acceptedFiles": "Accepts .html and .htm files",
+      "importingWithTheme": "Importing and setting up your theme…",
+      "importingDefault": "Importing… downloading images and rewriting with your theme",
+      "back": "Back",
+      "importingBtn": "Importing…",
+      "importBtn": "Import",
+      "invalidFileError": "Please drop an HTML file (.html or .htm).",
+      "importFailed": "Import failed"
+    }
+  },
+  "contentEditor": {
+    "unsavedChangesConfirm": "You have unsaved changes. Are you sure you want to leave?",
+    "unknownError": "Unknown error",
+    "loadFailed": "Failed to load content: {{message}}",
+    "titleRequired": "Title is required.",
+    "slugRequired": "Slug is required.",
+    "createdSuccess": "Content created successfully.",
+    "savedSuccess": "Content saved successfully.",
+    "saveFailed": "Failed to save: {{message}}",
+    "previewFailed": "Preview failed: {{message}}",
+    "historyLoadFailed": "Failed to load version history.",
+    "restoreConfirm": "Restore version {{version}}? This will replace the current content and create a new version.",
+    "restoredSuccess": "Restored to version {{version}}.",
+    "restoreFailed": "Failed to restore: {{message}}",
+    "imageGenFailed": "Image generation failed: {{message}}",
+    "newTitle": "New Content",
+    "editTitle": "Edit Content",
+    "history": "History",
+    "opening": "Opening...",
+    "preview": "Preview",
+    "fields": {
+      "title": "Title",
+      "slug": "Slug",
+      "contentType": "Content Type",
+      "status": "Status",
+      "seoTitle": "SEO Title",
+      "metaDescription": "Meta Description",
+      "featuredImage": "Featured Image"
+    },
+    "titlePlaceholder": "Page title...",
+    "slugPlaceholder": "url-friendly-slug",
+    "contentTypeOptions": {
+      "page": "Page",
+      "post": "Post"
+    },
+    "statusOptions": {
+      "draft": "Draft",
+      "published": "Published",
+      "archived": "Archived"
+    },
+    "seoTitlePlaceholderDefault": "Defaults to page title if left blank",
+    "seoTitleHint": "{{count}}/60 — shown in browser tab and search results",
+    "metaDescriptionPlaceholder": "Brief description for search engines (150-160 characters recommended)",
+    "metaDescriptionHint": "{{count}}/160",
+    "featuredImageAlt": "Featured",
+    "change": "Change",
+    "generateWithAi": "Generate with AI",
+    "remove": "Remove",
+    "browseMedia": "Browse Media",
+    "imagePromptPlaceholder": "Describe the image you want...",
+    "versionHistory": {
+      "title": "Version History",
+      "loading": "Loading versions...",
+      "empty": "No versions found.",
+      "versionLabel": "Version {{version}}",
+      "current": "Current",
+      "byAuthor": "by {{name}}"
+    }
+  },
+  "collections": {
+    "title": "Collections",
+    "newNamePlaceholder": "New collection name...",
+    "createFailed": "Failed to create collection",
+    "empty": "No collections yet.",
+    "table": {
+      "name": "Name",
+      "slug": "Slug"
+    }
+  },
+  "mediaLibrary": {
+    "title": "Media Library",
+    "generateImage": "Generate Image",
+    "generatePromptPlaceholder": "Describe the image you want to generate...",
+    "generateFailed": "Image generation failed",
+    "saveMetaFailed": "Failed to save",
+    "invalidFileType": "\"{{name}}\" is not an allowed file type. Accepted: images, videos, and PDFs.",
+    "fileTooLarge": "\"{{name}}\" exceeds the {{limit}} upload limit.",
+    "uploadingFile": "Uploading {{name}}",
+    "uploadingFileWithCount": "Uploading {{name}} ({{index}} of {{total}})",
+    "trialLimitMessage": "This file exceeds the 100 MB limit for trial accounts.",
+    "trialLimitSuffix": "to upload files up to 500 MB.",
+    "filters": {
+      "all": "All",
+      "images": "Images",
+      "videos": "Videos",
+      "pdfs": "PDFs"
+    },
+    "dropZone": "Drop files here or click Upload",
+    "loadingMedia": "Loading media...",
+    "empty": "No media uploaded yet. Upload files or let the AI generate images for your site.",
+    "blockedVideo": "Video has been blocked",
+    "blockedFile": "File has been blocked",
+    "processing": "Processing",
+    "underReview": "Under Review",
+    "blocked": "Blocked",
+    "displayName": "Display Name",
+    "altTitle": "Alt / Title",
+    "altPlaceholder": "Describe this image...",
+    "view": "View",
+    "copyUrl": "Copy URL",
+    "copied": "Copied!",
+    "previous": "Previous",
+    "next": "Next",
+    "pageOf": "Page {{page}} of {{total}}"
+  },
+  "contentPicker": {
+    "title": "Select a page or post",
+    "tabs": {
+      "pages": "Pages",
+      "posts": "Posts"
+    },
+    "noPublished": {
+      "pages": "No published pages yet.",
+      "posts": "No published posts yet."
+    }
+  },
+  "collectionPicker": {
+    "label": "Collections"
+  },
+  "mediaPicker": {
+    "title": "Select Media",
+    "trialLimitMessage": "File exceeds the 100 MB trial limit.",
+    "trialLimitSuffix": "to upload up to 500 MB.",
+    "noImages": "No images yet. Upload one above."
   }
 }
