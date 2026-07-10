@@ -70,7 +70,11 @@
     "back": "वापस",
     "continue": "जारी रखें",
     "change": "बदलें",
-    "remove": "हटाएं"
+    "remove": "हटाएं",
+    "saved": "सहेजा गया!",
+    "copy": "कॉपी करें",
+    "copied": "कॉपी हो गया",
+    "failedToSave": "सहेजने में विफल"
   },
   "onboardingBanner": {
     "message": "आपकी साइट अभी तक नहीं बनी है। Cadmus को इसे आपके लिए बनाने दें — इसमें बस कुछ ही मिनट लगते हैं।",
@@ -673,6 +677,263 @@
       "viewYourSite": "अपनी साइट देखें",
       "launching": "लॉन्च हो रहा है...",
       "goToDashboard": "डैशबोर्ड पर जाएं"
+    }
+  },
+  "siteSettings": {
+    "title": "सेटिंग्स",
+    "general": {
+      "heading": "सामान्य",
+      "siteName": "साइट का नाम",
+      "siteLanguage": "साइट की भाषा"
+    },
+    "domain": {
+      "heading": "डोमेन",
+      "subdomainLabel": "सबडोमेन:",
+      "change": "बदलें",
+      "subdomainUpdated": "सबडोमेन अपडेट हो गया!",
+      "subdomainChangePaidWarning": "आपका पुराना URL 48 घंटों के लिए नए पर रीडायरेक्ट होगा। उसके बाद, केवल नया URL काम करेगा। हम आपको एक पुष्टिकरण ईमेल भेजेंगे।",
+      "subdomainChangeFreeWarning": "यह बदलाव करते ही आपका पुराना URL तुरंत काम करना बंद कर देगा।",
+      "newSubdomain": "नया सबडोमेन",
+      "checkingAvailability": "जांच हो रही है...",
+      "available": "उपलब्ध",
+      "notAvailable": "उपलब्ध नहीं",
+      "customDomainLabel": "कस्टम डोमेन:",
+      "status": {
+        "active": "सक्रिय",
+        "sslProvisioning": "SSL प्रावधान हो रहा है...",
+        "failed": "विफल",
+        "pending": "लंबित"
+      },
+      "sslStatusSuffix": "(SSL: {{status}})",
+      "checking": "जांच हो रही है...",
+      "checkStatus": "स्थिति जांचें",
+      "disconnecting": "डिस्कनेक्ट हो रहा है...",
+      "disconnect": "डिस्कनेक्ट करें",
+      "verificationFailed": "सत्यापन विफल।",
+      "commonCauses": "सामान्य कारण:",
+      "causeCnameNotAdded": "आपके DNS प्रदाता पर CNAME रिकॉर्ड अभी तक नहीं जोड़ा गया है, या अभी तक प्रचारित नहीं हुआ है (DNS में कुछ घंटे लग सकते हैं)।",
+      "causeCnameWrongTargetPrefix": "CNAME किसी और जगह इंगित करता है, न कि",
+      "causeCnameWrongTargetSuffix": "— मान को ठीक से दोबारा जांचें।",
+      "causeProxyEnabled": "आपके DNS प्रदाता पर प्रॉक्सी/CDN सक्षम है (प्रॉक्सींग बंद करें; हम SSL संभालते हैं)।",
+      "updateDnsThenCheckPrefix": "अपना DNS अपडेट करें, फिर क्लिक करें",
+      "updateDnsThenCheckSuffix": "। आप डिस्कनेक्ट भी कर सकते हैं और किसी अन्य डोमेन के साथ फिर से प्रयास कर सकते हैं।",
+      "waitingForVerification": "DNS और SSL सत्यापन की प्रतीक्षा है — हम हर 15 सेकंड में स्वचालित रूप से जांच करते हैं।",
+      "dnsSetup": "DNS सेटअप:",
+      "tableType": "प्रकार",
+      "tableName": "नाम",
+      "tableValue": "मान",
+      "connectCustomDomain": "कस्टम डोमेन कनेक्ट करें",
+      "connect": "कनेक्ट करें",
+      "dnsMessageRoot": "www के लिए origin.cadmus.digital की ओर इंगित करने वाला एक CNAME जोड़ें। यदि आपका DNS प्रदाता CNAME फ़्लैटनिंग (जैसे Cloudflare) का समर्थन करता है, तो आप रूट डोमेन के लिए भी एक CNAME जोड़ सकते हैं। अन्यथा, अपने रूट डोमेन से www पर एक रीडायरेक्ट सेट अप करें। DNS बदलावों को प्रचारित होने में आमतौर पर 5 मिनट से कुछ घंटे लगते हैं।",
+      "dnsMessageSubdomain": "origin.cadmus.digital की ओर इंगित करने वाला एक CNAME रिकॉर्ड जोड़ें। SSL स्वचालित रूप से प्रावधानित किया जाता है। DNS बदलावों को प्रचारित होने में आमतौर पर 5 मिनट से कुछ घंटे लगते हैं।",
+      "copyToClipboard": "क्लिपबोर्ड पर कॉपी करें",
+      "disconnectConfirm": "{{domain}} को डिस्कनेक्ट करें?\n\nजब तक आप इसे फिर से कनेक्ट नहीं करते या कहीं और DNS अपडेट नहीं करते, तब तक इस डोमेन का उपयोग करने वाले विज़िटर तुरंत आपकी साइट तक पहुंचना बंद कर देंगे। आपका सबडोमेन URL काम करता रहेगा।",
+      "failedToConnect": "डोमेन कनेक्ट करने में विफल",
+      "failedToCheckStatus": "स्थिति जांचने में विफल",
+      "failedToDisconnect": "डोमेन डिस्कनेक्ट करने में विफल",
+      "failedToChangeSubdomain": "सबडोमेन बदलने में विफल"
+    },
+    "brief": {
+      "heading": "साइट ब्रीफ़",
+      "businessName": "व्यवसाय का नाम",
+      "businessDescription": "व्यवसाय का विवरण",
+      "targetAudience": "लक्षित दर्शक",
+      "tone": "टोन",
+      "tonePlaceholder": "जैसे professional, friendly, casual",
+      "primaryGoal": "मुख्य लक्ष्य",
+      "primaryGoalPlaceholder": "जैसे लीड जनरेट करना, उत्पाद बेचना",
+      "saveBrief": "ब्रीफ़ सहेजें"
+    },
+    "businessInfo": {
+      "heading": "व्यवसाय जानकारी",
+      "description": "आपकी साइट के संरचित डेटा के लिए संपर्क विवरण और पता (SEO और Google नॉलेज पैनल में मदद करता है)।",
+      "contactEmail": "संपर्क ईमेल",
+      "phoneNumber": "फ़ोन नंबर",
+      "streetAddress": "सड़क का पता",
+      "city": "शहर",
+      "state": "राज्य / प्रांत",
+      "postalCode": "पोस्टल कोड",
+      "country": "देश",
+      "countryPlaceholder": "United States"
+    },
+    "social": {
+      "heading": "सोशल लिंक",
+      "description": "आपकी सोशल प्रोफ़ाइल के लिंक। ये आपके फ़ूटर में और SEO के लिए Organization schema में दिखाई देते हैं।",
+      "facebook": "Facebook",
+      "instagram": "Instagram",
+      "twitter": "X / Twitter",
+      "linkedin": "LinkedIn",
+      "youtube": "YouTube",
+      "tiktok": "TikTok"
+    },
+    "forms": {
+      "heading": "फ़ॉर्म डिफ़ॉल्ट",
+      "description": "उन फ़ॉर्मों के लिए डिफ़ॉल्ट सेटिंग्स जिनका अपना नोटिफ़िकेशन कॉन्फ़िगर नहीं है (जैसे Stitch डिज़ाइन फ़ॉर्म)।",
+      "notificationEmail": "नोटिफ़िकेशन ईमेल",
+      "sendConfirmationEmail": "सबमिट करने वाले को पुष्टिकरण ईमेल भेजें",
+      "confirmationMessage": "पुष्टिकरण संदेश",
+      "confirmationMessagePlaceholder": "संपर्क करने के लिए धन्यवाद। हम जल्द ही आपसे संपर्क करेंगे।",
+      "webhookHeading": "वेबहुक",
+      "webhookDescription": "बिना अपने वेबहुक वाले फ़ॉर्मों के लिए डिफ़ॉल्ट वेबहुक। व्यक्तिगत फ़ॉर्म पेज एडिटर में इसे ओवरराइड कर सकते हैं।",
+      "sendEachSubmissionToWebhook": "प्रत्येक सबमिशन को एक वेबहुक URL पर भेजें",
+      "webhookUrl": "वेबहुक URL",
+      "signingSecret": "साइनिंग सीक्रेट",
+      "signingSecretDescription": "हम हर वेबहुक पर इस सीक्रेट के साथ हस्ताक्षर करते हैं (X-Cadmus-Signature हेडर में \"<timestamp>.<body>\" का HMAC-SHA256)। इसका उपयोग यह सत्यापित करने के लिए करें कि अनुरोध हमारी ओर से हैं।",
+      "rotateSecret": "सीक्रेट रोटेट करें",
+      "rotating": "रोटेट हो रहा है…",
+      "revealSigningSecret": "साइनिंग सीक्रेट दिखाएं",
+      "rotateSecretConfirm": "साइनिंग सीक्रेट रोटेट करें? वर्तमान सीक्रेट तुरंत काम करना बंद कर देगा — हस्ताक्षर सत्यापित करने वाले किसी भी रिसीवर को नए के साथ अपडेट करना होगा।",
+      "failedToRotateSecret": "साइनिंग सीक्रेट रोटेट करने में विफल",
+      "failedToLoadSecret": "साइनिंग सीक्रेट लोड करने में विफल"
+    },
+    "customCode": {
+      "heading": "कस्टम कोड",
+      "description": "एनालिटिक्स, पिक्सल, चैट विजेट, या सत्यापन टैग जोड़ें। यह कोड हर पेज में ज्यों का त्यों इंजेक्ट किया जाता है — यह सैनिटाइज़ नहीं किया जाता, इसलिए केवल उन स्रोतों से कोड पेस्ट करें जिन पर आप भरोसा करते हैं। केवल मालिक।",
+      "headCode": "हेड कोड",
+      "headCodeHint": "(<head> में इंजेक्ट किया गया — एनालिटिक्स, मेटा सत्यापन)",
+      "bodyEndCode": "बॉडी एंड कोड",
+      "bodyEndCodeHint": "(</body> से पहले इंजेक्ट किया गया — चैट विजेट, विलंबित स्क्रिप्ट)",
+      "saveCustomCode": "कस्टम कोड सहेजें"
+    },
+    "import": {
+      "heading": "WordPress से आयात करें",
+      "description": "WordPress XML एक्सपोर्ट (WXR) फ़ाइल से पोस्ट, पेज और मीडिया आयात करें।\nअपनी एक्सपोर्ट फ़ाइल डाउनलोड करने के लिए WordPress Admin → Tools → Export पर जाएं।",
+      "paymentMethodRequired": "इम्पोर्टर का उपयोग करने के लिए एक भुगतान विधि आवश्यक है। इसे अकाउंट सेक्शन में जोड़ें।",
+      "exportFileLabel": "WordPress Export File (.xml)",
+      "analyzeFile": "फ़ाइल का विश्लेषण करें",
+      "analyzing": "विश्लेषण हो रहा है...",
+      "fileTooLargeDetailed": "यह फ़ाइल {{sizeMb}} MB की है, जो 25 MB अपलोड सीमा से अधिक है। WordPress में, Tools → Export पर जाएं और पोस्ट, पेज और मीडिया को अलग-अलग एक्सपोर्ट करने के लिए फ़िल्टर का उपयोग करें।",
+      "fileTooLarge": "फ़ाइल बहुत बड़ी है (अधिकतम {{maxMb}} MB)। WordPress में, Tools → Export पर जाएं और पोस्ट, पेज और मीडिया को अलग-अलग एक्सपोर्ट करें।",
+      "failedToAnalyze": "फ़ाइल का विश्लेषण करने में विफल। सुनिश्चित करें कि यह एक मान्य WordPress XML एक्सपोर्ट है।",
+      "failedToStart": "आयात शुरू करने में विफल",
+      "foundLabel": "मिला:",
+      "foundSummary": "{{postCount}} पोस्ट, {{pageCount}} पेज, {{attachmentCount}} अटैचमेंट",
+      "mediaImportNote": "मीडिया आयात के लिए आपकी मूल WordPress साइट का अभी भी सुलभ होना आवश्यक है। डेड लिंक छोड़ दिए जाएंगे और लॉग किए जाएंगे।",
+      "contentToImport": "आयात करने के लिए कॉन्टेंट",
+      "postsCount": "पोस्ट ({{count}})",
+      "pagesCount": "पेज ({{count}})",
+      "importDrafts": "ड्राफ़्ट पोस्ट/पेज आयात करें",
+      "importMediaFiles": "मीडिया फ़ाइलें Cadmus में आयात करें",
+      "authorMapping": "लेखक मैपिंग",
+      "ownerOption": "मालिक",
+      "categoryMapping": "श्रेणी मैपिंग",
+      "createNewCollection": "नया संग्रह बनाएं",
+      "startImport": "आयात शुरू करें",
+      "importing": "आयात हो रहा है...",
+      "progressOfTotal": "({{total}} में से {{progress}})",
+      "importingHint": "इसमें कुछ मिनट लग सकते हैं। आप इस पेज को छोड़ सकते हैं — आयात पृष्ठभूमि में जारी रहेगा।",
+      "importComplete": "आयात पूर्ण",
+      "importedSummary": "आयातित: {{posts}} पोस्ट, {{pages}} पेज",
+      "importedMediaSuffix": "{{count}} मीडिया फ़ाइलें",
+      "skippedSummary": "छोड़ा गया: {{count}} आइटम",
+      "importFailed": "आयात विफल",
+      "renamedSlugs_one": "नाम बदले गए स्लग ({{count}})",
+      "renamedSlugs_other": "नाम बदले गए स्लग ({{count}})",
+      "mediaErrors_one": "मीडिया त्रुटियां ({{count}})",
+      "mediaErrors_other": "मीडिया त्रुटियां ({{count}})",
+      "otherErrors_one": "अन्य त्रुटियां ({{count}})",
+      "otherErrors_other": "अन्य त्रुटियां ({{count}})",
+      "startAnotherImport": "एक और आयात शुरू करें"
+    },
+    "export": {
+      "heading": "एक्सपोर्ट",
+      "description": "बैकअप या माइग्रेशन के लिए अपना साइट डेटा डाउनलोड करें।",
+      "formatHtml": "HTML",
+      "formatJson": "JSON",
+      "htmlDescription": "एम्बेडेड स्टाइल के साथ सभी पेजों को एक ही स्व-निहित HTML फ़ाइल के रूप में एक्सपोर्ट करता है। संग्रह या ऑफ़लाइन देखने के लिए उपयुक्त।",
+      "dataToInclude": "शामिल करने के लिए डेटा",
+      "deselectAll": "सभी अचयनित करें",
+      "selectAll": "सभी चुनें",
+      "selectAtLeastOneCategory": "एक्सपोर्ट करने के लिए कम से कम एक श्रेणी चुनें।",
+      "exportFailedWithStatus": "एक्सपोर्ट विफल ({{status}})",
+      "exportFailed": "एक्सपोर्ट विफल",
+      "exporting": "एक्सपोर्ट हो रहा है...",
+      "exportAs": "{{format}} के रूप में एक्सपोर्ट करें",
+      "categories": {
+        "content": {
+          "label": "कॉन्टेंट",
+          "description": "सभी पेज, पोस्ट और उनके ब्लॉक"
+        },
+        "submissions": {
+          "label": "फ़ॉर्म सबमिशन",
+          "description": "सभी फ़ॉर्म सबमिशन डेटा"
+        },
+        "settings": {
+          "label": "साइट सेटिंग्स",
+          "description": "नाम, ब्रीफ़, थीम और कॉन्फ़िगरेशन"
+        },
+        "collections": {
+          "label": "संग्रह",
+          "description": "श्रेणियां, टैग और कॉन्टेंट समूह"
+        },
+        "navigation": {
+          "label": "नेविगेशन",
+          "description": "मेनू आइटम और संरचना"
+        },
+        "media": {
+          "label": "मीडिया",
+          "description": "इमेज और फ़ाइल मेटाडेटा (फ़ाइलें स्वयं नहीं)"
+        }
+      }
+    },
+    "stitch": {
+      "heading": "डीबग: Stitch प्रोजेक्ट आयात करें",
+      "description": "किसी मौजूदा Stitch प्रोजेक्ट से स्क्रीन प्राप्त करें और उन्हें अपने पेजों पर लागू करें।",
+      "projectId": "Stitch प्रोजेक्ट ID",
+      "noScreensFound": "इस प्रोजेक्ट में कोई स्क्रीन नहीं मिली",
+      "failedToFetchScreens": "स्क्रीन प्राप्त करने में विफल",
+      "fetching": "प्राप्त हो रहा है...",
+      "fetchScreens": "स्क्रीन प्राप्त करें",
+      "foundScreens_one": "{{count}} स्क्रीन मिली। इसे किसी मौजूदा पेज पर मैप करें:",
+      "foundScreens_other": "{{count}} स्क्रीन मिलीं। प्रत्येक को किसी मौजूदा पेज पर मैप करें:",
+      "screenFallbackName": "स्क्रीन {{number}}",
+      "skipOption": "— छोड़ें (लागू न करें) —",
+      "blogPostTemplate": "ब्लॉग पोस्ट टेम्पलेट",
+      "genericPage": "पेज",
+      "applyingProgress": "{{screenName}} → {{target}} लागू किया जा रहा है ({{current}}/{{total}})...",
+      "applying": "लागू हो रहा है...",
+      "applyToPages": "पेजों पर लागू करें",
+      "done": "पूर्ण!",
+      "appliedToPages_one": "Stitch डिज़ाइन {{count}} पेज पर लागू किए गए।",
+      "appliedToPages_other": "Stitch डिज़ाइन {{count}} पेज(पेजों) पर लागू किए गए।",
+      "someFailed": "{{count}} विफल रहे।",
+      "refreshToSeeChanges": "बदलाव देखने के लिए अपनी साइट को रीफ़्रेश करें।"
+    },
+    "resetSite": {
+      "heading": "डीबग: साइट रीसेट करें",
+      "description": "सभी कॉन्टेंट, मीडिया, संग्रह, नेविगेशन और डिज़ाइन सेटिंग्स हटाएं, फिर शुरू से ऑनबोर्डिंग फिर से शुरू करें। आपका खाता और सबडोमेन सुरक्षित रहेंगे।",
+      "confirm": "क्या आप वाकई सुनिश्चित हैं? इससे सभी साइट कॉन्टेंट, मीडिया और सेटिंग्स स्थायी रूप से हट जाएंगी।",
+      "resetting": "रीसेट हो रहा है...",
+      "resetButton": "साइट रीसेट करें और फिर से शुरू करें"
+    },
+    "themeDebug": {
+      "heading": "प्लेटफ़ॉर्म एडमिन: थीम डीबग",
+      "description": "कंपाइल की गई थीम (फ़ॉन्ट, हेडर/फ़ूटर, CSS कवरेज) का निरीक्षण करें और वर्तमान ब्लॉक्स से Tailwind को फिर से कंपाइल करें।",
+      "failedToLoad": "थीम डीबग जानकारी लोड करने में विफल",
+      "loadThemeDebugInfo": "थीम डीबग जानकारी लोड करें",
+      "recompileFailed": "पुनः कंपाइल विफल",
+      "recompiling": "पुनः कंपाइल हो रहा है...",
+      "recompileTheme": "थीम पुनः कंपाइल करें",
+      "recompiled": "पुनः कंपाइल किया गया।",
+      "compiledCssSummary": "कंपाइल किया गया CSS: {{blockCount}} ब्लॉक(ब्लॉकों) में {{beforeBytes}} → {{afterBytes}} बाइट्स।"
+    },
+    "aiPreferences": {
+      "heading": "डीबग: AI प्राथमिकताएं",
+      "description": "विभिन्न कार्यों के लिए अपने पसंदीदा AI मॉडल चुनें।",
+      "textModel": "टेक्स्ट जनरेशन मॉडल",
+      "imageModel": "इमेज जनरेशन मॉडल",
+      "savePreferences": "प्राथमिकताएं सहेजें",
+      "preferencesSaved": "प्राथमिकताएं सहेजी गईं।",
+      "failedToSavePreferences": "प्राथमिकताएं सहेजने में विफल।",
+      "textModelOptions": {
+        "claude-sonnet-4-6": "Claude Sonnet 4.6 (Anthropic)",
+        "gemini-2.5-flash": "Gemini 2.5 Flash (Google)"
+      },
+      "imageModelOptions": {
+        "imagen-4.0-generate-001": "Imagen 4.0 (Google)",
+        "imagen-4.0-fast-generate-001": "Imagen 4.0 Fast (Google)",
+        "imagen-4.0-ultra-generate-001": "Imagen 4.0 Ultra (Google)"
+      }
     }
   }
 }

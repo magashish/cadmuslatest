@@ -70,7 +70,11 @@
     "back": "Back",
     "continue": "Continue",
     "change": "Change",
-    "remove": "Remove"
+    "remove": "Remove",
+    "saved": "Saved!",
+    "copy": "Copy",
+    "copied": "Copied",
+    "failedToSave": "Failed to save"
   },
   "onboardingBanner": {
     "message": "Your site isn't built yet. Let Cadmus create it for you — it only takes a few minutes.",
@@ -673,6 +677,263 @@
       "viewYourSite": "View Your Site",
       "launching": "Launching...",
       "goToDashboard": "Go to Dashboard"
+    }
+  },
+  "siteSettings": {
+    "title": "Settings",
+    "general": {
+      "heading": "General",
+      "siteName": "Site Name",
+      "siteLanguage": "Site Language"
+    },
+    "domain": {
+      "heading": "Domain",
+      "subdomainLabel": "Subdomain:",
+      "change": "Change",
+      "subdomainUpdated": "Subdomain updated!",
+      "subdomainChangePaidWarning": "Your old URL will redirect to the new one for 48 hours. After that, only the new URL will work. We will email you a confirmation.",
+      "subdomainChangeFreeWarning": "Your old URL will stop working immediately after this change.",
+      "newSubdomain": "New subdomain",
+      "checkingAvailability": "Checking...",
+      "available": "Available",
+      "notAvailable": "Not available",
+      "customDomainLabel": "Custom domain:",
+      "status": {
+        "active": "Active",
+        "sslProvisioning": "SSL Provisioning...",
+        "failed": "Failed",
+        "pending": "Pending"
+      },
+      "sslStatusSuffix": "(SSL: {{status}})",
+      "checking": "Checking...",
+      "checkStatus": "Check Status",
+      "disconnecting": "Disconnecting...",
+      "disconnect": "Disconnect",
+      "verificationFailed": "Verification failed.",
+      "commonCauses": "Common causes:",
+      "causeCnameNotAdded": "CNAME record not yet added at your DNS provider, or not yet propagated (DNS can take a few hours).",
+      "causeCnameWrongTargetPrefix": "CNAME points somewhere other than",
+      "causeCnameWrongTargetSuffix": "— double-check the value exactly.",
+      "causeProxyEnabled": "Proxy/CDN enabled at your DNS provider (turn off proxying; we handle SSL).",
+      "updateDnsThenCheckPrefix": "Update your DNS, then click",
+      "updateDnsThenCheckSuffix": ". You can also disconnect and try again with a different domain.",
+      "waitingForVerification": "Waiting for DNS & SSL verification — we check every 15 seconds automatically.",
+      "dnsSetup": "DNS Setup:",
+      "tableType": "Type",
+      "tableName": "Name",
+      "tableValue": "Value",
+      "connectCustomDomain": "Connect Custom Domain",
+      "connect": "Connect",
+      "dnsMessageRoot": "Add a CNAME for www pointing to origin.cadmus.digital. If your DNS provider supports CNAME flattening (like Cloudflare), you can also add a CNAME for the root domain. Otherwise, set up a redirect from your root domain to www. DNS changes usually take 5 minutes to a few hours to propagate.",
+      "dnsMessageSubdomain": "Add a CNAME record pointing to origin.cadmus.digital. SSL is provisioned automatically. DNS changes usually take 5 minutes to a few hours to propagate.",
+      "copyToClipboard": "Copy to clipboard",
+      "disconnectConfirm": "Disconnect {{domain}}?\n\nVisitors using this domain will immediately stop reaching your site until you reconnect it or update DNS elsewhere. Your subdomain URL keeps working.",
+      "failedToConnect": "Failed to connect domain",
+      "failedToCheckStatus": "Failed to check status",
+      "failedToDisconnect": "Failed to disconnect domain",
+      "failedToChangeSubdomain": "Failed to change subdomain"
+    },
+    "brief": {
+      "heading": "Site Brief",
+      "businessName": "Business Name",
+      "businessDescription": "Business Description",
+      "targetAudience": "Target Audience",
+      "tone": "Tone",
+      "tonePlaceholder": "e.g. professional, friendly, casual",
+      "primaryGoal": "Primary Goal",
+      "primaryGoalPlaceholder": "e.g. generate leads, sell products",
+      "saveBrief": "Save Brief"
+    },
+    "businessInfo": {
+      "heading": "Business Info",
+      "description": "Contact details and address for your site's structured data (helps with SEO and Google Knowledge Panel).",
+      "contactEmail": "Contact Email",
+      "phoneNumber": "Phone Number",
+      "streetAddress": "Street Address",
+      "city": "City",
+      "state": "State / Province",
+      "postalCode": "Postal Code",
+      "country": "Country",
+      "countryPlaceholder": "United States"
+    },
+    "social": {
+      "heading": "Social Links",
+      "description": "Links to your social profiles. These appear in your footer and in the Organization schema for SEO.",
+      "facebook": "Facebook",
+      "instagram": "Instagram",
+      "twitter": "X / Twitter",
+      "linkedin": "LinkedIn",
+      "youtube": "YouTube",
+      "tiktok": "TikTok"
+    },
+    "forms": {
+      "heading": "Form Defaults",
+      "description": "Default settings for forms that don't have their own notification configured (e.g. Stitch design forms).",
+      "notificationEmail": "Notification Email",
+      "sendConfirmationEmail": "Send confirmation email to submitter",
+      "confirmationMessage": "Confirmation Message",
+      "confirmationMessagePlaceholder": "Thank you for reaching out. We'll get back to you soon.",
+      "webhookHeading": "Webhook",
+      "webhookDescription": "Default webhook for forms without their own. Individual forms can override this in the page editor.",
+      "sendEachSubmissionToWebhook": "Send each submission to a webhook URL",
+      "webhookUrl": "Webhook URL",
+      "signingSecret": "Signing secret",
+      "signingSecretDescription": "We sign every webhook with this secret (HMAC-SHA256 of \"<timestamp>.<body>\" in the X-Cadmus-Signature header). Use it to verify requests are from us.",
+      "rotateSecret": "Rotate secret",
+      "rotating": "Rotating…",
+      "revealSigningSecret": "Reveal signing secret",
+      "rotateSecretConfirm": "Rotate the signing secret? The current secret stops working immediately — any receiver verifying signatures must be updated with the new one.",
+      "failedToRotateSecret": "Failed to rotate signing secret",
+      "failedToLoadSecret": "Failed to load signing secret"
+    },
+    "customCode": {
+      "heading": "Custom Code",
+      "description": "Add analytics, pixels, chat widgets, or verification tags. This code is injected verbatim into every page — it is NOT sanitized, so only paste code from sources you trust. Owner-only.",
+      "headCode": "Head code",
+      "headCodeHint": "(injected into <head> — analytics, meta verification)",
+      "bodyEndCode": "Body end code",
+      "bodyEndCodeHint": "(injected before </body> — chat widgets, deferred scripts)",
+      "saveCustomCode": "Save Custom Code"
+    },
+    "import": {
+      "heading": "Import from WordPress",
+      "description": "Import posts, pages, and media from a WordPress XML export (WXR) file.\nGo to WordPress Admin → Tools → Export to download your export file.",
+      "paymentMethodRequired": "A payment method is required to use the importer. Add one in the Account section.",
+      "exportFileLabel": "WordPress Export File (.xml)",
+      "analyzeFile": "Analyze File",
+      "analyzing": "Analyzing...",
+      "fileTooLargeDetailed": "This file is {{sizeMb}} MB, which exceeds the 25 MB upload limit. In WordPress, go to Tools → Export and use the filters to export posts, pages, and media separately.",
+      "fileTooLarge": "File is too large (max {{maxMb}} MB). In WordPress, go to Tools → Export and export posts, pages, and media separately.",
+      "failedToAnalyze": "Failed to analyze the file. Make sure it is a valid WordPress XML export.",
+      "failedToStart": "Failed to start import",
+      "foundLabel": "Found:",
+      "foundSummary": "{{postCount}} posts, {{pageCount}} pages, {{attachmentCount}} attachments",
+      "mediaImportNote": "Media import requires your original WordPress site to still be accessible. Dead links will be skipped and logged.",
+      "contentToImport": "Content to import",
+      "postsCount": "Posts ({{count}})",
+      "pagesCount": "Pages ({{count}})",
+      "importDrafts": "Import draft posts/pages",
+      "importMediaFiles": "Import media files to Cadmus",
+      "authorMapping": "Author Mapping",
+      "ownerOption": "Owner",
+      "categoryMapping": "Category Mapping",
+      "createNewCollection": "Create new collection",
+      "startImport": "Start Import",
+      "importing": "Importing...",
+      "progressOfTotal": "({{progress}} of {{total}})",
+      "importingHint": "This may take a few minutes. You can leave this page — the import will continue in the background.",
+      "importComplete": "Import complete",
+      "importedSummary": "Imported: {{posts}} posts, {{pages}} pages",
+      "importedMediaSuffix": "{{count}} media files",
+      "skippedSummary": "Skipped: {{count}} items",
+      "importFailed": "Import failed",
+      "renamedSlugs_one": "Renamed slugs ({{count}})",
+      "renamedSlugs_other": "Renamed slugs ({{count}})",
+      "mediaErrors_one": "Media errors ({{count}})",
+      "mediaErrors_other": "Media errors ({{count}})",
+      "otherErrors_one": "Other errors ({{count}})",
+      "otherErrors_other": "Other errors ({{count}})",
+      "startAnotherImport": "Start another import"
+    },
+    "export": {
+      "heading": "Export",
+      "description": "Download your site data for backup or migration.",
+      "formatHtml": "HTML",
+      "formatJson": "JSON",
+      "htmlDescription": "Exports all pages as a single self-contained HTML file with embedded styles. Suitable for archiving or viewing offline.",
+      "dataToInclude": "Data to include",
+      "deselectAll": "Deselect all",
+      "selectAll": "Select all",
+      "selectAtLeastOneCategory": "Select at least one category to export.",
+      "exportFailedWithStatus": "Export failed ({{status}})",
+      "exportFailed": "Export failed",
+      "exporting": "Exporting...",
+      "exportAs": "Export as {{format}}",
+      "categories": {
+        "content": {
+          "label": "Content",
+          "description": "All pages, posts, and their blocks"
+        },
+        "submissions": {
+          "label": "Form Submissions",
+          "description": "All form submission data"
+        },
+        "settings": {
+          "label": "Site Settings",
+          "description": "Name, brief, theme, and configuration"
+        },
+        "collections": {
+          "label": "Collections",
+          "description": "Categories, tags, and content groupings"
+        },
+        "navigation": {
+          "label": "Navigation",
+          "description": "Menu items and structure"
+        },
+        "media": {
+          "label": "Media",
+          "description": "Image and file metadata (not the files themselves)"
+        }
+      }
+    },
+    "stitch": {
+      "heading": "Debug: Import Stitch Project",
+      "description": "Fetch screens from an existing Stitch project and apply them to your pages.",
+      "projectId": "Stitch Project ID",
+      "noScreensFound": "No screens found in this project",
+      "failedToFetchScreens": "Failed to fetch screens",
+      "fetching": "Fetching...",
+      "fetchScreens": "Fetch Screens",
+      "foundScreens_one": "Found {{count}} screen. Map it to an existing page:",
+      "foundScreens_other": "Found {{count}} screens. Map each to an existing page:",
+      "screenFallbackName": "Screen {{number}}",
+      "skipOption": "— Skip (don't apply) —",
+      "blogPostTemplate": "Blog Post Template",
+      "genericPage": "page",
+      "applyingProgress": "Applying {{screenName}} → {{target}} ({{current}}/{{total}})...",
+      "applying": "Applying...",
+      "applyToPages": "Apply to Pages",
+      "done": "Done!",
+      "appliedToPages_one": "Applied Stitch designs to {{count}} page.",
+      "appliedToPages_other": "Applied Stitch designs to {{count}} page(s).",
+      "someFailed": "{{count}} failed.",
+      "refreshToSeeChanges": "Refresh your site to see the changes."
+    },
+    "resetSite": {
+      "heading": "Debug: Reset Site",
+      "description": "Delete all content, media, collections, navigation, and design settings, then restart onboarding from scratch. Your account and subdomain are preserved.",
+      "confirm": "Are you sure? This will permanently delete all site content, media, and settings.",
+      "resetting": "Resetting...",
+      "resetButton": "Reset Site & Start Over"
+    },
+    "themeDebug": {
+      "heading": "Platform Admin: Theme Debug",
+      "description": "Inspect the compiled theme (fonts, header/footer, CSS coverage) and recompile Tailwind from the current blocks.",
+      "failedToLoad": "Failed to load theme debug info",
+      "loadThemeDebugInfo": "Load Theme Debug Info",
+      "recompileFailed": "Recompile failed",
+      "recompiling": "Recompiling...",
+      "recompileTheme": "Recompile Theme",
+      "recompiled": "Recompiled.",
+      "compiledCssSummary": "Compiled CSS: {{beforeBytes}} → {{afterBytes}} bytes across {{blockCount}} block(s)."
+    },
+    "aiPreferences": {
+      "heading": "Debug: AI Preferences",
+      "description": "Choose your preferred AI models for different tasks.",
+      "textModel": "Text Generation Model",
+      "imageModel": "Image Generation Model",
+      "savePreferences": "Save Preferences",
+      "preferencesSaved": "Preferences saved.",
+      "failedToSavePreferences": "Failed to save preferences.",
+      "textModelOptions": {
+        "claude-sonnet-4-6": "Claude Sonnet 4.6 (Anthropic)",
+        "gemini-2.5-flash": "Gemini 2.5 Flash (Google)"
+      },
+      "imageModelOptions": {
+        "imagen-4.0-generate-001": "Imagen 4.0 (Google)",
+        "imagen-4.0-fast-generate-001": "Imagen 4.0 Fast (Google)",
+        "imagen-4.0-ultra-generate-001": "Imagen 4.0 Ultra (Google)"
+      }
     }
   }
 }
