@@ -1,11 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 import { auth } from "../lib/api";
 
 const RESEND_COOLDOWN_SECONDS = 60;
 
 export function VerifyEmail() {
+  const { t } = useTranslation();
   const { user, refreshUser } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -44,7 +46,7 @@ export function VerifyEmail() {
       })
       .catch((err) => {
         setVerifyState("error");
-        setVerifyError(err instanceof Error ? err.message : "Verification failed");
+        setVerifyError(err instanceof Error ? err.message : t("verifyEmail.error.generic"));
       });
   }, [token, navigate]);
 
@@ -77,7 +79,7 @@ export function VerifyEmail() {
       setResendSuccess(true);
       startCooldown();
     } catch (err) {
-      setResendError(err instanceof Error ? err.message : "Failed to resend email");
+      setResendError(err instanceof Error ? err.message : t("verifyEmail.error.resendFailed"));
     } finally {
       setResending(false);
     }
@@ -89,8 +91,8 @@ export function VerifyEmail() {
       return (
         <div className="auth-page">
           <div className="auth-card">
-            <h1>Cadmus</h1>
-            <p>Verifying your email...</p>
+            <h1>{t("sidebar.brand")}</h1>
+            <p>{t("verifyEmail.verifying")}</p>
           </div>
         </div>
       );
@@ -100,9 +102,9 @@ export function VerifyEmail() {
       return (
         <div className="auth-page">
           <div className="auth-card">
-            <h1>Cadmus</h1>
-            <h2>Email verified!</h2>
-            <p>Your email has been verified. Redirecting to setup...</p>
+            <h1>{t("sidebar.brand")}</h1>
+            <h2>{t("verifyEmail.successTitle")}</h2>
+            <p>{t("verifyEmail.successBody")}</p>
           </div>
         </div>
       );
@@ -112,20 +114,20 @@ export function VerifyEmail() {
       return (
         <div className="auth-page">
           <div className="auth-card">
-            <h1>Cadmus</h1>
-            <h2>Verification failed</h2>
+            <h1>{t("sidebar.brand")}</h1>
+            <h2>{t("verifyEmail.errorTitle")}</h2>
             <div className="auth-error">{verifyError}</div>
             {user && (
               <div style={{ marginTop: "1.5rem" }}>
-                <p>Need a new link?</p>
-                {resendSuccess && <p className="auth-success">A new verification email has been sent.</p>}
+                <p>{t("verifyEmail.needNewLink")}</p>
+                {resendSuccess && <p className="auth-success">{t("verifyEmail.resendSuccess")}</p>}
                 {resendError && <div className="auth-error">{resendError}</div>}
                 <button
                   className="btn btn-primary btn-full"
                   onClick={handleResend}
                   disabled={resending || cooldown > 0}
                 >
-                  {resending ? "Sending..." : cooldown > 0 ? `Resend in ${cooldown}s` : "Resend verification email"}
+                  {resending ? t("verifyEmail.sending") : cooldown > 0 ? t("verifyEmail.resendCooldown", { seconds: cooldown }) : t("verifyEmail.resend")}
                 </button>
               </div>
             )}
@@ -139,19 +141,18 @@ export function VerifyEmail() {
   return (
     <div className="auth-page">
       <div className="auth-card">
-        <h1>Cadmus</h1>
-        <h2>Check your inbox</h2>
+        <h1>{t("sidebar.brand")}</h1>
+        <h2>{t("verifyEmail.checkInboxTitle")}</h2>
         <p>
-          We sent a verification link to{" "}
-          <strong>{user?.email ?? "your email address"}</strong>. Click the
-          link in that email to continue.
+          {t("verifyEmail.checkInboxBodyPrefix")}{" "}
+          <strong>{user?.email ?? t("verifyEmail.yourEmailAddress")}</strong>{t("verifyEmail.checkInboxBodySuffix")}
         </p>
         <p style={{ color: "#666", fontSize: "0.875rem", marginTop: "0.5rem" }}>
-          The link expires in 24 hours. Check your spam folder if you don't see it.
+          {t("verifyEmail.expiryNotice")}
         </p>
         {resendSuccess && (
           <p className="auth-success" style={{ marginTop: "1rem" }}>
-            A new verification email has been sent.
+            {t("verifyEmail.resendSuccess")}
           </p>
         )}
         {resendError && <div className="auth-error" style={{ marginTop: "1rem" }}>{resendError}</div>}
@@ -161,7 +162,7 @@ export function VerifyEmail() {
           disabled={resending || cooldown > 0}
           style={{ marginTop: "1.5rem" }}
         >
-          {resending ? "Sending..." : cooldown > 0 ? `Resend in ${cooldown}s` : "Resend verification email"}
+          {resending ? t("verifyEmail.sending") : cooldown > 0 ? t("verifyEmail.resendCooldown", { seconds: cooldown }) : t("verifyEmail.resend")}
         </button>
       </div>
     </div>

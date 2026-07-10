@@ -1,9 +1,11 @@
 import { useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const API_BASE = import.meta.env.VITE_API_URL || "";
 
 export function ForgotPassword() {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
@@ -21,11 +23,11 @@ export function ForgotPassword() {
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || "Something went wrong");
+        throw new Error(data.error || t("forgotPassword.error.generic"));
       }
       setSubmitted(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      setError(err instanceof Error ? err.message : t("forgotPassword.error.generic"));
     } finally {
       setSubmitting(false);
     }
@@ -35,14 +37,13 @@ export function ForgotPassword() {
     return (
       <div className="auth-page">
         <div className="auth-card">
-          <h1>Cadmus</h1>
-          <h2>Check your email</h2>
+          <h1>{t("sidebar.brand")}</h1>
+          <h2>{t("forgotPassword.checkEmailTitle")}</h2>
           <p style={{ color: "#666", lineHeight: 1.6, marginBottom: "1.5rem" }}>
-            If an account exists for <strong>{email}</strong>, we sent a password reset link.
-            It expires in 1 hour.
+            {t("forgotPassword.checkEmailBodyPrefix")} <strong>{email}</strong>{t("forgotPassword.checkEmailBodySuffix")}
           </p>
           <Link to="/login" className="btn btn-primary btn-full" style={{ display: "block", textAlign: "center", textDecoration: "none" }}>
-            Back to sign in
+            {t("forgotPassword.backToSignIn")}
           </Link>
         </div>
       </div>
@@ -52,15 +53,15 @@ export function ForgotPassword() {
   return (
     <div className="auth-page">
       <div className="auth-card">
-        <h1>Cadmus</h1>
-        <h2>Forgot password</h2>
+        <h1>{t("sidebar.brand")}</h1>
+        <h2>{t("forgotPassword.title")}</h2>
         <p style={{ color: "#666", lineHeight: 1.6, marginBottom: "1.5rem" }}>
-          Enter your email and we'll send you a link to reset your password.
+          {t("forgotPassword.description")}
         </p>
         {error && <div className="auth-error">{error}</div>}
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>Email</label>
+            <label>{t("common.emailLabel")}</label>
             <input
               type="email"
               value={email}
@@ -70,11 +71,11 @@ export function ForgotPassword() {
             />
           </div>
           <button type="submit" className="btn btn-primary btn-full" disabled={submitting}>
-            {submitting ? "Sending..." : "Send reset link"}
+            {submitting ? t("forgotPassword.sending") : t("forgotPassword.submit")}
           </button>
         </form>
         <p className="auth-link">
-          <Link to="/login">Back to sign in</Link>
+          <Link to="/login">{t("forgotPassword.backToSignIn")}</Link>
         </p>
       </div>
     </div>

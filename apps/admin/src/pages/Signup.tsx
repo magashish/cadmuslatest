@@ -1,5 +1,6 @@
 import { useState, useEffect, type FormEvent, type ReactNode } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 import { auth, billing, type BillingPlanDetails } from "../lib/api";
 import { PasswordStrengthMeter, meetsPasswordRequirements } from "../components/PasswordStrengthMeter";
@@ -13,6 +14,7 @@ type PromoInfo = {
 };
 
 export function Signup() {
+  const { t } = useTranslation();
   const { provision } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -74,7 +76,7 @@ export function Signup() {
     setPromoLoading(true);
     auth.promoInfo(promoCodeParam)
       .then(setPromoInfo)
-      .catch(() => setPromoInfo({ valid: false, reason: "Could not load promotion details." }))
+      .catch(() => setPromoInfo({ valid: false, reason: t("signup.promoLoadError") }))
       .finally(() => setPromoLoading(false));
   }, [promoCodeParam]);
 
@@ -82,7 +84,7 @@ export function Signup() {
     e.preventDefault();
     setError("");
     if (!meetsPasswordRequirements(password)) {
-      setError("Please meet all password requirements");
+      setError(t("signup.error.passwordRequirements"));
       return;
     }
     setSubmitting(true);
@@ -111,9 +113,9 @@ export function Signup() {
         navigate("/signup/subdomain");
       }
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "Signup failed";
+      const msg = err instanceof Error ? err.message : t("signup.error.generic");
       if (msg.includes("already exists")) {
-        setError(<>An account with this email already exists. <Link to="/login">Sign in instead</Link></>);
+        setError(<>{t("signup.error.emailExists")} <Link to="/login">{t("signup.signInInstead")}</Link></>);
       } else {
         setError(msg);
       }
@@ -128,34 +130,34 @@ export function Signup() {
   return (
     <div className="auth-page">
       <div className="auth-card">
-        <h1>Cadmus</h1>
+        <h1>{t("sidebar.brand")}</h1>
         <h2>
           {hasValidPromo
-            ? `Claim your ${promoInfo!.trialDays}-day free trial`
+            ? t("signup.claimTrial", { days: promoInfo!.trialDays })
             : isPro
-              ? "Start your Pro plan"
-              : "Create a site that actually works"}
+              ? t("signup.startPro")
+              : t("signup.createSite")}
         </h2>
 
         {/* Promo offer banner */}
         {showPromo && hasValidPromo && (
           <div className="promo-banner">
             <strong>{promoInfo!.name}</strong>
-            <span>{promoInfo!.trialDays} days of Pro, free — no credit card required.</span>
+            <span>{t("signup.promoBanner", { days: promoInfo!.trialDays })}</span>
           </div>
         )}
         {showPromo && !hasValidPromo && (
           <div className="auth-error">
-            {promoInfo?.reason || "This promotion is not valid."} You can still sign up for a free account.
+            {promoInfo?.reason || t("signup.promoInvalidDefault")} {t("signup.promoInvalidSuffix")}
           </div>
         )}
 
         {/* Agency disclosure — the consent moment for ?client= invite links */}
         {agencyName && (
           <div className="promo-banner">
-            <strong>You're signing up with {agencyName}</strong>
+            <strong>{t("signup.agencyDisclosureTitle", { agencyName })}</strong>
             <span>
-              {agencyName} will be added to your site as an administrator and will manage the site and its billing on your behalf.
+              {t("signup.agencyDisclosureBody", { agencyName })}
             </span>
           </div>
         )}
@@ -168,7 +170,7 @@ export function Signup() {
               className={`plan-toggle__option${selectedPlan === "monthly" ? " active" : ""}`}
               onClick={() => setSelectedPlan("monthly")}
             >
-              Monthly
+              {t("signup.monthly")}
               {priceLabel("monthly") && <span className="plan-toggle__price">{priceLabel("monthly")}</span>}
             </button>
             <button
@@ -176,7 +178,7 @@ export function Signup() {
               className={`plan-toggle__option${selectedPlan === "annual" ? " active" : ""}`}
               onClick={() => setSelectedPlan("annual")}
             >
-              Annual <span className="plan-toggle__badge">Save ~17%</span>
+              {t("signup.annual")} <span className="plan-toggle__badge">{t("signup.saveBadge")}</span>
               {priceLabel("annual") && <span className="plan-toggle__price">{priceLabel("annual")}</span>}
             </button>
           </div>
@@ -185,18 +187,18 @@ export function Signup() {
         {error && <div className="auth-error">{error}</div>}
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>Site Name</label>
+            <label>{t("signup.siteNameLabel")}</label>
             <input
               type="text"
               value={siteName}
               onChange={(e) => setSiteName(e.target.value)}
-              placeholder="My New Site"
+              placeholder={t("signup.siteNamePlaceholder")}
               required
               autoFocus
             />
           </div>
           <div className="form-group">
-            <label>Email</label>
+            <label>{t("common.emailLabel")}</label>
             <input
               type="email"
               value={email}
@@ -205,7 +207,7 @@ export function Signup() {
             />
           </div>
           <div className="form-group">
-            <label>Password</label>
+            <label>{t("common.passwordLabel")}</label>
             <input
               type="password"
               value={password}
@@ -217,20 +219,20 @@ export function Signup() {
           </div>
           <button type="submit" className="btn btn-primary btn-full" disabled={submitting || promoLoading}>
             {submitting
-              ? hasValidPromo ? "Activating your trial..." : isPro ? "Setting up your account..." : "Creating your site..."
-              : hasValidPromo ? "Activate free trial"
-              : isPro ? "Continue to payment →"
-              : "Create free site"}
+              ? hasValidPromo ? t("signup.activatingTrial") : isPro ? t("signup.settingUpAccount") : t("signup.creatingSite")
+              : hasValidPromo ? t("signup.activateTrial")
+              : isPro ? t("signup.continueToPayment")
+              : t("signup.createFreeSite")}
           </button>
         </form>
 
         {isPro && (
           <p className="auth-link">
-            Just want the free plan? <Link to="/signup">Sign up for free</Link>
+            {t("signup.wantFreePlan")} <Link to="/signup">{t("signup.signUpFree")}</Link>
           </p>
         )}
         <p className="auth-link">
-          Already have an account? <Link to="/login">Sign in</Link>
+          {t("signup.alreadyHaveAccount")} <Link to="/login">{t("signup.signIn")}</Link>
         </p>
       </div>
     </div>

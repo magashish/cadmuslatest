@@ -1,10 +1,12 @@
 import { useState, type FormEvent } from "react";
 import { Link, useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { PasswordStrengthMeter, meetsPasswordRequirements } from "../components/PasswordStrengthMeter";
 
 const API_BASE = import.meta.env.VITE_API_URL || "";
 
 export function ResetPassword() {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
 
@@ -18,13 +20,13 @@ export function ResetPassword() {
     return (
       <div className="auth-page">
         <div className="auth-card">
-          <h1>Cadmus</h1>
-          <h2>Invalid link</h2>
+          <h1>{t("sidebar.brand")}</h1>
+          <h2>{t("resetPassword.invalidTitle")}</h2>
           <p style={{ color: "#666", lineHeight: 1.6, marginBottom: "1.5rem" }}>
-            This password reset link is invalid. Please request a new one.
+            {t("resetPassword.invalidBody")}
           </p>
           <Link to="/forgot-password" className="btn btn-primary btn-full" style={{ display: "block", textAlign: "center", textDecoration: "none" }}>
-            Request new link
+            {t("resetPassword.requestNewLink")}
           </Link>
         </div>
       </div>
@@ -36,12 +38,12 @@ export function ResetPassword() {
     setError("");
 
     if (password !== confirm) {
-      setError("Passwords do not match");
+      setError(t("resetPassword.error.mismatch"));
       return;
     }
 
     if (!meetsPasswordRequirements(password)) {
-      setError("Please meet all password requirements");
+      setError(t("resetPassword.error.requirements"));
       return;
     }
 
@@ -54,11 +56,11 @@ export function ResetPassword() {
       });
       const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.error || "Something went wrong");
+        throw new Error(data.error || t("resetPassword.error.generic"));
       }
       setSuccess(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      setError(err instanceof Error ? err.message : t("resetPassword.error.generic"));
     } finally {
       setSubmitting(false);
     }
@@ -68,13 +70,13 @@ export function ResetPassword() {
     return (
       <div className="auth-page">
         <div className="auth-card">
-          <h1>Cadmus</h1>
-          <h2>Password reset</h2>
+          <h1>{t("sidebar.brand")}</h1>
+          <h2>{t("resetPassword.successTitle")}</h2>
           <p style={{ color: "#666", lineHeight: 1.6, marginBottom: "1.5rem" }}>
-            Your password has been updated. You can now sign in with your new password.
+            {t("resetPassword.successBody")}
           </p>
           <Link to="/login" className="btn btn-primary btn-full" style={{ display: "block", textAlign: "center", textDecoration: "none" }}>
-            Sign in
+            {t("resetPassword.signIn")}
           </Link>
         </div>
       </div>
@@ -84,12 +86,12 @@ export function ResetPassword() {
   return (
     <div className="auth-page">
       <div className="auth-card">
-        <h1>Cadmus</h1>
-        <h2>Set new password</h2>
+        <h1>{t("sidebar.brand")}</h1>
+        <h2>{t("resetPassword.title")}</h2>
         {error && <div className="auth-error">{error}</div>}
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>New password</label>
+            <label>{t("resetPassword.newPasswordLabel")}</label>
             <input
               type="password"
               value={password}
@@ -97,12 +99,12 @@ export function ResetPassword() {
               required
               autoFocus
               minLength={12}
-              placeholder="At least 12 characters"
+              placeholder={t("resetPassword.passwordPlaceholder")}
             />
             <PasswordStrengthMeter password={password} />
           </div>
           <div className="form-group">
-            <label>Confirm password</label>
+            <label>{t("resetPassword.confirmLabel")}</label>
             <input
               type="password"
               value={confirm}
@@ -112,7 +114,7 @@ export function ResetPassword() {
             />
           </div>
           <button type="submit" className="btn btn-primary btn-full" disabled={submitting}>
-            {submitting ? "Resetting..." : "Reset password"}
+            {submitting ? t("resetPassword.submitting") : t("resetPassword.submit")}
           </button>
         </form>
       </div>
