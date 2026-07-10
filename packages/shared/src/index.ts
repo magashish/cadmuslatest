@@ -1,5 +1,6 @@
 export type { SiteBrief, SiteBriefPage } from "./types/site-brief.js";
-export type { AuthUser, LoginRequest, SignupRequest, AuthResponse, SiteRole, GlobalRole, SiteMembership } from "./types/auth.js";
+export type { AuthUser, LoginRequest, SignupRequest, AuthResponse, SiteRole, GlobalRole, SiteMembership, Locale } from "./types/auth.js";
+export { SUPPORTED_LOCALES } from "./types/auth.js";
 export type { ContentType, ContentStatus, BlockType } from "./types/content.js";
 export type { ScheduledTaskType, ScheduledTaskStatus } from "./types/scheduling.js";
 export type {

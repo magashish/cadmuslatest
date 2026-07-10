@@ -1,0 +1,42 @@
+{
+  "nav": {
+    "dashboard": "डैशबोर्ड",
+    "insights": "इनसाइट्स",
+    "content": "सामग्री",
+    "collections": "संग्रह",
+    "forms": "फ़ॉर्म",
+    "media": "मीडिया",
+    "style": "स्टाइल",
+    "seo": "SEO",
+    "addons": "ऐड-ऑन",
+    "redirects": "रीडायरेक्ट",
+    "activity": "गतिविधि",
+    "team": "टीम",
+    "account": "खाता",
+    "settings": "सेटिंग्स",
+    "help": "सहायता और समर्थन"
+  },
+  "sidebar": {
+    "brand": "Cadmus",
+    "viewSite": "साइट देखें ↗",
+    "logout": "लॉग आउट",
+    "toggleMenu": "मेनू टॉगल करें",
+    "insightsBadge_one": "{{count}} इनसाइट",
+    "insightsBadge_other": "{{count}} इनसाइट्स"
+  },
+  "account": {
+    "language": {
+      "title": "भाषा",
+      "label": "प्रदर्शन भाषा",
+      "hint": "यह केवल आपके खाते के लिए Cadmus एडमिन डैशबोर्ड की भाषा बदलता है।",
+      "save": "भाषा सहेजें",
+      "saving": "सहेजा जा रहा है...",
+      "saved": "भाषा अपडेट हो गई!",
+      "error": "भाषा सहेजने में विफल"
+    }
+  },
+  "languages": {
+    "en": "English",
+    "hi": "हिन्दी (Hindi)"
+  }
+}

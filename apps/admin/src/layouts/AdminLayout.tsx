@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 import { AIDrawer } from "../components/AIDrawer";
 import { AIDrawerButton } from "../components/AIDrawerButton";
@@ -9,22 +10,22 @@ import { SuspensionBanner } from "../components/SuspensionBanner";
 import { OnboardingNudgeBanner } from "../components/OnboardingNudgeBanner";
 import { ai, type Insight } from "../lib/api";
 
-const navItems: { to: string; label: string; minRole?: string; indexableOnly?: boolean }[] = [
-  { to: "/", label: "Dashboard" },
-  { to: "/insights", label: "Insights" },
-  { to: "/content", label: "Content" },
-  { to: "/collections", label: "Collections" },
-  { to: "/forms", label: "Forms", minRole: "admin" },
-  { to: "/media", label: "Media" },
-  { to: "/theme", label: "Style", minRole: "admin" },
-  { to: "/seo", label: "SEO", minRole: "admin", indexableOnly: true },
-  { to: "/addons", label: "Add-ons", minRole: "admin" },
-  { to: "/redirects", label: "Redirects", minRole: "admin" },
-  { to: "/activity", label: "Activity", minRole: "admin" },
-  { to: "/team", label: "Team" },
-  { to: "/account", label: "Account" },
-  { to: "/settings", label: "Settings", minRole: "admin" },
-  { to: "/help", label: "Help & Support" },
+const navItems: { to: string; labelKey: string; minRole?: string; indexableOnly?: boolean }[] = [
+  { to: "/", labelKey: "nav.dashboard" },
+  { to: "/insights", labelKey: "nav.insights" },
+  { to: "/content", labelKey: "nav.content" },
+  { to: "/collections", labelKey: "nav.collections" },
+  { to: "/forms", labelKey: "nav.forms", minRole: "admin" },
+  { to: "/media", labelKey: "nav.media" },
+  { to: "/theme", labelKey: "nav.style", minRole: "admin" },
+  { to: "/seo", labelKey: "nav.seo", minRole: "admin", indexableOnly: true },
+  { to: "/addons", labelKey: "nav.addons", minRole: "admin" },
+  { to: "/redirects", labelKey: "nav.redirects", minRole: "admin" },
+  { to: "/activity", labelKey: "nav.activity", minRole: "admin" },
+  { to: "/team", labelKey: "nav.team" },
+  { to: "/account", labelKey: "nav.account" },
+  { to: "/settings", labelKey: "nav.settings", minRole: "admin" },
+  { to: "/help", labelKey: "nav.help" },
 ];
 
 const ROLE_LEVEL: Record<string, number> = { viewer: 1, editor: 2, admin: 3, owner: 4 };
@@ -71,6 +72,7 @@ function saveDismissed(siteId: string, ids: Set<string>) {
 }
 
 export function AdminLayout() {
+  const { t } = useTranslation();
   const { user, sitePlan, logout, switchSite } = useAuth();
   const location = useLocation();
   const [aiOpen, setAiOpen] = useState(false);
@@ -169,16 +171,16 @@ export function AdminLayout() {
         <button
           className="hamburger"
           onClick={() => setSidebarOpen((o) => !o)}
-          aria-label="Toggle menu"
+          aria-label={t("sidebar.toggleMenu")}
         >
           <span /><span /><span />
         </button>
-        <span className="mobile-topbar__title">Cadmus</span>
+        <span className="mobile-topbar__title">{t("sidebar.brand")}</span>
       </div>
 
       <aside className="sidebar">
         <div className="sidebar-header">
-          <h1>Cadmus</h1>
+          <h1>{t("sidebar.brand")}</h1>
           {hasMultipleSites && (
             <select
               className="site-switcher"
@@ -200,7 +202,7 @@ export function AdminLayout() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              View site ↗
+              {t("sidebar.viewSite")}
             </a>
           )}
         </div>
@@ -227,11 +229,11 @@ export function AdminLayout() {
                   }
                   onClick={closeOnNav}
                 >
-                  <span className="nav-link__label">{item.label}</span>
+                  <span className="nav-link__label">{t(item.labelKey)}</span>
                   {showBadge && (
                     <span
                       className="nav-link__badge"
-                      aria-label={`${visibleInsights.length} insight${visibleInsights.length === 1 ? "" : "s"}`}
+                      aria-label={t("sidebar.insightsBadge", { count: visibleInsights.length })}
                     >
                       {visibleInsights.length > 9 ? "9+" : visibleInsights.length}
                     </span>
@@ -243,7 +245,7 @@ export function AdminLayout() {
         <div className="sidebar-footer">
           <span className="sidebar-user-email">{user?.email}</span>
           <button type="button" className="btn-sidebar-logout" onClick={logout}>
-            Log out
+            {t("sidebar.logout")}
           </button>
         </div>
       </aside>

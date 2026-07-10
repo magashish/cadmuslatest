@@ -1,0 +1,42 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "insights": "Insights",
+    "content": "Content",
+    "collections": "Collections",
+    "forms": "Forms",
+    "media": "Media",
+    "style": "Style",
+    "seo": "SEO",
+    "addons": "Add-ons",
+    "redirects": "Redirects",
+    "activity": "Activity",
+    "team": "Team",
+    "account": "Account",
+    "settings": "Settings",
+    "help": "Help & Support"
+  },
+  "sidebar": {
+    "brand": "Cadmus",
+    "viewSite": "View site ↗",
+    "logout": "Log out",
+    "toggleMenu": "Toggle menu",
+    "insightsBadge_one": "{{count}} insight",
+    "insightsBadge_other": "{{count}} insights"
+  },
+  "account": {
+    "language": {
+      "title": "Language",
+      "label": "Display language",
+      "hint": "Changes the language of the Cadmus admin dashboard for your account only.",
+      "save": "Save Language",
+      "saving": "Saving...",
+      "saved": "Language updated!",
+      "error": "Failed to save language"
+    }
+  },
+  "languages": {
+    "en": "English",
+    "hi": "हिन्दी (Hindi)"
+  }
+}

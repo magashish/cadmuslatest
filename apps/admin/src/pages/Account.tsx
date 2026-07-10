@@ -1,15 +1,43 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 import { auth, billing, team, media, type BillingPlanDetails, type BillingStatus, type TeamMember } from "../lib/api";
 import { PasswordStrengthMeter, meetsPasswordRequirements } from "../components/PasswordStrengthMeter";
+import i18n, { SUPPORTED_LOCALES, isSupportedLocale, type SupportedLocale } from "../i18n";
 
 export function Account() {
-  const { user } = useAuth();
+  const { t } = useTranslation();
+  const { user, refreshUser } = useAuth();
   const [firstName, setFirstName] = useState(user?.firstName || "");
   const [lastName, setLastName] = useState(user?.lastName || "");
   const [profileSaved, setProfileSaved] = useState(false);
   const [profileError, setProfileError] = useState("");
   const [profileSaving, setProfileSaving] = useState(false);
+
+  const userLocale = user?.locale;
+  const [language, setLanguage] = useState<SupportedLocale>(
+    isSupportedLocale(userLocale) ? userLocale : (i18n.language as SupportedLocale),
+  );
+  const [languageSaved, setLanguageSaved] = useState(false);
+  const [languageError, setLanguageError] = useState("");
+  const [languageSaving, setLanguageSaving] = useState(false);
+
+  const handleLanguageSave = async () => {
+    setLanguageError("");
+    setLanguageSaved(false);
+    setLanguageSaving(true);
+    try {
+      await auth.updateProfile({ locale: language });
+      await i18n.changeLanguage(language);
+      await refreshUser();
+      setLanguageSaved(true);
+      setTimeout(() => setLanguageSaved(false), 3000);
+    } catch (e) {
+      setLanguageError(e instanceof Error ? e.message : t("account.language.error"));
+    } finally {
+      setLanguageSaving(false);
+    }
+  };
 
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -76,6 +104,36 @@ export function Account() {
             </button>
             {profileSaved && <span className="settings-success">Profile saved!</span>}
             {profileError && <span className="auth-error">{profileError}</span>}
+          </div>
+        </div>
+      </section>
+
+      <section className="settings-section">
+        <h3>{t("account.language.title")}</h3>
+        <div className="settings-form">
+          <label>
+            {t("account.language.label")}
+            <select value={language} onChange={(e) => setLanguage(e.target.value as SupportedLocale)}>
+              {SUPPORTED_LOCALES.map((code) => (
+                <option key={code} value={code}>
+                  {t(`languages.${code}`)}
+                </option>
+              ))}
+            </select>
+          </label>
+          <p style={{ color: "var(--color-text-muted)", fontSize: "0.9rem", margin: 0 }}>
+            {t("account.language.hint")}
+          </p>
+          <div className="settings-actions">
+            <button
+              className="btn btn-primary"
+              disabled={languageSaving}
+              onClick={handleLanguageSave}
+            >
+              {languageSaving ? t("account.language.saving") : t("account.language.save")}
+            </button>
+            {languageSaved && <span className="settings-success">{t("account.language.saved")}</span>}
+            {languageError && <span className="auth-error">{languageError}</span>}
           </div>
         </div>
       </section>
