@@ -1,0 +1,1 @@
+ALTER TABLE "partners" ADD COLUMN "commissions_on_addons" boolean DEFAULT false NOT NULL;

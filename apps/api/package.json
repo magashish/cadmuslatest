@@ -1,0 +1,41 @@
+{
+  "name": "@cadmus/api",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "lint": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@cadmus/ai": "workspace:*",
+    "@cadmus/cloud": "workspace:^",
+    "@cadmus/db": "workspace:*",
+    "@cadmus/shared": "workspace:*",
+    "@google-cloud/vision": "^4.0.0",
+    "@hono/node-server": "^1",
+    "@sentry/node": "^10.53.1",
+    "@types/archiver": "^7.0.0",
+    "archiver": "^7.0.1",
+    "drizzle-orm": "^0.45",
+    "file-type": "^22.0.1",
+    "google-auth-library": "^9.15.1",
+    "hono": "^4.12.28",
+    "jose": "^6",
+    "node-html-parser": "^7.1.0",
+    "postgres": "^3",
+    "sax": "^1.6.0",
+    "sharp": "^0.34.5",
+    "stripe": "^22.1.1",
+    "zod": "^4.4.1"
+  },
+  "devDependencies": {
+    "@types/node": "^25.8.0",
+    "@types/sax": "^1.2.7",
+    "tsx": "^4",
+    "typescript": "^5",
+    "vitest": "^4.1.6"
+  }
+}

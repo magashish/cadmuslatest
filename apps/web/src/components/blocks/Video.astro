@@ -1,0 +1,121 @@
+---
+interface Props {
+  variant: "embed" | "full-width" | "contained";
+  source?: "url" | "library";
+  url: string;
+  mediaUrl?: string;
+  title?: string;
+  autoplay?: boolean;
+}
+
+const { variant, source = "url", url, mediaUrl, title = "Video", autoplay = false } = Astro.props;
+
+function getEmbedUrl(rawUrl: string, autoplay: boolean): string {
+  const autoplayParam = autoplay ? "1" : "0";
+
+  // YouTube
+  const ytMatch = rawUrl.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]+)/);
+  if (ytMatch) {
+    return `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=${autoplayParam}&rel=0`;
+  }
+
+  // Vimeo
+  const vimeoMatch = rawUrl.match(/(?:vimeo\.com\/|player\.vimeo\.com\/video\/)(\d+)/);
+  if (vimeoMatch) {
+    return `https://player.vimeo.com/video/${vimeoMatch[1]}?autoplay=${autoplayParam}`;
+  }
+
+  return rawUrl;
+}
+
+const embedUrl = source === "url" ? getEmbedUrl(url, autoplay) : null;
+const isLibrary = source === "library" && mediaUrl;
+---
+
+<section class={`video video--${variant}`}>
+  <div class="video__container">
+    <div class={`video__embed${isLibrary ? " video__embed--native" : ""}`}>
+      {isLibrary ? (
+        <video
+          src={mediaUrl}
+          title={title}
+          controls
+          playsinline
+          autoplay={autoplay}
+          muted={autoplay}
+          loop={false}
+        />
+      ) : (
+        <iframe
+          src={embedUrl!}
+          title={title}
+          loading="lazy"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+        ></iframe>
+      )}
+    </div>
+    {title && variant !== "full-width" && (
+      <p class="video__title">{title}</p>
+    )}
+  </div>
+</section>
+
+<style>
+  .video {
+    padding: calc(var(--spacing-unit, 8px) * 6) 0;
+  }
+
+  .video--full-width {
+    padding: 0;
+  }
+
+  .video--contained .video__container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .video__embed {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    border-radius: var(--radius-lg, 16px);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--color-border, #e2e8f0);
+  }
+
+  .video--full-width .video__embed {
+    border-radius: 0;
+    box-shadow: none;
+    border: none;
+  }
+
+  .video__embed iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .video__embed--native {
+    padding-bottom: 0;
+    height: auto;
+  }
+
+  .video__embed--native video {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 0;
+  }
+
+  .video__title {
+    margin-top: calc(var(--spacing-unit, 8px) * 1.5);
+    font-size: 0.875rem;
+    color: var(--color-text-muted, #666);
+    text-align: center;
+  }
+</style>

@@ -1,0 +1,94 @@
+---
+interface Props {
+  variant: "full-width" | "contained" | "rounded";
+  url: string;
+  alt: string;
+  caption?: string;
+  isFirst?: boolean;
+}
+
+const { variant, url, alt, caption, isFirst } = Astro.props;
+---
+
+<section class={`image image--${variant}`}>
+  <figure class="image__figure">
+    <div class="image__wrapper">
+      <img
+        src={url}
+        alt={alt}
+        loading={isFirst ? "eager" : "lazy"}
+        fetchpriority={isFirst ? "high" : undefined}
+      />
+    </div>
+    {caption && <figcaption class="image__caption">{caption}</figcaption>}
+  </figure>
+</section>
+
+<style>
+  .image {
+    padding: calc(var(--spacing-unit, 8px) * 6) 0;
+  }
+
+  .image--full-width {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .image__figure {
+    margin: 0;
+  }
+
+  .image--contained .image__figure {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .image__wrapper {
+    overflow: hidden;
+    border-radius: var(--radius-md, 8px);
+  }
+
+  .image--rounded .image__wrapper {
+    border-radius: var(--radius-lg, 16px);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+  }
+
+  .image--contained .image__wrapper {
+    border-radius: var(--radius-md, 8px);
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+  }
+
+  .image__figure img {
+    width: 100%;
+    height: auto;
+    display: block;
+    aspect-ratio: auto;
+    transition: transform 0.4s ease;
+  }
+
+  .image__wrapper:hover img {
+    transform: scale(1.02);
+  }
+
+  .image__caption {
+    padding: calc(var(--spacing-unit, 8px) * 1.5) calc(var(--spacing-unit, 8px) * 2);
+    font-size: 0.875rem;
+    color: var(--color-text-muted, #666);
+    text-align: center;
+    background: var(--color-surface, #f8f9fa);
+    border-radius: 0 0 var(--radius-md, 8px) var(--radius-md, 8px);
+    margin-top: -1px;
+  }
+
+  .image--contained .image__caption {
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .image__figure img {
+      transition: none;
+    }
+  }
+</style>

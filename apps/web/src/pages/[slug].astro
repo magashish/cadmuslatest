@@ -1,0 +1,129 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import BlockRenderer from "@/components/BlockRenderer.astro";
+import { getSite, getContentBySlug, getPreview, getAllNavigation, API_BASE } from "@/lib/api";
+import { getThemeVars } from "@/lib/theme";
+import { buildOrgSchema, buildWebPageSchema, wrapGraph } from "@/lib/schema";
+
+const { slug } = Astro.params;
+
+// Homepage is handled by index.astro
+if (slug === "home") {
+  return Astro.redirect("/");
+}
+
+const siteId = Astro.locals.siteId;
+const previewToken = Astro.url.searchParams.get("preview");
+
+let site: import("@/lib/api").SiteInfo | null = null;
+let page: import("@/lib/api").ContentWithBlocks | null = null;
+
+try {
+  [site, page] = await Promise.all([
+    getSite(siteId),
+    previewToken
+      ? getPreview(previewToken, siteId).catch(() => null)
+      : getContentBySlug(siteId, slug!).catch(() => null),
+  ]);
+} catch {
+  // API not available
+}
+const navData = await getAllNavigation(siteId);
+
+if (!page) {
+  return new Response(null, { status: 404, statusText: "Not Found" });
+}
+if (page.type !== "page") {
+  return Astro.redirect(`/blog/${slug}`, 301);
+}
+
+const siteName = site?.name || "Cadmus";
+const siteUrl = site?.domain
+  ? `https://${site.domain}`
+  : site?.subdomain ? `https://${site.subdomain}.cadmus.digital` : undefined;
+const schemaData = (page.schemaData || {}) as Record<string, string>;
+const seoTitle = schemaData.seoTitle || undefined;
+const title = seoTitle || schemaData.title || page.slug;
+const description = schemaData.metaDescription || undefined;
+const featuredImage = schemaData.featuredImage || undefined;
+const themeVars = getThemeVars(site?.settings);
+const isPreview = !!previewToken;
+
+const hasHtmlBlocks = page.blocks.some((b) => b.blockType === "html");
+// Always pass the theme so the global header/footer render on every page,
+// including text-only pages created via the AI chat (create_content uses
+// text blocks, which would otherwise fall through to theme=undefined and
+// render without the site's header/footer).
+const theme = (site?.settings as any)?.theme;
+const socialLinks = (site?.settings as any)?.socialLinks || undefined;
+const logoUrl = (site?.settings as any)?.logoUrl || undefined;
+const businessInfo = (site?.settings as any)?.businessInfo || undefined;
+const hideCadmusByline = (site?.settings as any)?.hideCadmusByline === true;
+const faviconUrl = (site?.settings as any)?.faviconUrl || undefined;
+const businessDescription = (site?.brief as any)?.businessDescription || undefined;
+const lang = (site?.brief as any)?.language ?? "en";
+
+// Pages use the site name as author; posts use the author's name (handled in blog/[slug].astro)
+const authorName = siteName;
+
+// Build structured data — include Organization on "about" pages
+const isAboutPage = /^about/i.test(slug || "");
+const pageUrl = `${siteUrl || ""}/${slug}`;
+const schemas: Record<string, unknown>[] = [
+  buildWebPageSchema({ title, description, url: pageUrl, siteUrl }),
+];
+if (isAboutPage) {
+  schemas.push(
+    buildOrgSchema({
+      siteName,
+      siteUrl,
+      logoUrl,
+      description: businessDescription || description,
+      businessInfo,
+      socialLinks,
+    })
+  );
+}
+const jsonLd = wrapGraph(schemas);
+---
+
+<BaseLayout title={title} appendSiteName={!seoTitle} description={description} featuredImage={featuredImage} siteName={siteName} siteUrl={siteUrl} logoUrl={logoUrl} authorName={authorName} contentType={page.type} publishedAt={page.publishedAt} navItems={navData.headerNav} footerNavItems={navData.footerNav} navConfigured={navData.headerNavConfigured} footerNavConfigured={navData.footerNavConfigured} socialLinks={socialLinks} themeVars={themeVars} theme={theme} apiUrl={API_BASE} siteId={siteId} jsonLd={jsonLd} hideCadmusByline={hideCadmusByline} faviconUrl={faviconUrl} lang={lang} plan={site?.plan} addons={site?.addons} customHeadCode={(site?.settings as any)?.customCode?.head} customBodyEndCode={(site?.settings as any)?.customCode?.bodyEnd}>
+  {isPreview && (
+    <div class="preview-banner">Preview Mode — This content is not published</div>
+  )}
+  {hasHtmlBlocks ? (
+    <BlockRenderer blocks={page.blocks} />
+  ) : (
+    <article class="page-article">
+      <h1>{title}</h1>
+      <BlockRenderer blocks={page.blocks} />
+    </article>
+  )}
+</BaseLayout>
+
+<style>
+  .preview-banner {
+    background: #f59e0b;
+    color: #000;
+    text-align: center;
+    padding: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  /* Constrain text-block pages (e.g. AI-chat-generated info pages like
+     privacy policy) so prose has a comfortable reading width and doesn't
+     hug the viewport edge. Marketing pages built from html blocks render
+     full-width and are unaffected. */
+  .page-article {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    line-height: 1.8;
+  }
+
+  .page-article h1 {
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+  }
+</style>

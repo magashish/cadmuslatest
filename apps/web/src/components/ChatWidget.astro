@@ -1,0 +1,343 @@
+---
+// Visitor chatbot widget. Rendered by BaseLayout ONLY when the "visitor-chatbot"
+// add-on is active and not disabled. The greeting comes from the add-on's public
+// config; all network behavior lives in ~/scripts/chat-widget.ts. The endpoint
+// itself re-checks the entitlement, so this is presentation only.
+interface Props {
+  greeting?: string;
+}
+const { greeting } = Astro.props;
+const resolvedGreeting = greeting?.trim() || "Hi! How can I help you today?";
+---
+
+<div class="cadmus-chat" data-greeting={resolvedGreeting}>
+  <button
+    type="button"
+    class="cadmus-chat__launcher"
+    aria-label="Chat with us"
+    aria-expanded="false"
+  >
+    <svg class="cadmus-chat__launcher-icon cadmus-chat__launcher-icon--open" viewBox="0 0 24 24" aria-hidden="true">
+      <path
+        fill="currentColor"
+        d="M12 3c-4.97 0-9 3.58-9 8 0 2.4 1.19 4.55 3.06 6.02-.13 1.2-.6 2.3-1.36 3.2-.2.24-.06.6.25.66 1.86.35 3.7-.16 5.13-1.16.62.12 1.26.18 1.92.18 4.97 0 9-3.58 9-8s-4.03-8-9-8Z"
+      />
+    </svg>
+    <svg class="cadmus-chat__launcher-icon cadmus-chat__launcher-icon--close" viewBox="0 0 24 24" aria-hidden="true">
+      <path
+        fill="currentColor"
+        d="M18.3 5.71 12 12.01l-6.3-6.3-1.4 1.41 6.29 6.3-6.3 6.3 1.42 1.4 6.29-6.29 6.3 6.3 1.4-1.42-6.29-6.29 6.3-6.3z"
+      />
+    </svg>
+  </button>
+
+  <section class="cadmus-chat__panel" hidden aria-label="Chat">
+    <header class="cadmus-chat__header">
+      <span class="cadmus-chat__title">Chat with us</span>
+      <button type="button" class="cadmus-chat__close" aria-label="Close chat">
+        <svg viewBox="0 0 24 24" aria-hidden="true" width="20" height="20">
+          <path
+            fill="currentColor"
+            d="M18.3 5.71 12 12.01l-6.3-6.3-1.4 1.41 6.29 6.3-6.3 6.3 1.42 1.4 6.29-6.29 6.3 6.3 1.4-1.42-6.29-6.29 6.3-6.3z"
+          />
+        </svg>
+      </button>
+    </header>
+
+    <div class="cadmus-chat__messages" role="log" aria-live="polite"></div>
+
+    <form class="cadmus-chat__form">
+      <textarea
+        class="cadmus-chat__input"
+        rows="1"
+        placeholder="Type your message…"
+        aria-label="Message"
+      ></textarea>
+      <button type="submit" class="cadmus-chat__send" aria-label="Send message">
+        <svg viewBox="0 0 24 24" aria-hidden="true" width="20" height="20">
+          <path fill="currentColor" d="M3.4 20.4 21 12 3.4 3.6 3 10l12 2-12 2z" />
+        </svg>
+      </button>
+    </form>
+  </section>
+</div>
+
+<script>
+  import "@/scripts/chat-widget.ts";
+</script>
+
+<style>
+  .cadmus-chat {
+    --cc-primary: var(--color-primary, #1a1a1a);
+    --cc-bg: var(--color-bg, #ffffff);
+    --cc-surface: var(--color-surface, var(--color-bg, #ffffff));
+    --cc-text: var(--color-text, #1a1a1a);
+    --cc-muted: var(--color-text-muted, #666);
+    --cc-border: var(--color-border, #e5e7eb);
+    font-family: var(--font-body, system-ui, -apple-system, sans-serif);
+  }
+
+  /* ── Launcher ───────────────────────── */
+  .cadmus-chat__launcher {
+    position: fixed;
+    right: 1.25rem;
+    /* Sit above the Cadmus byline if it's present. */
+    bottom: 1.75rem;
+    z-index: 2147483000;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    border: none;
+    background: var(--cc-primary);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+
+  .cadmus-chat__launcher:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.28);
+  }
+
+  .cadmus-chat__launcher:focus-visible {
+    outline: 2px solid var(--cc-primary);
+    outline-offset: 3px;
+  }
+
+  .cadmus-chat__launcher-icon {
+    width: 1.6rem;
+    height: 1.6rem;
+  }
+
+  .cadmus-chat__launcher-icon--close {
+    display: none;
+  }
+
+  .cadmus-chat--open .cadmus-chat__launcher-icon--open {
+    display: none;
+  }
+
+  .cadmus-chat--open .cadmus-chat__launcher-icon--close {
+    display: block;
+  }
+
+  /* ── Panel ──────────────────────────── */
+  .cadmus-chat__panel {
+    position: fixed;
+    right: 1.25rem;
+    bottom: 5.75rem;
+    z-index: 2147483000;
+    width: 360px;
+    max-width: calc(100vw - 2rem);
+    height: 480px;
+    max-height: calc(100vh - 7.5rem);
+    display: flex;
+    flex-direction: column;
+    background: var(--cc-bg);
+    color: var(--cc-text);
+    border: 1px solid var(--cc-border);
+    border-radius: 14px;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.24);
+    overflow: hidden;
+  }
+
+  .cadmus-chat__panel[hidden] {
+    display: none;
+  }
+
+  .cadmus-chat__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.85rem 1rem;
+    background: var(--cc-primary);
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  .cadmus-chat__title {
+    font-weight: 700;
+    font-size: 0.975rem;
+    font-family: var(--font-heading, var(--font-body, system-ui));
+  }
+
+  .cadmus-chat__close {
+    background: transparent;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    padding: 0.15rem;
+    display: flex;
+    align-items: center;
+    opacity: 0.85;
+    transition: opacity 0.15s;
+  }
+
+  .cadmus-chat__close:hover {
+    opacity: 1;
+  }
+
+  .cadmus-chat__messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    background: var(--cc-bg);
+  }
+
+  .cadmus-chat__msg {
+    max-width: 82%;
+    padding: 0.6rem 0.8rem;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    line-height: 1.45;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-wrap: anywhere;
+  }
+
+  .cadmus-chat__msg--assistant {
+    align-self: flex-start;
+    background: color-mix(in srgb, var(--cc-text) 8%, var(--cc-bg));
+    color: var(--cc-text);
+    border-bottom-left-radius: 4px;
+  }
+
+  .cadmus-chat__msg--user {
+    align-self: flex-end;
+    background: var(--cc-primary);
+    color: #fff;
+    border-bottom-right-radius: 4px;
+  }
+
+  .cadmus-chat__msg--system {
+    align-self: center;
+    background: transparent;
+    color: var(--cc-muted);
+    font-size: 0.825rem;
+    text-align: center;
+    max-width: 100%;
+  }
+
+  /* ── Typing indicator ───────────────── */
+  .cadmus-chat__typing {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+
+  .cadmus-chat__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--cc-muted);
+    opacity: 0.5;
+    animation: cadmus-chat-blink 1.2s infinite ease-in-out both;
+  }
+
+  .cadmus-chat__dot:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+
+  .cadmus-chat__dot:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+
+  @keyframes cadmus-chat-blink {
+    0%,
+    80%,
+    100% {
+      opacity: 0.25;
+    }
+    40% {
+      opacity: 0.9;
+    }
+  }
+
+  /* ── Input row ──────────────────────── */
+  .cadmus-chat__form {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.5rem;
+    padding: 0.65rem;
+    border-top: 1px solid var(--cc-border);
+    background: var(--cc-bg);
+    flex-shrink: 0;
+  }
+
+  .cadmus-chat__input {
+    flex: 1;
+    resize: none;
+    max-height: 120px;
+    padding: 0.55rem 0.7rem;
+    border: 1.5px solid var(--cc-border);
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    color: var(--cc-text);
+    background: var(--cc-surface);
+    box-sizing: border-box;
+  }
+
+  .cadmus-chat__input:focus {
+    outline: none;
+    border-color: var(--cc-primary);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--cc-primary) 15%, transparent);
+  }
+
+  .cadmus-chat__send {
+    flex-shrink: 0;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: none;
+    border-radius: 10px;
+    background: var(--cc-primary);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.15s;
+  }
+
+  .cadmus-chat__send:hover {
+    opacity: 0.9;
+  }
+
+  .cadmus-chat__send:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+
+  /* ── Small screens: full-width sheet ── */
+  @media (max-width: 480px) {
+    .cadmus-chat__panel {
+      right: 0;
+      left: 0;
+      bottom: 0;
+      width: 100vw;
+      max-width: 100vw;
+      height: 80vh;
+      max-height: 80vh;
+      border-radius: 14px 14px 0 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cadmus-chat__launcher,
+    .cadmus-chat__send,
+    .cadmus-chat__close {
+      transition: none;
+    }
+    .cadmus-chat__dot {
+      animation: none;
+    }
+  }
+</style>

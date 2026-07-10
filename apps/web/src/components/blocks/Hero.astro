@@ -1,0 +1,173 @@
+---
+interface Props {
+  variant: "centered" | "split" | "video-bg" | "image-bg";
+  headline: string;
+  subheadline?: string;
+  ctaText?: string;
+  ctaUrl?: string;
+  imageUrl?: string;
+  isFirst?: boolean;
+}
+
+const { variant, headline, subheadline, ctaText, ctaUrl, imageUrl, isFirst } = Astro.props;
+---
+
+<section class={`hero hero--${variant}`} style={imageUrl && variant === "image-bg" ? `background-image: url(${imageUrl})` : ""}>
+  <div class="hero__content">
+    <h1>{headline}</h1>
+    {subheadline && <p class="hero__sub">{subheadline}</p>}
+    {ctaText && ctaUrl && (
+      <a href={ctaUrl} class="hero__cta">
+        <span>{ctaText}</span>
+        <svg class="hero__cta-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m0 0L9 4m4 4L9 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    )}
+  </div>
+  {variant === "split" && imageUrl && (
+    <div class="hero__image">
+      <img src={imageUrl} alt={headline} fetchpriority={isFirst ? "high" : undefined} />
+    </div>
+  )}
+</section>
+
+<style>
+  .hero {
+    padding: calc(var(--spacing-unit, 8px) * 10) calc(var(--spacing-unit, 8px) * 2);
+    animation: heroFadeIn 0.6s ease-out;
+  }
+
+  @keyframes heroFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .hero--centered {
+    text-align: center;
+  }
+
+  .hero--split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: calc(var(--spacing-unit, 8px) * 6);
+    align-items: center;
+  }
+
+  .hero--image-bg {
+    background-size: cover;
+    background-position: center;
+    color: #fff;
+    text-align: center;
+    position: relative;
+    min-height: 480px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hero--image-bg::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(0, 0, 0, 0.65) 0%,
+      rgba(0, 0, 0, 0.35) 100%
+    );
+  }
+
+  .hero--image-bg .hero__content {
+    position: relative;
+  }
+
+  .hero h1 {
+    font-family: var(--font-heading, system-ui);
+    font-size: clamp(2.25rem, 5vw, 4rem);
+    margin-bottom: calc(var(--spacing-unit, 8px) * 2);
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+
+  .hero__sub {
+    font-size: clamp(1.1rem, 2vw, 1.35rem);
+    color: var(--color-text-muted, #666);
+    margin-bottom: calc(var(--spacing-unit, 8px) * 4);
+    max-width: 600px;
+    line-height: 1.6;
+  }
+
+  .hero--centered .hero__sub {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero--image-bg .hero__sub {
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .hero__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: calc(var(--spacing-unit, 8px) * 1.75) calc(var(--spacing-unit, 8px) * 4);
+    background: var(--color-primary, #1a1a1a);
+    color: #fff;
+    text-decoration: none;
+    border-radius: var(--radius-md, 8px);
+    font-weight: 600;
+    font-size: 1.05rem;
+    transition: transform 0.2s, box-shadow 0.2s, background 0.15s;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  .hero__cta:hover {
+    background: var(--color-primary-hover, #333);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  }
+
+  .hero__cta:active {
+    transform: translateY(0);
+  }
+
+  .hero__cta-arrow {
+    transition: transform 0.2s;
+  }
+
+  .hero__cta:hover .hero__cta-arrow {
+    transform: translateX(3px);
+  }
+
+  .hero__image img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-lg, 16px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  }
+
+  @media (max-width: 768px) {
+    .hero {
+      padding: calc(var(--spacing-unit, 8px) * 6) calc(var(--spacing-unit, 8px) * 2);
+    }
+
+    .hero--split {
+      grid-template-columns: 1fr;
+      gap: calc(var(--spacing-unit, 8px) * 4);
+    }
+
+    .hero--image-bg {
+      min-height: 360px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero {
+      animation: none;
+    }
+  }
+</style>

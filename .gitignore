@@ -1,0 +1,54 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Generated at SPA build time by scripts/write-spa-version.mjs
+apps/admin/public/version.json
+apps/dashboard/public/version.json
+
+# Turbo
+.turbo/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Astro
+.astro/
+
+# Claude Code
+.claude/
+
+# Local debug working dir
+.tmp-debug/
+**/_debug-*.mjs
+
+# Certificates / secrets
+*.pem
+*.key
+
+# direnv — local env, points at on-disk SA key; never commit
+.envrc
+.envrc.local
+
+# Docker
+pgdata/
+
+# Local test files (kept locally, not committed)
+test-files/

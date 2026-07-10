@@ -1,0 +1,373 @@
+---
+interface Props {
+  title?: string;
+  defaultPrice?: number;
+  defaultDownPct?: number;
+  defaultRatePct?: number;
+  defaultTermYears?: number;
+  showAmortization?: boolean;
+  accentColor?: string;
+  includeTaxesInsurance?: boolean;
+  defaultTaxRatePct?: number;
+  defaultInsuranceYearly?: number;
+  showBreakdown?: boolean;
+}
+
+const {
+  title,
+  defaultPrice = 400000,
+  defaultDownPct = 20,
+  defaultRatePct = 6.5,
+  defaultTermYears = 30,
+  showAmortization = false,
+  accentColor,
+  includeTaxesInsurance = false,
+  defaultTaxRatePct = 1.1,
+  defaultInsuranceYearly = 1500,
+  showBreakdown = true,
+} = Astro.props;
+
+const termOptions = [15, 20, 30];
+const selectedTerm = termOptions.includes(defaultTermYears) ? defaultTermYears : 30;
+
+// accentColor is rendered into a style attribute — only allow well-formed hex.
+const safeAccent =
+  accentColor && /^#[0-9a-fA-F]{3,8}$/.test(accentColor) ? accentColor : undefined;
+const rootStyle = safeAccent ? `--calc-accent: ${safeAccent}` : undefined;
+---
+
+<section class="mortgage-calculator" style={rootStyle}>
+  {title && <h2 class="mc__title">{title}</h2>}
+
+  <div class="mc__card">
+    <div class="mc__inputs">
+      <div class="mc__field">
+        <label class="mc__label" for="mc-price">Home price ($)</label>
+        <input
+          id="mc-price"
+          class="mc__input"
+          type="number"
+          min="0"
+          step="1000"
+          data-field="price"
+          value={defaultPrice}
+        />
+      </div>
+
+      <div class="mc__field">
+        <label class="mc__label" for="mc-down">Down payment (%)</label>
+        <input
+          id="mc-down"
+          class="mc__input"
+          type="number"
+          min="0"
+          max="100"
+          step="1"
+          data-field="down"
+          value={defaultDownPct}
+        />
+      </div>
+
+      <div class="mc__field">
+        <label class="mc__label" for="mc-rate">Interest rate (% APR)</label>
+        <input
+          id="mc-rate"
+          class="mc__input"
+          type="number"
+          min="0"
+          step="0.1"
+          data-field="rate"
+          value={defaultRatePct}
+        />
+      </div>
+
+      <div class="mc__field">
+        <label class="mc__label" for="mc-term">Loan term (years)</label>
+        <select id="mc-term" class="mc__input mc__select" data-field="term">
+          {termOptions.map((years) => (
+            <option value={years} selected={years === selectedTerm}>{years}</option>
+          ))}
+        </select>
+      </div>
+
+      {includeTaxesInsurance && (
+        <>
+          <div class="mc__field">
+            <label class="mc__label" for="mc-tax">Property tax rate (%/yr)</label>
+            <input
+              id="mc-tax"
+              class="mc__input"
+              type="number"
+              min="0"
+              step="0.05"
+              data-field="tax"
+              value={defaultTaxRatePct}
+            />
+          </div>
+
+          <div class="mc__field">
+            <label class="mc__label" for="mc-insurance">Home insurance ($/yr)</label>
+            <input
+              id="mc-insurance"
+              class="mc__input"
+              type="number"
+              min="0"
+              step="50"
+              data-field="insurance"
+              value={defaultInsuranceYearly}
+            />
+          </div>
+        </>
+      )}
+    </div>
+
+    <div class="mc__results">
+      {includeTaxesInsurance ? (
+        <>
+          <div class="mc__result mc__result--primary">
+            <span class="mc__result-label">Total monthly payment (PITI)</span>
+            <span class="mc__result-value mc__result-value--lg" data-out="total">$0.00</span>
+          </div>
+          {showBreakdown && (
+            <div class="mc__breakdown">
+              <div class="mc__breakdown-line">
+                <span class="mc__result-label">Principal &amp; interest</span>
+                <span class="mc__breakdown-value" data-out="monthly">$0.00</span>
+              </div>
+              <div class="mc__breakdown-line">
+                <span class="mc__result-label">Property tax</span>
+                <span class="mc__breakdown-value" data-out="monthlyTax">$0.00</span>
+              </div>
+              <div class="mc__breakdown-line">
+                <span class="mc__result-label">Insurance</span>
+                <span class="mc__breakdown-value" data-out="monthlyInsurance">$0.00</span>
+              </div>
+            </div>
+          )}
+        </>
+      ) : (
+        <div class="mc__result mc__result--primary">
+          <span class="mc__result-label">Monthly payment (P&amp;I)</span>
+          <span class="mc__result-value mc__result-value--lg" data-out="monthly">$0.00</span>
+        </div>
+      )}
+      <div class="mc__result-row">
+        <div class="mc__result">
+          <span class="mc__result-label">Loan amount</span>
+          <span class="mc__result-value" data-out="loan">$0</span>
+        </div>
+        <div class="mc__result">
+          <span class="mc__result-label">Total interest</span>
+          <span class="mc__result-value" data-out="interest">$0</span>
+        </div>
+      </div>
+    </div>
+
+    {showAmortization && (
+      <details class="mc__amortization">
+        <summary class="mc__amortization-summary">Amortization schedule</summary>
+        {includeTaxesInsurance && (
+          <p class="mc__amortization-note">Amortization shows principal &amp; interest only.</p>
+        )}
+        <div class="mc__table-wrap">
+          <table class="mc__table">
+            <thead>
+              <tr>
+                <th>Year</th>
+                <th>Principal paid</th>
+                <th>Interest paid</th>
+                <th>Remaining balance</th>
+              </tr>
+            </thead>
+            <tbody data-out="amortization"></tbody>
+          </table>
+        </div>
+      </details>
+    )}
+  </div>
+</section>
+
+<script>
+  import "@/scripts/mortgage-calculator.ts";
+</script>
+
+<style>
+  .mortgage-calculator {
+    padding: calc(var(--spacing-unit, 8px) * 6) 0;
+  }
+
+  .mc__title {
+    font-family: var(--font-heading, system-ui);
+    font-size: 1.75rem;
+    margin-bottom: calc(var(--spacing-unit, 8px) * 3);
+    color: var(--color-text, #1a1a1a);
+  }
+
+  .mc__card {
+    max-width: 640px;
+    padding: calc(var(--spacing-unit, 8px) * 4);
+    background: var(--color-surface, #fff);
+    border: 1.5px solid var(--color-border, #e2e8f0);
+    border-radius: var(--radius-lg, 16px);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+    box-sizing: border-box;
+  }
+
+  .mc__inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: calc(var(--spacing-unit, 8px) * 2.5);
+  }
+
+  .mc__label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: calc(var(--spacing-unit, 8px) * 0.75);
+    font-size: 0.875rem;
+    font-family: var(--font-heading, system-ui);
+    color: var(--color-text, #1a1a1a);
+  }
+
+  .mc__input {
+    width: 100%;
+    padding: calc(var(--spacing-unit, 8px) * 1.5) calc(var(--spacing-unit, 8px) * 2);
+    border: 1.5px solid var(--color-border, #e2e8f0);
+    border-radius: var(--radius-md, 8px);
+    font-family: var(--font-body, system-ui);
+    font-size: 1rem;
+    background: var(--color-surface, #fff);
+    color: var(--color-text, #1a1a1a);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+  }
+
+  .mc__input:focus {
+    outline: none;
+    border-color: var(--calc-accent, var(--color-primary, #1a1a1a));
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--calc-accent, var(--color-primary, #1a1a1a)) 15%, transparent);
+  }
+
+  .mc__results {
+    margin-top: calc(var(--spacing-unit, 8px) * 4);
+    padding-top: calc(var(--spacing-unit, 8px) * 3);
+    border-top: 1.5px solid var(--color-border, #e2e8f0);
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing-unit, 8px) * 3);
+  }
+
+  .mc__result {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing-unit, 8px) * 0.5);
+  }
+
+  .mc__result-row {
+    display: flex;
+    gap: calc(var(--spacing-unit, 8px) * 3);
+    flex-wrap: wrap;
+  }
+
+  .mc__result-row .mc__result {
+    flex: 1;
+    min-width: 140px;
+  }
+
+  .mc__result-label {
+    font-size: 0.8125rem;
+    font-family: var(--font-body, system-ui);
+    color: var(--color-text-muted, #666);
+  }
+
+  .mc__result-value {
+    font-family: var(--font-heading, system-ui);
+    font-weight: 600;
+    font-size: 1.25rem;
+    color: var(--color-text, #1a1a1a);
+  }
+
+  .mc__result-value--lg {
+    font-size: 2.25rem;
+    color: var(--calc-accent, var(--color-primary, #1a1a1a));
+  }
+
+  .mc__breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing-unit, 8px) * 1);
+    padding: calc(var(--spacing-unit, 8px) * 2);
+    border-radius: var(--radius-md, 8px);
+    background: color-mix(in srgb, var(--calc-accent, var(--color-primary, #1a1a1a)) 6%, transparent);
+  }
+
+  .mc__breakdown-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: calc(var(--spacing-unit, 8px) * 2);
+  }
+
+  .mc__breakdown-value {
+    font-family: var(--font-heading, system-ui);
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--color-text, #1a1a1a);
+  }
+
+  .mc__amortization-note {
+    margin: calc(var(--spacing-unit, 8px) * 0.5) 0 0;
+    font-family: var(--font-body, system-ui);
+    font-size: 0.8125rem;
+    color: var(--color-text-muted, #666);
+  }
+
+  .mc__amortization {
+    margin-top: calc(var(--spacing-unit, 8px) * 3);
+  }
+
+  .mc__amortization-summary {
+    cursor: pointer;
+    font-weight: 600;
+    font-family: var(--font-heading, system-ui);
+    font-size: 0.9375rem;
+    color: var(--calc-accent, var(--color-primary, #1a1a1a));
+    padding: calc(var(--spacing-unit, 8px) * 1);
+  }
+
+  .mc__table-wrap {
+    margin-top: calc(var(--spacing-unit, 8px) * 1.5);
+    overflow-x: auto;
+  }
+
+  .mc__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-body, system-ui);
+    font-size: 0.875rem;
+    color: var(--color-text, #1a1a1a);
+  }
+
+  .mc__table th,
+  .mc__table td {
+    padding: calc(var(--spacing-unit, 8px) * 1) calc(var(--spacing-unit, 8px) * 1.5);
+    text-align: right;
+    border-bottom: 1px solid var(--color-border, #e2e8f0);
+  }
+
+  .mc__table th:first-child,
+  .mc__table td:first-child {
+    text-align: left;
+  }
+
+  .mc__table th {
+    font-family: var(--font-heading, system-ui);
+    font-weight: 600;
+    color: var(--color-text-muted, #666);
+  }
+
+  @media (max-width: 560px) {
+    .mc__inputs {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

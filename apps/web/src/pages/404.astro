@@ -1,0 +1,111 @@
+---
+import { getSite, getAllNavigation, API_BASE } from "@/lib/api";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { getThemeVars } from "@/lib/theme";
+
+const siteId = Astro.locals.siteId;
+
+let site: import("@/lib/api").SiteInfo | null = null;
+let navData = { headerNav: [], footerNav: [], headerNavConfigured: false, footerNavConfigured: false };
+
+try {
+  [site, navData] = await Promise.all([
+    getSite(siteId),
+    getAllNavigation(siteId),
+  ]);
+} catch {
+  // API unavailable — render with minimal branding
+}
+
+const siteName = site?.name || "Cadmus";
+const siteUrl = site?.domain
+  ? `https://${site.domain}`
+  : site?.subdomain ? `https://${site.subdomain}.cadmus.digital` : "/";
+const theme = (site?.settings as any)?.theme;
+const logoUrl = (site?.settings as any)?.logoUrl || undefined;
+const socialLinks = (site?.settings as any)?.socialLinks || undefined;
+const hideCadmusByline = (site?.settings as any)?.hideCadmusByline === true;
+const faviconUrl = (site?.settings as any)?.faviconUrl || undefined;
+const themeVars = getThemeVars(site?.settings);
+---
+
+<BaseLayout
+  title="Page Not Found"
+  siteName={siteName}
+  siteUrl={siteUrl}
+  logoUrl={logoUrl}
+  navItems={navData.headerNav}
+  footerNavItems={navData.footerNav}
+  navConfigured={navData.headerNavConfigured}
+  footerNavConfigured={navData.footerNavConfigured}
+  socialLinks={socialLinks}
+  themeVars={themeVars}
+  theme={theme}
+  apiUrl={API_BASE}
+  siteId={siteId}
+  hideCadmusByline={hideCadmusByline}
+  faviconUrl={faviconUrl}
+  addons={site?.addons}
+  customHeadCode={(site?.settings as any)?.customCode?.head}
+  customBodyEndCode={(site?.settings as any)?.customCode?.bodyEnd}
+>
+  <div class="not-found">
+    <div class="not-found-code">404</div>
+    <h1 class="not-found-heading">Page not found</h1>
+    <p class="not-found-message">
+      The page you're looking for doesn't exist or may have been moved.
+    </p>
+    <a href="/" class="not-found-btn">Go to homepage</a>
+  </div>
+</BaseLayout>
+
+<style>
+  .not-found {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 5rem 1.5rem;
+    min-height: 50vh;
+    gap: 1rem;
+  }
+
+  .not-found-code {
+    font-size: 6rem;
+    font-weight: 800;
+    line-height: 1;
+    color: #d1d5db;
+    letter-spacing: -0.04em;
+  }
+
+  .not-found-heading {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .not-found-message {
+    color: #6b7280;
+    font-size: 1rem;
+    max-width: 360px;
+    margin: 0;
+  }
+
+  .not-found-btn {
+    display: inline-block;
+    margin-top: 0.5rem;
+    padding: 0.65rem 1.5rem;
+    background: #111827;
+    color: #fff;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: opacity 0.15s;
+  }
+
+  .not-found-btn:hover {
+    opacity: 0.85;
+  }
+</style>

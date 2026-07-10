@@ -1,0 +1,175 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import BlockRenderer from "@/components/BlockRenderer.astro";
+import { getSite, getContentBySlug, getPreview, getAllNavigation, API_BASE } from "@/lib/api";
+import { getThemeVars } from "@/lib/theme";
+import { buildArticleSchema, wrapGraph } from "@/lib/schema";
+
+const { slug } = Astro.params;
+const siteId = Astro.locals.siteId;
+const previewToken = Astro.url.searchParams.get("preview");
+
+const [site, post, navData] = await Promise.all([
+  getSite(siteId),
+  previewToken
+    ? getPreview(previewToken, siteId).catch(() => null)
+    : getContentBySlug(siteId, slug!).catch(() => null),
+  getAllNavigation(siteId),
+]);
+
+if (!post || post.type !== "post") {
+  return new Response(null, { status: 404, statusText: "Not Found" });
+}
+
+const siteName = site?.name || "Cadmus";
+const siteUrl = site?.domain
+  ? `https://${site.domain}`
+  : site?.subdomain ? `https://${site.subdomain}.cadmus.digital` : undefined;
+const schema = post.schemaData as Record<string, any>;
+const title = schema?.title || post.slug;
+const description = schema?.metaDescription || undefined;
+const featuredImage = schema?.featuredImage || undefined;
+const publishedDate = post.publishedAt
+  ? new Date(post.publishedAt).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    })
+  : null;
+const themeVars = getThemeVars(site?.settings);
+const theme = (site?.settings as any)?.theme || undefined;
+const socialLinks = (site?.settings as any)?.socialLinks || undefined;
+const logoUrl = (site?.settings as any)?.logoUrl || undefined;
+const postTemplate = (site?.settings as any)?.postTemplate || undefined;
+const hideCadmusByline = (site?.settings as any)?.hideCadmusByline === true;
+const faviconUrl = (site?.settings as any)?.faviconUrl || undefined;
+const lang = (site?.brief as any)?.language ?? "en";
+const isPreview = !!previewToken;
+const hasTemplate = postTemplate?.blocks?.length > 0;
+
+// Posts use the author's name if available, otherwise fall back to site name
+const authorName = post.authorName || siteName;
+
+const articleUrl = `${siteUrl || ""}/blog/${slug}`;
+const jsonLd = wrapGraph([
+  buildArticleSchema({
+    title,
+    description,
+    url: articleUrl,
+    featuredImage,
+    authorName,
+    publishedAt: post.publishedAt,
+    siteUrl,
+    siteName,
+    logoUrl,
+  }),
+]);
+---
+
+<BaseLayout title={title} description={description} featuredImage={featuredImage} siteName={siteName} siteUrl={siteUrl} logoUrl={logoUrl} authorName={authorName} contentType="post" publishedAt={post.publishedAt} navItems={navData.headerNav} footerNavItems={navData.footerNav} navConfigured={navData.headerNavConfigured} footerNavConfigured={navData.footerNavConfigured} socialLinks={socialLinks} themeVars={themeVars} theme={theme} apiUrl={API_BASE} siteId={siteId} jsonLd={jsonLd} hideCadmusByline={hideCadmusByline} faviconUrl={faviconUrl} lang={lang} plan={site?.plan} addons={site?.addons} customHeadCode={(site?.settings as any)?.customCode?.head} customBodyEndCode={(site?.settings as any)?.customCode?.bodyEnd}>
+  {isPreview && (
+    <div class="preview-banner">Preview Mode — This content is not published</div>
+  )}
+  {hasTemplate ? (
+    <!-- Stitch-designed blog post template -->
+    <article class="blog-post blog-post--designed">
+      <BlockRenderer blocks={postTemplate.blocks} />
+      <div class="blog-post__injected-content">
+        <header>
+          <h1>{title}</h1>
+          {publishedDate && <time>{publishedDate}</time>}
+        </header>
+        <BlockRenderer blocks={post.blocks} />
+      </div>
+    </article>
+  ) : (
+    <!-- Fallback: default blog post layout -->
+    <article class="blog-post">
+      {featuredImage && (
+        <div class="blog-post__hero">
+          <img src={featuredImage} alt={title} />
+        </div>
+      )}
+      <div class="blog-post__content">
+        <header>
+          <h1>{title}</h1>
+          {publishedDate && <time>{publishedDate}</time>}
+        </header>
+        <BlockRenderer blocks={post.blocks} />
+      </div>
+    </article>
+  )}
+</BaseLayout>
+
+<style>
+  .preview-banner {
+    background: #f59e0b;
+    color: #000;
+    text-align: center;
+    padding: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  /* Designed template: post content sits over the template's content area */
+  .blog-post--designed {
+    position: relative;
+  }
+
+  .blog-post--designed .blog-post__injected-content {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    line-height: 1.8;
+  }
+
+  .blog-post--designed .blog-post__injected-content header {
+    margin-bottom: 2rem;
+  }
+
+  .blog-post--designed .blog-post__injected-content h1 {
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+  }
+
+  .blog-post--designed .blog-post__injected-content time {
+    color: #666;
+    font-size: 0.9rem;
+  }
+
+  /* Fallback layout */
+  .blog-post__hero {
+    width: 100%;
+    max-height: 480px;
+    overflow: hidden;
+  }
+
+  .blog-post__hero img {
+    width: 100%;
+    height: 100%;
+    max-height: 480px;
+    object-fit: cover;
+    display: block;
+  }
+
+  .blog-post__content {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    line-height: 1.8;
+  }
+
+  .blog-post__content header {
+    margin-bottom: 2rem;
+  }
+
+  .blog-post__content h1 {
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+  }
+
+  .blog-post__content time {
+    color: #666;
+    font-size: 0.9rem;
+  }
+</style>

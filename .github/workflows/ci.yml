@@ -1,0 +1,138 @@
+name: CI
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+  workflow_dispatch:
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      # workflow_dispatch forces every build job on so CI can validate
+      # a branch (e.g. main after a merge) without needing a code change
+      # to satisfy paths-filter. Trigger via `gh workflow run CI --ref <branch>`.
+      api: ${{ github.event_name == 'workflow_dispatch' || steps.filter.outputs.api == 'true' }}
+      admin: ${{ github.event_name == 'workflow_dispatch' || steps.filter.outputs.admin == 'true' }}
+      web: ${{ github.event_name == 'workflow_dispatch' || steps.filter.outputs.web == 'true' }}
+      scanner: ${{ github.event_name == 'workflow_dispatch' || steps.filter.outputs.scanner == 'true' }}
+      dashboard: ${{ github.event_name == 'workflow_dispatch' || steps.filter.outputs.dashboard == 'true' }}
+      packages: ${{ github.event_name == 'workflow_dispatch' || steps.filter.outputs.packages == 'true' }}
+    steps:
+      - uses: actions/checkout@v6
+      - if: github.event_name != 'workflow_dispatch'
+        uses: dorny/paths-filter@v4
+        id: filter
+        with:
+          # On push, compare against the previous commit on this branch
+          # (not the default branch). Without this, paths-filter compares
+          # main against the default branch (dev) — after a dev→main
+          # merge they have identical trees, so every filter resolves to
+          # false and nothing builds. PR runs ignore this and use the
+          # PR base automatically.
+          base: ${{ github.event_name == 'push' && github.event.before || '' }}
+          filters: |
+            api:
+              - 'apps/api/**'
+            admin:
+              - 'apps/admin/**'
+            web:
+              - 'apps/web/**'
+            scanner:
+              - 'apps/scanner/**'
+            dashboard:
+              - 'apps/dashboard/**'
+            packages:
+              - 'packages/**'
+              - 'pnpm-lock.yaml'
+
+  check-db-journal:
+    needs: changes
+    if: needs.changes.outputs.packages == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: node packages/db/src/check-journal.mjs
+
+  build-api:
+    needs: changes
+    if: needs.changes.outputs.api == 'true' || needs.changes.outputs.packages == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm turbo build --filter=@cadmus/api...
+
+  build-admin:
+    needs: changes
+    if: needs.changes.outputs.admin == 'true' || needs.changes.outputs.packages == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm turbo build --filter=@cadmus/admin...
+
+  build-web:
+    needs: changes
+    if: needs.changes.outputs.web == 'true' || needs.changes.outputs.packages == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm turbo build --filter=@cadmus/web...
+
+  build-scanner:
+    needs: changes
+    if: needs.changes.outputs.scanner == 'true' || needs.changes.outputs.packages == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm turbo build --filter=@cadmus/scanner...
+
+  build-dashboard:
+    needs: changes
+    if: needs.changes.outputs.dashboard == 'true' || needs.changes.outputs.packages == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm turbo build --filter=@cadmus/dashboard...

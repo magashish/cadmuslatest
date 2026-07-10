@@ -1,0 +1,9 @@
+name = "cadmus-router"
+main = "cloudflare-worker.js"
+compatibility_date = "2025-01-01"
+account_id = "7fc1ec0400d898cc58cbb2e3cbacf16b"
+
+routes = [
+  { pattern = "cadmus.digital/*", zone_name = "cadmus.digital" },
+  { pattern = "*.cadmus.digital/*", zone_name = "cadmus.digital" },
+]

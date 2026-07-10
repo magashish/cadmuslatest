@@ -1,0 +1,95 @@
+---
+interface Props {
+  variant: "default" | "with-subtitle" | "centered";
+  text: string;
+  level: 1 | 2 | 3 | 4;
+  subtitle?: string;
+}
+
+const { variant, text, level, subtitle } = Astro.props;
+
+const Tag = `h${level}` as "h1" | "h2" | "h3" | "h4";
+---
+
+<section class={`heading heading--${variant}`}>
+  <Tag class="heading__text">{text}</Tag>
+  {subtitle && (variant === "with-subtitle" || variant === "centered") && (
+    <p class="heading__subtitle">{subtitle}</p>
+  )}
+</section>
+
+<style>
+  .heading {
+    padding: calc(var(--spacing-unit, 8px) * 5) 0 calc(var(--spacing-unit, 8px) * 2);
+  }
+
+  .heading--centered {
+    text-align: center;
+  }
+
+  .heading__text {
+    font-family: var(--font-heading, system-ui);
+    margin: 0;
+    letter-spacing: -0.02em;
+    position: relative;
+    display: inline-block;
+  }
+
+  .heading--centered .heading__text {
+    display: block;
+  }
+
+  .heading__text::after {
+    content: "";
+    display: block;
+    width: 48px;
+    height: 3px;
+    background: var(--color-primary, #1a1a1a);
+    border-radius: 2px;
+    margin-top: calc(var(--spacing-unit, 8px) * 1.5);
+  }
+
+  .heading--centered .heading__text::after {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  h1.heading__text {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+  }
+
+  h2.heading__text {
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    font-weight: 700;
+  }
+
+  h3.heading__text {
+    font-size: clamp(1.25rem, 3vw, 1.75rem);
+    font-weight: 700;
+  }
+
+  h4.heading__text {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    font-weight: 600;
+  }
+
+  h3.heading__text::after,
+  h4.heading__text::after {
+    width: 32px;
+    height: 2px;
+  }
+
+  .heading__subtitle {
+    margin-top: calc(var(--spacing-unit, 8px) * 2);
+    font-size: 1.125rem;
+    color: var(--color-text-muted, #666);
+    line-height: 1.6;
+  }
+
+  .heading--centered .heading__subtitle {
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+</style>

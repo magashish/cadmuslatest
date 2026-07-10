@@ -1,0 +1,105 @@
+---
+import Hero from "./blocks/Hero.astro";
+import TextSection from "./blocks/TextSection.astro";
+import CTA from "./blocks/CTA.astro";
+import Testimonials from "./blocks/Testimonials.astro";
+import FAQ from "./blocks/FAQ.astro";
+import Pricing from "./blocks/Pricing.astro";
+import Gallery from "./blocks/Gallery.astro";
+import Form from "./blocks/Form.astro";
+import Map from "./blocks/Map.astro";
+import Video from "./blocks/Video.astro";
+import Embed from "./blocks/Embed.astro";
+import Image from "./blocks/Image.astro";
+import Heading from "./blocks/Heading.astro";
+import HtmlBlock from "./blocks/HtmlBlock.astro";
+import MortgageCalculator from "./blocks/MortgageCalculator.astro";
+
+interface Block {
+  id?: string;
+  blockType: string;
+  variant?: string;
+  data: Record<string, unknown>;
+}
+
+interface Props {
+  blocks: Block[];
+}
+
+const { blocks } = Astro.props;
+---
+
+{blocks.map((block, index) => {
+  // Mark the first block so it can prioritize its hero/LCP image.
+  const isFirst = index === 0;
+  switch (block.blockType) {
+    case "hero":
+      return <Hero variant={block.variant as any} {...block.data as any} isFirst={isFirst} />;
+    case "text":
+      return <TextSection variant={block.variant as any} {...block.data as any} />;
+    case "cta":
+      return <CTA variant={block.variant as any} {...block.data as any} />;
+    case "testimonial":
+      return <Testimonials variant={block.variant as any} {...block.data as any} />;
+    case "faq":
+      return <FAQ variant={block.variant as any} {...block.data as any} />;
+    case "pricing":
+      return <Pricing variant={block.variant as any} {...block.data as any} />;
+    case "gallery":
+      return <Gallery variant={block.variant as any} {...block.data as any} />;
+    case "form": {
+      const formId = (block.data as { formId?: string }).formId;
+      const formIdentifier = formId
+        ? `form:${formId}`
+        : block.id
+          ? `block:${block.id}`
+          : undefined;
+      return <Form variant={block.variant as any} {...block.data as any} formIdentifier={formIdentifier} />;
+    }
+    case "map":
+      return <Map variant={block.variant as any} {...block.data as any} />;
+    case "video":
+      return <Video variant={block.variant as any} {...block.data as any} />;
+    case "embed":
+      return <Embed variant={block.variant as any} {...block.data as any} />;
+    case "image":
+      return <Image variant={block.variant as any} {...block.data as any} isFirst={isFirst} />;
+    case "heading":
+      return <Heading variant={block.variant as any} {...block.data as any} />;
+    case "html":
+      return <HtmlBlock {...block.data as any} blockId={block.id} isFirst={isFirst} />;
+    case "mortgage-calculator":
+      return <MortgageCalculator {...block.data as any} />;
+    case "section":
+      return (
+        <section class="block-section">
+          {block.data.heading && <h2>{block.data.heading}</h2>}
+          {block.data.body && <p>{block.data.body}</p>}
+        </section>
+      );
+    case "paragraph":
+      return <p>{block.data.text}</p>;
+    default:
+      return <div class="block-unknown">Unknown block type: {block.blockType}</div>;
+  }
+})}
+
+<style>
+  .block-section {
+    margin: 2rem 0;
+  }
+
+  .block-section h2 {
+    font-size: 1.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .block-unknown {
+    padding: 1rem;
+    background: #fff3cd;
+    border: 1px solid #ffc107;
+    border-radius: 4px;
+    color: #856404;
+    text-align: center;
+  }
+</style>

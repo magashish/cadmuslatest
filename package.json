@@ -1,0 +1,46 @@
+{
+  "name": "cadmus",
+  "private": true,
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "clean": "turbo clean",
+    "db:migrate": "pnpm --filter @cadmus/db db:migrate",
+    "db:migrate:run": "pnpm --filter @cadmus/db db:migrate:run",
+    "db:push": "pnpm --filter @cadmus/db db:push",
+    "db:studio": "pnpm --filter @cadmus/db db:studio"
+  },
+  "devDependencies": {
+    "turbo": "^2.9.15"
+  },
+  "packageManager": "pnpm@10.32.1",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "sharp"
+    ],
+    "overrides": {
+      "fast-xml-parser": "^5.8.0",
+      "fast-xml-builder": "^1.2.0",
+      "fast-uri": "^3.1.2",
+      "devalue": "^5.8.1",
+      "ip-address": "^10.2.0",
+      "brace-expansion": "^5.0.6",
+      "protobufjs": "^7.6.3",
+      "ws": "^8.20.1",
+      "qs": "^6.15.2",
+      "@tootallnate/once": "^2.0.1",
+      "hono": "^4.12.25",
+      "react-router": "^7.17.0",
+      "yaml": "^2.8.3",
+      "smol-toml": "^1.6.1",
+      "undici@7": "^7.28.0",
+      "js-yaml@4": "^4.2.0",
+      "form-data@2": "^2.5.6",
+      "@grpc/grpc-js": "^1.14.4",
+      "@babel/core": "^7.29.6",
+      "@opentelemetry/core": "^2.8.0"
+    }
+  }
+}

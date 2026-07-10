@@ -1,0 +1,30 @@
+{
+  "name": "@cadmus/db",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "lint": "tsc --noEmit",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio",
+    "db:migrate:run": "tsx src/migrate.ts",
+    "db:baseline": "tsx src/baseline.ts",
+    "db:check-journal": "node src/check-journal.mjs"
+  },
+  "dependencies": {
+    "@cadmus/shared": "workspace:*",
+    "@opentelemetry/api": "^1.9.1",
+    "drizzle-orm": "^0.45",
+    "postgres": "^3"
+  },
+  "devDependencies": {
+    "@types/node": "^25.8.0",
+    "drizzle-kit": "^0.31",
+    "tsx": "^4",
+    "typescript": "^5"
+  }
+}

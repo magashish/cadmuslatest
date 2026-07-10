@@ -1,0 +1,1 @@
+ALTER TABLE "partners" ADD COLUMN "is_agency" boolean DEFAULT false NOT NULL;

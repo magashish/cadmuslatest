@@ -1,0 +1,164 @@
+---
+interface Props {
+  variant: "banner" | "inline" | "card";
+  headline: string;
+  description?: string;
+  buttonText: string;
+  buttonUrl: string;
+  secondaryButtonText?: string;
+  secondaryButtonUrl?: string;
+}
+
+const { variant, headline, description, buttonText, buttonUrl, secondaryButtonText, secondaryButtonUrl } = Astro.props;
+---
+
+<section class={`cta cta--${variant}`}>
+  <div class="cta__content">
+    <h2>{headline}</h2>
+    {description && <p>{description}</p>}
+    <div class="cta__buttons">
+      <a href={buttonUrl} class="cta__btn cta__btn--primary">
+        <span>{buttonText}</span>
+        <svg class="cta__btn-arrow" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m0 0L9 4m4 4L9 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      {secondaryButtonText && secondaryButtonUrl && (
+        <a href={secondaryButtonUrl} class="cta__btn cta__btn--secondary">{secondaryButtonText}</a>
+      )}
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta {
+    padding: calc(var(--spacing-unit, 8px) * 6) calc(var(--spacing-unit, 8px) * 3);
+  }
+
+  .cta--banner {
+    background: linear-gradient(
+      135deg,
+      var(--color-primary, #1a1a1a) 0%,
+      color-mix(in srgb, var(--color-primary, #1a1a1a) 70%, #000) 100%
+    );
+    color: #fff;
+    text-align: center;
+    border-radius: var(--radius-lg, 16px);
+  }
+
+  .cta--card {
+    background: var(--color-surface, #f8f9fa);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: var(--radius-lg, 16px);
+    text-align: center;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+    transition: box-shadow 0.3s, transform 0.3s;
+  }
+
+  .cta--card:hover {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+  }
+
+  .cta--inline {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: calc(var(--spacing-unit, 8px) * 3);
+  }
+
+  .cta h2 {
+    font-family: var(--font-heading, system-ui);
+    margin-bottom: calc(var(--spacing-unit, 8px) * 1);
+    letter-spacing: -0.02em;
+  }
+
+  .cta p {
+    margin-bottom: calc(var(--spacing-unit, 8px) * 3);
+    opacity: 0.9;
+    line-height: 1.6;
+  }
+
+  .cta__buttons {
+    display: flex;
+    gap: calc(var(--spacing-unit, 8px) * 1.5);
+    justify-content: center;
+  }
+
+  .cta--inline .cta__buttons {
+    justify-content: flex-end;
+  }
+
+  .cta__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: calc(var(--spacing-unit, 8px) * 1.5) calc(var(--spacing-unit, 8px) * 3);
+    border-radius: var(--radius-md, 8px);
+    text-decoration: none;
+    font-weight: 600;
+    transition: transform 0.2s, box-shadow 0.2s, background 0.15s, color 0.15s;
+  }
+
+  .cta__btn:focus-visible {
+    outline: 2px solid var(--color-primary, #1a1a1a);
+    outline-offset: 2px;
+  }
+
+  .cta__btn-arrow {
+    transition: transform 0.2s;
+  }
+
+  .cta__btn:hover .cta__btn-arrow {
+    transform: translateX(3px);
+  }
+
+  .cta--banner .cta__btn--primary {
+    background: #fff;
+    color: var(--color-primary, #1a1a1a);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .cta--banner .cta__btn--primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  }
+
+  .cta--card .cta__btn--primary,
+  .cta--inline .cta__btn--primary {
+    background: var(--color-primary, #1a1a1a);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  .cta--card .cta__btn--primary:hover,
+  .cta--inline .cta__btn--primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  }
+
+  .cta__btn--secondary {
+    background: transparent;
+    border: 1px solid currentColor;
+    color: inherit;
+  }
+
+  .cta__btn--secondary:hover {
+    background: rgba(0, 0, 0, 0.05);
+  }
+
+  @media (max-width: 768px) {
+    .cta--inline {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .cta--inline .cta__buttons {
+      justify-content: center;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cta--card {
+      transition: none;
+    }
+  }
+</style>

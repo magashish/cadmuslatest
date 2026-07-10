@@ -1,0 +1,160 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { getSite, getAllNavigation, API_BASE } from "@/lib/api";
+import { getThemeVars } from "@/lib/theme";
+import type { SiteInfo, ContentItem } from "@/lib/api";
+
+const siteId = Astro.locals.siteId;
+const url = new URL(Astro.request.url);
+const q = (url.searchParams.get("q") ?? "").trim();
+
+let site: SiteInfo | null = null;
+let results: ContentItem[] = [];
+let total = 0;
+
+try {
+  site = await getSite(siteId);
+} catch {
+  // API not available
+}
+
+if (q) {
+  try {
+    const res = await fetch(
+      `${API_BASE}/api/public/search?q=${encodeURIComponent(q)}`,
+      { headers: { "x-site-id": siteId } },
+    );
+    if (res.ok) {
+      const data = (await res.json()) as { items: ContentItem[]; total: number };
+      results = data.items;
+      total = data.total;
+    }
+  } catch {
+    // API not available
+  }
+}
+
+const navData = await getAllNavigation(siteId);
+const siteName = site?.name || "Cadmus";
+const siteUrl = site?.domain
+  ? `https://${site.domain}`
+  : site?.subdomain ? `https://${site.subdomain}.cadmus.digital` : undefined;
+const themeVars = getThemeVars(site?.settings);
+const theme = (site?.settings as any)?.theme || undefined;
+const socialLinks = (site?.settings as any)?.socialLinks || undefined;
+const logoUrl = (site?.settings as any)?.logoUrl || undefined;
+const hideCadmusByline = (site?.settings as any)?.hideCadmusByline === true;
+const faviconUrl = (site?.settings as any)?.faviconUrl || undefined;
+
+const pageTitle = q ? `Search: ${q}` : "Search";
+
+function resultHref(item: ContentItem): string {
+  if (item.type === "post") return `/blog/${item.slug}`;
+  return `/${item.slug}`;
+}
+---
+
+<BaseLayout title={pageTitle} siteName={siteName} siteUrl={siteUrl} logoUrl={logoUrl} authorName={siteName} navItems={navData.headerNav} footerNavItems={navData.footerNav} navConfigured={navData.headerNavConfigured} footerNavConfigured={navData.footerNavConfigured} socialLinks={socialLinks} themeVars={themeVars} theme={theme} apiUrl={API_BASE} siteId={siteId} hideCadmusByline={hideCadmusByline} faviconUrl={faviconUrl} plan={site?.plan} addons={site?.addons} customHeadCode={(site?.settings as any)?.customCode?.head} customBodyEndCode={(site?.settings as any)?.customCode?.bodyEnd}>
+  <div class="search-page">
+    <h1>Search</h1>
+    <form method="get" action="/search" class="search-form" role="search">
+      <input
+        type="search"
+        name="q"
+        value={q}
+        placeholder="Search the site..."
+        autofocus
+        aria-label="Search"
+      />
+      <button type="submit">Search</button>
+    </form>
+
+    {q && (
+      <p class="search-summary">
+        {total === 0
+          ? `No results for "${q}".`
+          : `${total} result${total === 1 ? "" : "s"} for "${q}".`}
+      </p>
+    )}
+
+    {results.length > 0 && (
+      <ul class="result-list">
+        {results.map((item) => {
+          const data = (item.schemaData as any) || {};
+          const title = data.title || item.slug;
+          const desc = data.metaDescription || data.excerpt;
+          return (
+            <li>
+              <a href={resultHref(item)}>
+                <h2>{title}</h2>
+                {desc && <p>{desc}</p>}
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    )}
+  </div>
+</BaseLayout>
+
+<style>
+  .search-page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+  /* Stitch themes use fixed headers that overlay content — push the search page below it. */
+  :global(.stitch-main) .search-page {
+    padding-top: 8rem;
+  }
+  .search-page h1 {
+    margin: 0 0 1rem;
+  }
+  .search-form {
+    display: flex;
+    gap: 0.5rem;
+    margin: 0 0 2rem;
+  }
+  .search-form input {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+  .search-form button {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    border: 0;
+    border-radius: 6px;
+    background: #1c1917;
+    color: #fff;
+    cursor: pointer;
+  }
+  .search-summary {
+    color: #666;
+    margin-bottom: 1.5rem;
+  }
+  .result-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .result-list li {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #eee;
+  }
+  .result-list a {
+    text-decoration: none;
+    color: inherit;
+  }
+  .result-list h2 {
+    margin: 0 0 0.5rem;
+    font-size: 1.25rem;
+  }
+  .result-list p {
+    color: #666;
+    margin: 0;
+  }
+</style>

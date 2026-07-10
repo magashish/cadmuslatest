@@ -1,0 +1,3 @@
+/* Base styles for Cadmus sites.
+ * Stitch-themed pages load Tailwind via CDN with per-site config.
+ * No build-time Tailwind import — avoids v3/v4 conflicts. */

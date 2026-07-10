@@ -1,0 +1,167 @@
+---
+interface GalleryItem {
+  url: string;
+  alt: string;
+  caption?: string;
+}
+
+interface Props {
+  variant: "grid" | "masonry" | "carousel";
+  items: GalleryItem[];
+  columns?: number;
+}
+
+const { variant, items, columns = 3 } = Astro.props;
+---
+
+<section class={`gallery gallery--${variant}`} style={`--gallery-columns: ${columns}`}>
+  <div class="gallery__container">
+    {items.map((item) => (
+      <figure class="gallery__item">
+        <div class="gallery__image-wrapper">
+          <img src={item.url} alt={item.alt} loading="lazy" />
+          <div class="gallery__overlay">
+            {item.caption && <span class="gallery__overlay-caption">{item.caption}</span>}
+          </div>
+        </div>
+        {item.caption && <figcaption class="gallery__caption">{item.caption}</figcaption>}
+      </figure>
+    ))}
+  </div>
+  {variant === "carousel" && (
+    <div class="gallery__indicators">
+      {items.map(() => (
+        <span class="gallery__dot" />
+      ))}
+    </div>
+  )}
+</section>
+
+<style>
+  .gallery {
+    padding: calc(var(--spacing-unit, 8px) * 6) 0;
+  }
+
+  .gallery--grid .gallery__container {
+    display: grid;
+    grid-template-columns: repeat(var(--gallery-columns, 3), 1fr);
+    gap: calc(var(--spacing-unit, 8px) * 2);
+  }
+
+  .gallery--masonry .gallery__container {
+    column-count: var(--gallery-columns, 3);
+    column-gap: calc(var(--spacing-unit, 8px) * 2);
+  }
+
+  .gallery--masonry .gallery__item {
+    break-inside: avoid;
+    margin-bottom: calc(var(--spacing-unit, 8px) * 2);
+  }
+
+  .gallery--carousel .gallery__container {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: calc(var(--spacing-unit, 8px) * 2);
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    padding-bottom: calc(var(--spacing-unit, 8px) * 1);
+  }
+
+  .gallery--carousel .gallery__item {
+    flex: 0 0 min(80vw, 400px);
+    scroll-snap-align: start;
+  }
+
+  .gallery__item {
+    margin: 0;
+  }
+
+  .gallery__image-wrapper {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-md, 8px);
+  }
+
+  .gallery__image-wrapper img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.4s ease;
+  }
+
+  .gallery__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s;
+  }
+
+  .gallery__image-wrapper:hover img {
+    transform: scale(1.05);
+  }
+
+  .gallery__image-wrapper:hover .gallery__overlay {
+    background: rgba(0, 0, 0, 0.3);
+  }
+
+  .gallery__overlay-caption {
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.9rem;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.3s, transform 0.3s;
+  }
+
+  .gallery__image-wrapper:hover .gallery__overlay-caption {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .gallery__caption {
+    padding-top: calc(var(--spacing-unit, 8px) * 1);
+    font-size: 0.875rem;
+    color: var(--color-text-muted, #666);
+    text-align: center;
+  }
+
+  .gallery__indicators {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: calc(var(--spacing-unit, 8px) * 2);
+  }
+
+  .gallery__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: var(--radius-full, 9999px);
+    background: var(--color-border, #e2e8f0);
+  }
+
+  .gallery__dot:first-child {
+    background: var(--color-primary, #1a1a1a);
+  }
+
+  @media (max-width: 768px) {
+    .gallery--grid .gallery__container {
+      grid-template-columns: 1fr;
+    }
+
+    .gallery--masonry .gallery__container {
+      column-count: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gallery__image-wrapper img,
+    .gallery__overlay,
+    .gallery__overlay-caption {
+      transition: none;
+    }
+  }
+</style>

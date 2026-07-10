@@ -1,0 +1,25 @@
+{
+  "name": "@cadmus/dashboard",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "node ../../scripts/write-spa-version.mjs && tsc -b && vite build",
+    "preview": "vite preview",
+    "lint": "tsc -b"
+  },
+  "dependencies": {
+    "@cadmus/shared": "workspace:*",
+    "@sentry/react": "^10.53.1",
+    "react": "^19",
+    "react-dom": "^19",
+    "react-router-dom": "^7"
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^4",
+    "typescript": "^5",
+    "vite": "^6.4.3"
+  }
+}

@@ -1,0 +1,183 @@
+name: DB Migrate
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Target environment
+        required: true
+        type: choice
+        options:
+          - dev
+          - production
+        default: dev
+      mode:
+        description: Migration mode
+        required: true
+        type: choice
+        options:
+          - migrate
+          - baseline
+          - push
+        default: migrate
+      dry-run:
+        description: Dry run (show changes without applying)
+        required: false
+        type: boolean
+        default: false
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  GCP_PROJECT: ${{ secrets.GCP_PROJECT }}
+  GCP_REGION: ${{ secrets.GCP_REGION }}
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+      # Pin checkout ref to the environment so `gh workflow run` (which defaults
+      # to the repo's default branch) doesn't migrate against stale journal files.
+      # Dev env -> dev branch. Production -> the dispatched ref (expected to be
+      # a v* tag).
+      - id: resolve-ref
+        run: |
+          if [ "${{ inputs.environment }}" = "dev" ]; then
+            echo "ref=refs/heads/dev" >> "$GITHUB_OUTPUT"
+          else
+            echo "ref=${{ github.ref }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ steps.resolve-ref.outputs.ref }}
+
+      - id: auth
+        uses: google-github-actions/auth@v3
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - uses: google-github-actions/setup-gcloud@v3
+
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Build DB package
+        run: pnpm turbo build --filter=@cadmus/db...
+
+      - name: Set environment-specific secret name
+        run: |
+          if [ "${{ inputs.environment }}" = "production" ]; then
+            echo "DB_SECRET_NAME=DATABASE_URL" >> "$GITHUB_ENV"
+          else
+            echo "DB_SECRET_NAME=DATABASE_URL_DEV" >> "$GITHUB_ENV"
+          fi
+
+      - name: Install Cloud SQL Auth Proxy
+        run: |
+          curl -o cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.14.3/cloud-sql-proxy.linux.amd64
+          chmod +x cloud-sql-proxy
+          sudo mv cloud-sql-proxy /usr/local/bin/
+
+      - name: Start Cloud SQL Auth Proxy
+        run: |
+          CLOUD_SQL_CONNECTION="${GCP_PROJECT}:${GCP_REGION}:cadmus"
+          cloud-sql-proxy "$CLOUD_SQL_CONNECTION" --port=5433 &
+          echo "PROXY_PID=$!" >> $GITHUB_ENV
+
+          # Wait for proxy to accept TCP connections
+          echo "Waiting for proxy to be ready..."
+          for i in $(seq 1 30); do
+            if nc -z 127.0.0.1 5433 2>/dev/null; then
+              echo "Proxy accepting connections on attempt $i"
+              break
+            fi
+            if [ "$i" -eq 30 ]; then
+              echo "ERROR: Cloud SQL Auth Proxy failed to start after 30s"
+              exit 1
+            fi
+            sleep 1
+          done
+
+          # Give the proxy a moment to fully establish the upstream connection
+          sleep 3
+
+      - name: Fetch DATABASE_URL and verify connection
+        run: |
+          echo "Using secret: $DB_SECRET_NAME (${{ inputs.environment }})"
+          SECRET_DB_URL=$(gcloud secrets versions access latest --secret=$DB_SECRET_NAME)
+          # Rewrite unix socket URL to TCP via proxy
+          DB_USER=$(echo "$SECRET_DB_URL" | sed -n 's|postgresql://\([^:]*\):.*|\1|p')
+          DB_PASS=$(echo "$SECRET_DB_URL" | sed -n 's|postgresql://[^:]*:\([^@]*\)@.*|\1|p')
+          DB_NAME=$(echo "$SECRET_DB_URL" | sed -n 's|.*@[^/]*/\([^?]*\).*|\1|p')
+          PROXY_DB_URL="postgresql://${DB_USER}:${DB_PASS}@127.0.0.1:5433/${DB_NAME}"
+          echo "DATABASE_URL=${PROXY_DB_URL}" >> $GITHUB_ENV
+
+          # Verify we can actually query the database before proceeding
+          echo "Verifying database connection..."
+          sudo apt-get install -y -qq postgresql-client > /dev/null 2>&1
+          PGPASSWORD="$DB_PASS" psql -h 127.0.0.1 -p 5433 -U "$DB_USER" -d "$DB_NAME" -c "SELECT 1 AS connection_ok;" || {
+            echo "ERROR: Could not connect to database through proxy"
+            exit 1
+          }
+          echo "Database connection verified."
+
+      - name: Run migrations
+        if: inputs.mode == 'migrate' && inputs.dry-run == false
+        run: pnpm --filter @cadmus/db db:migrate:run
+
+      - name: Dry run — list pending migrations
+        if: inputs.mode == 'migrate' && inputs.dry-run == true
+        working-directory: packages/db
+        run: |
+          echo "=== DRY RUN (${{ inputs.environment }}) — migrations on disk ==="
+          ls -la drizzle/*.sql 2>/dev/null || echo "No migration files found"
+          echo
+          echo "=== Already applied in ${{ inputs.environment }} ==="
+          psql "$DATABASE_URL" -c 'SELECT id, hash, to_timestamp(created_at/1000) AS applied_at FROM drizzle.__drizzle_migrations ORDER BY id' \
+            || echo "drizzle.__drizzle_migrations does not exist — this DB is not baselined."
+
+      - name: Baseline existing database
+        if: inputs.mode == 'baseline' && inputs.dry-run == false
+        run: pnpm --filter @cadmus/db db:baseline
+
+      - name: Dry run — baseline preview
+        if: inputs.mode == 'baseline' && inputs.dry-run == true
+        working-directory: packages/db
+        run: |
+          echo "=== DRY RUN (${{ inputs.environment }}) — migrations that would be baselined ==="
+          ls -la drizzle/*.sql 2>/dev/null || echo "No migration files found"
+          echo
+          echo "Each file above would be marked applied in drizzle.__drizzle_migrations"
+          echo "WITHOUT running its SQL. Use this only on a DB whose schema already"
+          echo "matches the generated migrations."
+
+      - name: Run schema push (escape hatch)
+        if: inputs.mode == 'push' && inputs.dry-run == false
+        working-directory: packages/db
+        run: |
+          set -euo pipefail
+          echo "WARNING: drizzle-kit push is interactive and may hang on data-integrity prompts."
+          echo "Prefer mode=migrate with committed migration files."
+          printf '\n%.0s' {1..20} | npx drizzle-kit push --force 2>&1 | tee /tmp/push-output.txt
+          if grep -qi "error" /tmp/push-output.txt; then
+            echo "ERROR: drizzle-kit push output contained errors"
+            exit 1
+          fi
+          echo "Schema push completed successfully (${{ inputs.environment }})."
+
+      - name: Dry run — check schema drift
+        if: inputs.mode == 'push' && inputs.dry-run == true
+        working-directory: packages/db
+        run: |
+          echo "=== DRY RUN (${{ inputs.environment }}) — checking schema consistency ==="
+          npx drizzle-kit check
+
+      - name: Stop proxy
+        if: always()
+        run: kill $PROXY_PID 2>/dev/null || true

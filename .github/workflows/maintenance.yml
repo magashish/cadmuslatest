@@ -1,0 +1,45 @@
+name: Maintenance
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Target environment
+        required: true
+        type: choice
+        options:
+          - production
+          - dev
+        default: production
+      dry_run:
+        description: Dry run (preview without deleting)
+        required: false
+        type: boolean
+        default: true
+      task:
+        description: Task to run
+        required: true
+        type: choice
+        options:
+          - expire-archives
+        default: expire-archives
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  GCP_PROJECT: cadmus-84
+
+jobs:
+  run-maintenance:
+    name: Run maintenance task
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger ${{ inputs.task }} on ${{ inputs.environment }}
+        run: |
+          BASE_URL=$([[ "${{ inputs.environment }}" == "production" ]] && echo "https://api.cadmus.digital" || echo "https://api-dev.cadmus.digital")
+          URL="${BASE_URL}/api/admin/maintenance/${{ inputs.task }}"
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            URL="${URL}?dryRun=true"
+          fi
+          echo "Calling: $URL"
+          echo "Note: Authentication required — run this from the Cadmus Dashboard instead, or provide a valid admin session token."
+          echo "Dashboard path: Sites → Clean up expired archives button"

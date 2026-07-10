@@ -1,0 +1,111 @@
+CADMUS BACKLOG
+Conventions: "-" = item, "--" = sub-item. Categories are rough groupings, not priority.
+
+
+=== CONTENT, EDITOR & ONBOARDING ===
+- make site bilingual with spanish and hindi [Ashish]
+- switch to a visual tailwind editor instead of our custom one?
+- add support for different schema types (perhaps on a per-collection basis? ex: podcast episodes)
+- reusable blocks?
+- add dictation (voice input) for AI chat
+- menu editor page/post picker (shipped, commit 598fe73) stores the resolved URL string, so a menu link goes stale if the page/post slug is later renamed. Enhancement: store a contentId reference on the menu item instead (alongside or in place of url) and resolve slug->URL at render time in the public nav, so links auto-update on slug change. Needs: extend MenuItem shape (contentId? + type?), resolution in the header/footer nav rendering, and handling when the referenced content is unpublished/deleted (drop or fall back to stored url).
+- need to test the blog template for posts more thoroughly
+- add import feature (give it a URL and have it convert it to Tailwind and our theme structure)
+- improve WP importer to try and style pages with our theme
+-- WP importer: move in-memory XML buffer to GCS so analyze+start work across Cloud Run instances (in progress)
+- add a finalization step to onboarding: after page generation, run a sanity pass that fixes obvious drift — nav menu items match generated pages, internal links resolve, footer links present, theme classes used in HTML are actually compiled in CSS, etc. Self-heal where safe; surface anything ambiguous to the user.
+- homepage-first feedback gate in onboarding: generate ONLY the homepage first, show it to the user, collect one round of feedback, apply it, THEN generate the remaining pages (so the rest inherit the refined direction/theme). Onboarding already does homepage-first then fans out the others (Onboarding.tsx generateAllPages — homepage via generateOnePage(home), then the rest); insert a review/feedback pause between those two phases. Apply feedback by re-running the homepage design with the feedback appended to the prompt (and persist any theme deltas so later pages match). ALT if not in onboarding: an obvious "Refine design" action in the admin (Theme/editor) that takes freeform feedback and regenerates/edits the current page — useful beyond onboarding. Consider doing the admin "refine" version first since it's reusable (onboarding gate can call the same path).
+- brief constraints follow-ups (capture+prompt shipped in d3a2917 — SiteBrief.constraints now extracted from "do not/never/avoid" directives + injected as ABSOLUTE rules in the claude/stitch design prompts):
+-- surface + let the user edit the extracted constraints in the onboarding brief-review UI before generation, so a missed/misread constraint can be corrected (extraction can drop or garble them; rawBrief is preserved as fallback but not shown). High value — closes the loop on "it did things I banned".
+-- Layer 3 verification/self-heal pass: after each page generates, run an LLM-judge comparing the HTML against brief.constraints (+ rawBrief), flag or auto-fix violations. Gate on constraints existing (skip when none) to limit added AI cost/latency. Only build if violations still slip through after the capture+prompt change.
+- parallelize onboarding pipeline (mostly sequential today). Top win: fan out page generations with Promise.all + concurrency cap (Onboarding.tsx:809–855). Secondary: parallelize section editable-field extraction within a page (html-to-html-blocks.ts:70–123); run header/footer extraction alongside page blocks. Mind AI rate caps (Anthropic/Imagen) and cost burstiness; final theme compile still has to wait for the merged class set.
+
+
+=== AUTH, ACCOUNT & MULTI-SITE ===
+- add Google signup support
+- add ability to change email address?
+- let a user add/create an additional Cadmus site from within the admin (rather than re-registering) — will need the site switcher dropdown plus an "add new site" option
+
+
+=== ANALYTICS & SEO ===
+- integrate Fathom analytics as our built-in analytics
+- optional google analytics support (BYO measurement ID)
+- add automated reporting for SEO, site visits, form fills, etc.
+- google search console integration (automatic, ideally)
+- per-site Discoverability setting: SEO crawlers (always on), AI answer bots (default on), AI training crawlers (default on, opt-out). Wire to Cloudflare WAF rules per zone/host.
+
+
+=== SECURITY & MODERATION ===
+- add 2FA support (free add-on?) (make required for cadmus_admin)
+- add recaptcha / turnstile feature/option (free add-on?) -> Turnstile for *.cadmus.digital sites, reCAPTCHA for custom domains
+- enable Cloudflare Leaked Credentials Detection in log mode; in auth handler, read the exposed-credential header and force a password reset on next login for flagged users
+- add a local NSFW pre-filter (nsfwjs or similar) to scanner to reduce Vision API calls at scale — removed due to native addon issues in Cloud Run; revisit with a pure-JS model or sidecar approach
+- add malware/virus scanning to the media scanner. Today the scanner only does CONTENT moderation (Cloud Vision SafeSearch on images/video-frames/PDF-thumbnails) + magic-byte MIME validation at upload — no AV. An authed editor can upload an arbitrary file (e.g. weaponized PDF) that's visually clean and we'd host/serve it to visitors. Add an AV pass in the scanner's staging step before approve (e.g. ClamAV sidecar/Cloud Run service, or a hosted scanning API); block/quarantine on hit. Mind the 100MB+ large-file path (we skip render there → would also need AV or route to manual review).
+- custom-code injection hardening (feature shipped 5a97178 — owner-only raw head/body script injection via settings.customCode, rendered in BaseLayout). Follow-ups: (a) if/when we add a Content-Security-Policy header to served sites, owner-injected scripts will break unless nonce'd or the CSP is relaxed per-site for sites using customCode; (b) on shared *.cadmus.digital subdomains, keep any cookies set by injected scripts host-scoped — avoid anything on the parent .cadmus.digital domain that could leak across tenant subdomains (custom domains are already isolated); (c) consider a size cap + basic well-formedness check on the head/body code, and surfacing it in the audit log UI.
+
+
+=== INTEGRATIONS, EMAIL & DOMAINS ===
+- add custom email sending domain
+- allow domain registration? should be able to manage through Cloudflare (could also use the instant domain API for suggestions and checking)
+- Google Business Profile support (add-on?) to pull in reviews, update info, etc.
+- form webhook enhancements (LOW PRIORITY, PAID-PLAN ONLY) — base feature shipped (per-form URL, HMAC signing, retry, status + resend, secret reveal/rotate):
+-- durable delivery via Cloud Tasks instead of fire-and-forget+retry — survives receiver downtime (retries with backoff for hours). Needs a queue (setup-infra + deploy) + an OIDC-authed internal delivery endpoint. Gate to paid plans.
+-- zero-downtime secret rotation — support two active signing secrets server-side and sign with both during a grace window, so receivers can roll over without dropped webhooks (today rotation is a hard switch). Gate to paid plans.
+
+
+=== MOBILE & UI POLISH ===
+- polish up admin UI styles
+- improve mobile admin experience (responsive sidebar, touch-friendly controls, mobile preview)
+
+
+=== PLATFORM DASHBOARD (internal ops UI) ===
+- add charts to dashboard
+- add GCP monitoring in dashboard (quotas, usage, errors, etc.)
+- add billing page in dashboard. Track active subscription revenue against infra costs
+
+
+=== ADD-ON MARKETPLACE ===
+- build out addon marketplace (SHIPPED 2026-07-04: entitlements v1 — catalog + Stripe multi-item billing + dashboard mgmt + admin marketplace + 3 add-ons: Turnstile free, mortgage calc + visitor chatbot paid. Sandbox runtime deferred; catalog has a runtime field reserving "external".)
+-- seed marketplace with custom functionality like mortgage calculators, HighLevel integration, CRM integrations, etc.
+-- make sure billing can handle user-initiated add-on changes so they get a correct single monthly charge (done: always_invoice on add so annual sites are charged the proration immediately; credit on removal; plan changes swap add-on items to matching interval)
+-- there will be both free and paid add-ons
+- Turnstile at scale needs Cloudflare Enterprise: custom-domain sites are auto-provisioned into a pool of platform widgets (turnstile-provision.ts), but the free plan caps at 20 widgets x 10 hostnames ≈ ~190 custom-domain sites. When approaching that, move to Turnstile Enterprise ("Any Hostname" widget or 200-hostname widgets), keep the server-side hostname binding in forms/submit (it becomes the only hostname check), and delete the pool provisioning machinery.
+- add frontend chatbot option (will need a training/instruction section) - add-on?
+- add automated blogging (as an add-on... FroBot?)
+- built-in feature adds with margin bump (e.g., Respona) - like a default add-on?
+- form-file-uploads add-on: virus/malware scanning of visitor uploads deferred (extension+MIME-sniff allowlist only for now; consider routing through cadmus-scanner or GCS malware scanning before opening up riskier file types like zip)
+- pull form webhook feature back and turn it into a free or cheap add-on
+
+
+=== REFERRAL & PARTNER PROGRAM ===
+- affiliate/referral tracking: signup attribution via ?ref= links + per-partner dashboard referral link + admin views done. Remaining:
+-- partner self-service portal v1 SHIPPED — site-less partners log in and land on /partner (referral + client links, referral list, client sites w/ billing state). Follow-ups: nav link to /partner for partners who also have site memberships; commission/payout history once payouts automate
+-- commission payout automation — compute/pay commissions off qualified referrals (referrals.rewarded + partners.commissionRate columns exist but nothing computes or pays; manual off the Referrals list for now). 45-day clawback window enforced before a referral is payable. When automating: consolidate payouts to once a month per partner (one batch covering everything that cleared the window that month), likely via Stripe customer-balance credits for partners who are also customers.
+-- public-facing partner-signup / landing page to recruit partners
+
+
+=== INFRASTRUCTURE, SCALING & DEPLOY ===
+- make a plan for handling future AI provider plan limits (pool of api keys, or request increases https://docs.cloud.google.com/api-keys/docs/quotas)
+- remove dead signing code: after the upload (resumable) + read (stream proxy) migrations, getSignedUrl/getSignedUploadUrl in packages/cloud appear unused. Confirm no callers, then delete them + the signWithRetry helper, and consider dropping the api SA's tokenCreator-on-self grant (and the setup-infra line that adds it).
+- Improve production deploy:
+-- Startup/readiness probes for container-level health.
+-- Tagged revision URL + smoke tests for canary verification.
+-- Gradual traffic shifts for production promotion.
+-- Cloud Monitoring / logs for error-rate validation during the ramp.
+- Database connection scaling:
+-- Add a connection pooler (Cloud SQL managed connection pooling, PgBouncer-based transaction mode) to decouple Cloud Run instance count from Postgres connection count. Root issue: each Cloud Run instance opens its own pool, so connections grow linearly with instances. Mitigated for now by lowering per-instance pool to max:4 (packages/db/src/client.ts) and bumping prod Cloud SQL f1-micro -> db-custom-1-3840 (max_connections=200). Revisit pooling when peak connections approach the ceiling (~sustained 150+).
+-- Give dev its own Cloud SQL instance — dev + prod currently share the single `cadmus` instance (different DBs, same server/connection budget), so a dev spike or migration can starve prod.
+-- Later scale knobs: vertical tier bumps for query throughput, read replicas for read-heavy traffic (sites/resolve, content reads), regional HA for SLA, in-memory/Redis cache for hot hostname->site lookups.
+
+
+=== DOCUMENTATION ===
+- Add documentation — we have none yet. Likely needs: end-user/admin help docs (how to build/edit a site, AI chat, media, SEO, billing), platform/dashboard ops docs, and developer/architecture docs. Decide where it lives (in-app help vs separate docs site).
+
+
+=== BUSINESS DEVELOPMENT & PARTNERSHIPS ===
+- rev share partnership with Eric Saar and Craig Graham for running ads
+- build new site for people like Eric Saar, show them and convert them to Cadmus
+- create arrangement for Michael Radcliffe and RAD CRM folks to get real estate sites (plus maybe an add-on for RAD CRM to hook everything up seamlessly)
+- record entire process of creating those sites and turn it into content
+- create private add-on for Doublestack folks (local legends site) - or make available to public but let doublestackers use a code to get it free (they just pay for the site)
+- talk to Adaptify about supporting Cadmus as a platform (and make an add-on signup route, automatically making that site a referred user of FroBro)

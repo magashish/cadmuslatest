@@ -1,0 +1,15 @@
+node_modules
+.git
+.github
+*.md
+!packages/*/README.md
+.env
+.env.*
+!.env.example
+dist
+.turbo
+.astro
+.vite
+docker-compose.yml
+scripts
+.claude

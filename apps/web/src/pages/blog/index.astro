@@ -1,0 +1,114 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { getSite, getContent, getAllNavigation, API_BASE } from "@/lib/api";
+import { getThemeVars } from "@/lib/theme";
+import type { SiteInfo, ContentItem } from "@/lib/api";
+
+const siteId = Astro.locals.siteId;
+
+let site: SiteInfo | null = null;
+let posts: ContentItem[] = [];
+
+try {
+  const [siteResult, contentResult] = await Promise.all([
+    getSite(siteId),
+    getContent(siteId, "post"),
+  ]);
+  site = siteResult;
+  posts = contentResult.items;
+} catch {
+  // API not available
+}
+
+const navData = await getAllNavigation(siteId);
+const siteName = site?.name || "Cadmus";
+const siteUrl = site?.domain
+  ? `https://${site.domain}`
+  : site?.subdomain ? `https://${site.subdomain}.cadmus.digital` : undefined;
+const themeVars = getThemeVars(site?.settings);
+const theme = (site?.settings as any)?.theme || undefined;
+const socialLinks = (site?.settings as any)?.socialLinks || undefined;
+const logoUrl = (site?.settings as any)?.logoUrl || undefined;
+const hideCadmusByline = (site?.settings as any)?.hideCadmusByline === true;
+const faviconUrl = (site?.settings as any)?.faviconUrl || undefined;
+---
+
+<BaseLayout title="Blog" siteName={siteName} siteUrl={siteUrl} logoUrl={logoUrl} authorName={siteName} navItems={navData.headerNav} footerNavItems={navData.footerNav} navConfigured={navData.headerNavConfigured} footerNavConfigured={navData.footerNavConfigured} socialLinks={socialLinks} themeVars={themeVars} theme={theme} apiUrl={API_BASE} siteId={siteId} hideCadmusByline={hideCadmusByline} faviconUrl={faviconUrl} plan={site?.plan} addons={site?.addons} customHeadCode={(site?.settings as any)?.customCode?.head} customBodyEndCode={(site?.settings as any)?.customCode?.bodyEnd}>
+  <div class="blog-index">
+    <h1>Blog</h1>
+
+    {posts.length === 0 && <p>No posts yet.</p>}
+
+    <ul class="post-list">
+      {posts.map((post) => (
+        <li>
+          <a href={`/blog/${post.slug}`}>
+            {(post.schemaData as any)?.featuredImage && (
+              <img src={(post.schemaData as any).featuredImage} alt={(post.schemaData as any)?.title || post.slug} class="post-list__img" />
+            )}
+            <div>
+              <h2>{(post.schemaData as any)?.title || post.slug}</h2>
+              {((post.schemaData as any)?.metaDescription || (post.schemaData as any)?.excerpt) && (
+                <p>{(post.schemaData as any)?.metaDescription || (post.schemaData as any)?.excerpt}</p>
+              )}
+            </div>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</BaseLayout>
+
+<style>
+  .blog-index {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+
+  .post-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .post-list li {
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #eee;
+  }
+
+  .post-list a {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+  }
+
+  .post-list__img {
+    width: 200px;
+    height: 130px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+
+  .post-list h2 {
+    margin-bottom: 0.5rem;
+  }
+
+  .post-list p {
+    color: #666;
+  }
+
+  @media (max-width: 600px) {
+    .post-list a {
+      flex-direction: column;
+    }
+
+    .post-list__img {
+      width: 100%;
+      height: 180px;
+    }
+  }
+</style>

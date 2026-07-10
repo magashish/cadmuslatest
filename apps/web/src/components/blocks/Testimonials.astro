@@ -1,0 +1,148 @@
+---
+interface Testimonial {
+  quote: string;
+  name: string;
+  title?: string;
+  imageUrl?: string;
+  rating?: number;
+}
+
+interface Props {
+  variant: "carousel" | "grid" | "single-feature";
+  items: Testimonial[];
+}
+
+const { variant, items } = Astro.props;
+
+function renderStars(rating: number): string {
+  return "★".repeat(rating) + "☆".repeat(5 - rating);
+}
+---
+
+<section class={`testimonials testimonials--${variant}`}>
+  <div class="testimonials__grid">
+    {items.map((item) => (
+      <div class="testimonial-card">
+        <div class="testimonial-card__quote-mark">&ldquo;</div>
+        {item.rating && (
+          <div class="testimonial-card__rating" aria-label={`${item.rating} out of 5 stars`}>
+            {renderStars(item.rating)}
+          </div>
+        )}
+        <blockquote class="testimonial-card__quote">{item.quote}</blockquote>
+        <div class="testimonial-card__author">
+          {item.imageUrl && <img src={item.imageUrl} alt={item.name} class="testimonial-card__avatar" />}
+          <div>
+            <div class="testimonial-card__name">{item.name}</div>
+            {item.title && <div class="testimonial-card__title">{item.title}</div>}
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .testimonials {
+    padding: calc(var(--spacing-unit, 8px) * 8) 0;
+  }
+
+  .testimonials--grid .testimonials__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: calc(var(--spacing-unit, 8px) * 3);
+  }
+
+  .testimonials--single-feature .testimonials__grid {
+    max-width: 640px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .testimonials--carousel .testimonials__grid {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: calc(var(--spacing-unit, 8px) * 3);
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    padding-bottom: calc(var(--spacing-unit, 8px) * 1);
+  }
+
+  .testimonials--carousel .testimonial-card {
+    flex: 0 0 min(85vw, 380px);
+    scroll-snap-align: start;
+  }
+
+  .testimonial-card {
+    background: var(--color-surface, #f8f9fa);
+    border-radius: var(--radius-lg, 16px);
+    padding: calc(var(--spacing-unit, 8px) * 4);
+    position: relative;
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.04);
+    transition: box-shadow 0.3s, transform 0.3s;
+  }
+
+  .testimonial-card:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+  }
+
+  .testimonial-card__quote-mark {
+    font-size: 3.5rem;
+    line-height: 1;
+    color: var(--color-primary, #1a1a1a);
+    opacity: 0.15;
+    font-family: Georgia, serif;
+    position: absolute;
+    top: calc(var(--spacing-unit, 8px) * 2);
+    left: calc(var(--spacing-unit, 8px) * 3);
+  }
+
+  .testimonial-card__rating {
+    color: #f59e0b;
+    margin-bottom: calc(var(--spacing-unit, 8px) * 1.5);
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+  }
+
+  .testimonial-card__quote {
+    font-style: italic;
+    line-height: 1.7;
+    margin: 0 0 calc(var(--spacing-unit, 8px) * 3);
+    color: var(--color-text-muted, #555);
+  }
+
+  .testimonial-card__author {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--spacing-unit, 8px) * 1.5);
+  }
+
+  .testimonials--single-feature .testimonial-card__author {
+    justify-content: center;
+  }
+
+  .testimonial-card__avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-full, 9999px);
+    object-fit: cover;
+    border: 2px solid var(--color-border, #e2e8f0);
+  }
+
+  .testimonial-card__name {
+    font-weight: 600;
+  }
+
+  .testimonial-card__title {
+    color: var(--color-text-muted, #666);
+    font-size: 0.875rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .testimonial-card {
+      transition: none;
+    }
+  }
+</style>

@@ -1,0 +1,1 @@
+ALTER TABLE "sites" ADD COLUMN "billing" varchar(10) DEFAULT 'standard' NOT NULL;

@@ -1,0 +1,64 @@
+---
+import { applyEditableFields } from "@/lib/html-block-renderer";
+
+interface EditableField {
+  selector: string;
+  type: "text" | "richtext" | "image" | "link";
+  value: string;
+  label: string;
+}
+
+interface FormSettings {
+  name?: string;
+  formId?: string;
+  notificationEmail?: string;
+  confirmationEnabled?: boolean;
+  confirmationMessage?: string;
+  successMessage?: string;
+  redirectUrl?: string;
+}
+
+interface Props {
+  html: string;
+  css?: string;
+  editableFields?: Record<string, EditableField>;
+  sectionName?: string;
+  blockId?: string;
+  formSettings?: FormSettings;
+  isFirst?: boolean;
+}
+
+const { html, css, editableFields, sectionName, blockId, formSettings, isFirst } = Astro.props;
+
+let renderedHtml = applyEditableFields(html, editableFields);
+
+// LCP hint: if this is the first block on the page, mark its first <img> as
+// high priority so the browser fetches it ahead of the rest. Skips images
+// that already specify fetchpriority so authored markup wins.
+if (isFirst) {
+  renderedHtml = renderedHtml.replace(/<img\b([^>]*)>/i, (match, attrs) =>
+    /\bfetchpriority\s*=/i.test(attrs) ? match : `<img fetchpriority="high"${attrs}>`,
+  );
+}
+
+// If this block has a form, inject data attributes so the form handler can identify it.
+// Prefer the stable formId (survives content saves) over the ephemeral block id.
+const hasForm = /<form[\s>]/i.test(html);
+const formIdentifier = formSettings?.formId
+  ? `form:${formSettings.formId}`
+  : blockId
+    ? `block:${blockId}`
+    : `html:${sectionName || "unknown"}`;
+---
+
+<div
+  class="stitch-section"
+  data-section={sectionName}
+  data-form-identifier={hasForm ? formIdentifier : undefined}
+  data-success-message={hasForm ? (formSettings?.successMessage || undefined) : undefined}
+  data-redirect-url={hasForm ? (formSettings?.redirectUrl || undefined) : undefined}
+>
+  <Fragment set:html={renderedHtml} />
+</div>
+
+{css && <style set:html={css} />}

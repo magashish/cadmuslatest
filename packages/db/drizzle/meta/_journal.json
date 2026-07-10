@@ -1,0 +1,195 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1776406137965,
+      "tag": "0000_dazzling_tattoo",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1776409837157,
+      "tag": "0001_real_slipstream",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1776488389915,
+      "tag": "0002_slim_james_howlett",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1776573150392,
+      "tag": "0003_icy_nebula",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1777184696990,
+      "tag": "0004_backfill_form_defaults",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1777258852147,
+      "tag": "0005_cooing_zarek",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1777410586427,
+      "tag": "0006_left_greymalkin",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1778129998780,
+      "tag": "0007_watery_terror",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1778133278837,
+      "tag": "0008_small_veda",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1778566573546,
+      "tag": "0009_tense_silver_sable",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1778566574000,
+      "tag": "0010_collections_unique_slug",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1778566575000,
+      "tag": "0011_media_file_size",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1778566576000,
+      "tag": "0012_media_moderation",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1778566577000,
+      "tag": "0013_media_thumbnail",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1778566580000,
+      "tag": "0014_media_moderation_extra",
+      "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "7",
+      "when": 1778566581000,
+      "tag": "0015_redirects",
+      "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1780553202922,
+      "tag": "0016_wise_surge",
+      "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1780553203922,
+      "tag": "0017_seed_platform_config",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1780553204922,
+      "tag": "0018_free_tier_content_limits",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1780553205922,
+      "tag": "0019_backfill_email_verified",
+      "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1780553206922,
+      "tag": "0020_promotions",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1781109382473,
+      "tag": "0021_nebulous_guardian",
+      "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1782193892216,
+      "tag": "0022_many_whiplash",
+      "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1783183100659,
+      "tag": "0023_true_adam_destine",
+      "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1783484319905,
+      "tag": "0024_graceful_spot",
+      "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1783615588782,
+      "tag": "0025_huge_metal_master",
+      "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1783655306347,
+      "tag": "0026_known_black_widow",
+      "breakpoints": true
+    }
+  ]
+}

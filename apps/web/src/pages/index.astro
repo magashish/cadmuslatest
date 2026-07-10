@@ -1,0 +1,87 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import BlockRenderer from "@/components/BlockRenderer.astro";
+import { getSite, getContentBySlug, getPreview, getAllNavigation, API_BASE } from "@/lib/api";
+import { getThemeVars } from "@/lib/theme";
+import { buildOrgSchema, wrapGraph } from "@/lib/schema";
+import type { SiteInfo, ContentWithBlocks } from "@/lib/api";
+
+const siteId = Astro.locals.siteId;
+const previewToken = Astro.url.searchParams.get("preview");
+
+let site: SiteInfo | null = null;
+let page: ContentWithBlocks | null = null;
+
+const [siteResult, pageResult, navData] = await Promise.all([
+  getSite(siteId).catch(() => null),
+  previewToken
+    ? getPreview(previewToken, siteId).catch(() => null)
+    : getContentBySlug(siteId, "home").catch(() => null),
+  getAllNavigation(siteId),
+]);
+site = siteResult;
+page = pageResult;
+
+const siteName = site?.name || "Cadmus";
+const siteUrl = site?.domain
+  ? `https://${site.domain}`
+  : site?.subdomain ? `https://${site.subdomain}.cadmus.digital` : undefined;
+const schemaData = (page?.schemaData || {}) as Record<string, string>;
+const description = schemaData.metaDescription || undefined;
+const featuredImage = schemaData.featuredImage || undefined;
+const seoTitle = schemaData.seoTitle || undefined;
+const pageTitle = seoTitle || schemaData.title || "Home";
+const themeVars = getThemeVars(site?.settings);
+
+// Always pass the theme so the global header/footer render on every page,
+// including text-only pages created via the AI chat (create_content uses
+// text blocks, which would otherwise fall through to theme=undefined and
+// render without the site's header/footer).
+const theme = (site?.settings as any)?.theme;
+const socialLinks = (site?.settings as any)?.socialLinks || undefined;
+const logoUrl = (site?.settings as any)?.logoUrl || undefined;
+const businessInfo = (site?.settings as any)?.businessInfo || undefined;
+const hideCadmusByline = (site?.settings as any)?.hideCadmusByline === true;
+const faviconUrl = (site?.settings as any)?.faviconUrl || undefined;
+const businessDescription = (site?.brief as any)?.businessDescription || undefined;
+const lang = (site?.brief as any)?.language ?? "en";
+
+const jsonLd = wrapGraph([
+  buildOrgSchema({
+    siteName,
+    siteUrl,
+    logoUrl,
+    description: businessDescription || description,
+    businessInfo,
+    socialLinks,
+  }),
+]);
+---
+
+<BaseLayout title={pageTitle} appendSiteName={!seoTitle} description={description} featuredImage={featuredImage} siteName={siteName} siteUrl={siteUrl} logoUrl={logoUrl} authorName={siteName} contentType={page?.type} publishedAt={page?.publishedAt} navItems={navData.headerNav} footerNavItems={navData.footerNav} navConfigured={navData.headerNavConfigured} footerNavConfigured={navData.footerNavConfigured} socialLinks={socialLinks} themeVars={themeVars} theme={theme} apiUrl={API_BASE} siteId={siteId} jsonLd={jsonLd} hideCadmusByline={hideCadmusByline} faviconUrl={faviconUrl} lang={lang} plan={site?.plan} addons={site?.addons} customHeadCode={(site?.settings as any)?.customCode?.head} customBodyEndCode={(site?.settings as any)?.customCode?.bodyEnd}>
+  {page ? (
+    <BlockRenderer blocks={page.blocks} />
+  ) : (
+    <section class="hero">
+      <h1>Welcome</h1>
+      <p>This site is powered by Cadmus.</p>
+    </section>
+  )}
+</BaseLayout>
+
+<style>
+  .hero {
+    text-align: center;
+    padding: 4rem 0;
+  }
+
+  .hero h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  .hero p {
+    font-size: 1.25rem;
+    color: #666;
+  }
+</style>

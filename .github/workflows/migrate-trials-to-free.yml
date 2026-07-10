@@ -1,0 +1,145 @@
+name: Migrate Trials to Free
+
+# One-off operational job: move trial-era sites (hasEverPaid = false) onto the
+# free plan, cancelling their Stripe subscriptions and emailing owners. Runs the
+# committed apps/api/src/scripts/migrate-trialing-to-free.ts so prod credentials
+# stay in CI and never touch a local shell.
+#
+# Defaults to a DRY-RUN (apply=false) that prints the full cohort and changes
+# nothing. Flip apply=true only after reviewing that list.
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Target environment
+        required: true
+        type: choice
+        options:
+          - dev
+          - production
+        default: dev
+      apply:
+        description: "Apply changes (false = dry-run, prints cohort only)"
+        required: true
+        type: boolean
+        default: false
+      skip-emails:
+        description: "Skip owner notification emails (apply only)"
+        required: false
+        type: boolean
+        default: false
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  GCP_PROJECT: ${{ secrets.GCP_PROJECT }}
+  GCP_REGION: ${{ secrets.GCP_REGION }}
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+      # Pin the ref to the environment so the committed script matches what's
+      # deployed: dev -> dev branch, production -> the dispatched ref (a v* tag).
+      - id: resolve-ref
+        run: |
+          if [ "${{ inputs.environment }}" = "dev" ]; then
+            echo "ref=refs/heads/dev" >> "$GITHUB_OUTPUT"
+          else
+            echo "ref=${{ github.ref }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ steps.resolve-ref.outputs.ref }}
+
+      - id: auth
+        uses: google-github-actions/auth@v3
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - uses: google-github-actions/setup-gcloud@v3
+
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # Build the workspace packages the script imports (@cadmus/db, cloud,
+      # shared). The script itself runs from source via tsx.
+      - name: Build dependencies
+        run: pnpm turbo build --filter=@cadmus/db... --filter=@cadmus/cloud...
+
+      - name: Resolve environment-specific secret names
+        run: |
+          if [ "${{ inputs.environment }}" = "production" ]; then
+            echo "DB_SECRET_NAME=DATABASE_URL" >> "$GITHUB_ENV"
+            echo "STRIPE_SECRET_NAME=STRIPE_SECRET_KEY" >> "$GITHUB_ENV"
+          else
+            echo "DB_SECRET_NAME=DATABASE_URL_DEV" >> "$GITHUB_ENV"
+            echo "STRIPE_SECRET_NAME=STRIPE_SECRET_KEY_DEV" >> "$GITHUB_ENV"
+          fi
+
+      - name: Install Cloud SQL Auth Proxy
+        run: |
+          curl -o cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.14.3/cloud-sql-proxy.linux.amd64
+          chmod +x cloud-sql-proxy
+          sudo mv cloud-sql-proxy /usr/local/bin/
+
+      - name: Start Cloud SQL Auth Proxy
+        run: |
+          CLOUD_SQL_CONNECTION="${GCP_PROJECT}:${GCP_REGION}:cadmus"
+          cloud-sql-proxy "$CLOUD_SQL_CONNECTION" --port=5433 &
+          echo "PROXY_PID=$!" >> $GITHUB_ENV
+
+          echo "Waiting for proxy to be ready..."
+          for i in $(seq 1 30); do
+            if nc -z 127.0.0.1 5433 2>/dev/null; then
+              echo "Proxy accepting connections on attempt $i"
+              break
+            fi
+            if [ "$i" -eq 30 ]; then
+              echo "ERROR: Cloud SQL Auth Proxy failed to start after 30s"
+              exit 1
+            fi
+            sleep 1
+          done
+          sleep 3
+
+      - name: Fetch secrets into env
+        run: |
+          echo "Using DB secret: $DB_SECRET_NAME (${{ inputs.environment }})"
+          SECRET_DB_URL=$(gcloud secrets versions access latest --secret=$DB_SECRET_NAME)
+          DB_USER=$(echo "$SECRET_DB_URL" | sed -n 's|postgresql://\([^:]*\):.*|\1|p')
+          DB_PASS=$(echo "$SECRET_DB_URL" | sed -n 's|postgresql://[^:]*:\([^@]*\)@.*|\1|p')
+          DB_NAME=$(echo "$SECRET_DB_URL" | sed -n 's|.*@[^/]*/\([^?]*\).*|\1|p')
+          echo "::add-mask::$DB_PASS"
+          echo "DATABASE_URL=postgresql://${DB_USER}:${DB_PASS}@127.0.0.1:5433/${DB_NAME}" >> "$GITHUB_ENV"
+
+          # Stripe is required to cancel subscriptions on --apply.
+          STRIPE_KEY=$(gcloud secrets versions access latest --secret=$STRIPE_SECRET_NAME)
+          echo "::add-mask::$STRIPE_KEY"
+          echo "STRIPE_SECRET_KEY=$STRIPE_KEY" >> "$GITHUB_ENV"
+
+          # Mailgun (shared across environments) for owner notifications.
+          MG_KEY=$(gcloud secrets versions access latest --secret=MAILGUN_API_KEY)
+          MG_DOMAIN=$(gcloud secrets versions access latest --secret=MAILGUN_DOMAIN)
+          echo "::add-mask::$MG_KEY"
+          echo "MAILGUN_API_KEY=$MG_KEY" >> "$GITHUB_ENV"
+          echo "MAILGUN_DOMAIN=$MG_DOMAIN" >> "$GITHUB_ENV"
+
+      - name: Run migration
+        run: |
+          ARGS=""
+          if [ "${{ inputs.apply }}" = "true" ]; then ARGS="$ARGS --apply"; fi
+          if [ "${{ inputs.skip-emails }}" = "true" ]; then ARGS="$ARGS --skip-emails"; fi
+          echo "Running: migrate-trialing-to-free.ts$ARGS (${{ inputs.environment }})"
+          pnpm --filter @cadmus/api exec tsx src/scripts/migrate-trialing-to-free.ts $ARGS
+
+      - name: Stop proxy
+        if: always()
+        run: kill $PROXY_PID 2>/dev/null || true

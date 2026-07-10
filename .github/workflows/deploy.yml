@@ -1,0 +1,772 @@
+name: Deploy
+
+run-name: >-
+  ${{ github.event_name == 'workflow_dispatch' &&
+        format('Deploy {0} to {1} (manual)', inputs.target, inputs.environment) ||
+      startsWith(github.ref, 'refs/tags/v') &&
+        format('Deploy {0} to production', github.ref_name) ||
+      github.event_name == 'workflow_run' &&
+        format('Deploy to dev — {0}', github.event.workflow_run.head_commit.message) ||
+      'Deploy' }}
+
+on:
+  # Auto-deploy after CI passes on dev branch
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [dev]
+  # Auto-deploy production on version tags (no CI gate — tags are cut from tested code)
+  push:
+    tags: ['v*']
+  # Manual deploy for either environment
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Target environment
+        required: true
+        type: choice
+        options:
+          - dev
+          - production
+        default: dev
+      target:
+        description: Which app to deploy
+        required: true
+        type: choice
+        options:
+          - api
+          - admin
+          - web
+          - dashboard
+          - scanner
+          - all
+        default: all
+
+concurrency:
+  group: deploy-${{ github.event_name == 'push' && github.ref || github.event_name == 'workflow_run' && github.event.workflow_run.head_branch || github.ref }}
+  cancel-in-progress: false
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  GCP_PROJECT: ${{ secrets.GCP_PROJECT }}
+  GCP_REGION: ${{ secrets.GCP_REGION }}
+
+jobs:
+  # ── Determine environment ──────────────────────────────────────────────────
+  resolve-env:
+    # Skip deploy if triggered by workflow_run and CI failed
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    outputs:
+      environment: ${{ steps.env.outputs.environment }}
+      target: ${{ steps.env.outputs.target }}
+      ref: ${{ steps.env.outputs.ref }}
+    steps:
+      - id: env
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "environment=${{ inputs.environment }}" >> "$GITHUB_OUTPUT"
+            echo "target=${{ inputs.target }}" >> "$GITHUB_OUTPUT"
+            # Dev deploys should build from the dev branch, not main
+            if [ "${{ inputs.environment }}" = "dev" ]; then
+              echo "ref=refs/heads/dev" >> "$GITHUB_OUTPUT"
+            else
+              echo "ref=${{ github.ref }}" >> "$GITHUB_OUTPUT"
+            fi
+          elif [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+            echo "environment=production" >> "$GITHUB_OUTPUT"
+            echo "target=all" >> "$GITHUB_OUTPUT"
+            echo "ref=${{ github.ref }}" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event_name }}" = "workflow_run" ]; then
+            echo "environment=dev" >> "$GITHUB_OUTPUT"
+            echo "target=all" >> "$GITHUB_OUTPUT"
+            echo "ref=${{ github.event.workflow_run.head_sha }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "environment=dev" >> "$GITHUB_OUTPUT"
+            echo "target=all" >> "$GITHUB_OUTPUT"
+            echo "ref=${{ github.ref }}" >> "$GITHUB_OUTPUT"
+          fi
+
+  # ── Auto-migrate DB ──────────────────────────────────────────────────────
+  migrate-db:
+    needs: resolve-env
+    if: |
+      (needs.resolve-env.outputs.target == 'api' || needs.resolve-env.outputs.target == 'all')
+    runs-on: ubuntu-latest
+    environment: ${{ needs.resolve-env.outputs.environment }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ needs.resolve-env.outputs.ref }}
+
+      # Always run migrations — drizzle-kit is a no-op when nothing is pending.
+      # The previous HEAD~1..HEAD diff check skipped migrations when multiple
+      # commits were pushed together and only the final commit lacked schema
+      # changes, which deployed broken code.
+
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build DB package
+        run: pnpm turbo build --filter=@cadmus/db...
+
+      - id: auth
+        uses: google-github-actions/auth@v3
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - uses: google-github-actions/setup-gcloud@v3
+
+      - name: Install Cloud SQL Auth Proxy
+        run: |
+          curl -o cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.14.3/cloud-sql-proxy.linux.amd64
+          chmod +x cloud-sql-proxy
+          sudo mv cloud-sql-proxy /usr/local/bin/
+
+      - name: Start Cloud SQL Auth Proxy
+        run: |
+          CLOUD_SQL_CONNECTION="${GCP_PROJECT}:${GCP_REGION}:cadmus"
+          cloud-sql-proxy "$CLOUD_SQL_CONNECTION" --port=5433 &
+          echo "PROXY_PID=$!" >> $GITHUB_ENV
+          for i in $(seq 1 30); do
+            if nc -z 127.0.0.1 5433 2>/dev/null; then
+              echo "Proxy ready on attempt $i"
+              break
+            fi
+            [ "$i" -eq 30 ] && echo "ERROR: Proxy failed to start" && exit 1
+            sleep 1
+          done
+          sleep 3
+
+      - name: Run migrations
+        working-directory: packages/db
+        run: |
+          ENV="${{ needs.resolve-env.outputs.environment }}"
+          if [ "$ENV" = "production" ]; then
+            DB_SECRET="DATABASE_URL"
+          else
+            DB_SECRET="DATABASE_URL_DEV"
+          fi
+          SECRET_DB_URL=$(gcloud secrets versions access latest --secret="$DB_SECRET")
+          DB_USER=$(echo "$SECRET_DB_URL" | sed -n 's|postgresql://\([^:]*\):.*|\1|p')
+          DB_PASS=$(echo "$SECRET_DB_URL" | sed -n 's|postgresql://[^:]*:\([^@]*\)@.*|\1|p')
+          DB_NAME=$(echo "$SECRET_DB_URL" | sed -n 's|.*@[^/]*/\([^?]*\).*|\1|p')
+          export DATABASE_URL="postgresql://${DB_USER}:${DB_PASS}@127.0.0.1:5433/${DB_NAME}"
+
+          set -euo pipefail
+          pnpm db:migrate:run
+          echo "Migrations applied successfully ($ENV)."
+
+      - name: Stop proxy
+        if: always()
+        run: kill $PROXY_PID 2>/dev/null || true
+
+  # ── Deploy API ─────────────────────────────────────────────────────────────
+  deploy-api:
+    needs: [resolve-env, migrate-db, deploy-scanner]
+    if: always() && (needs.resolve-env.outputs.target == 'api' || needs.resolve-env.outputs.target == 'all') && (needs.migrate-db.result == 'success' || needs.migrate-db.result == 'skipped') && (needs.deploy-scanner.result == 'success' || needs.deploy-scanner.result == 'skipped')
+    runs-on: ubuntu-latest
+    environment: ${{ needs.resolve-env.outputs.environment }}
+    env:
+      ENV: ${{ needs.resolve-env.outputs.environment }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ needs.resolve-env.outputs.ref }}
+
+      - id: auth
+        uses: google-github-actions/auth@v3
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - uses: google-github-actions/setup-gcloud@v3
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker ${GCP_REGION}-docker.pkg.dev --quiet
+
+      - name: Set environment-specific variables
+        run: |
+          if [ "$ENV" = "production" ]; then
+            echo "SERVICE_NAME=cadmus-api" >> "$GITHUB_ENV"
+            echo "MEDIA_BUCKET=${GCP_PROJECT}-media" >> "$GITHUB_ENV"
+            echo "STAGING_BUCKET=${GCP_PROJECT}-media-staging" >> "$GITHUB_ENV"
+            echo "SQL_INSTANCE=cadmus" >> "$GITHUB_ENV"
+            echo "DB_SECRET=DATABASE_URL" >> "$GITHUB_ENV"
+            echo "JWT_SECRET_NAME=JWT_SECRET" >> "$GITHUB_ENV"
+            echo "STRIPE_KEY_SECRET=STRIPE_SECRET_KEY" >> "$GITHUB_ENV"
+            echo "STRIPE_MONTHLY_SECRET=STRIPE_PRICE_MONTHLY" >> "$GITHUB_ENV"
+            echo "STRIPE_ANNUAL_SECRET=STRIPE_PRICE_ANNUAL" >> "$GITHUB_ENV"
+            echo "STRIPE_WH_SECRET=STRIPE_WEBHOOK_SECRET" >> "$GITHUB_ENV"
+            echo "BASE_DOMAIN=${{ secrets.BASE_DOMAIN }}" >> "$GITHUB_ENV"
+            echo "IMAGE_TAG=cadmus-api" >> "$GITHUB_ENV"
+            echo "SCANNER_SA=cadmus-scanner@${GCP_PROJECT}.iam.gserviceaccount.com" >> "$GITHUB_ENV"
+            echo "CLOUD_TASKS_QUEUE=projects/${GCP_PROJECT}/locations/${GCP_REGION}/queues/media-scan" >> "$GITHUB_ENV"
+          else
+            echo "SERVICE_NAME=cadmus-api-dev" >> "$GITHUB_ENV"
+            echo "MEDIA_BUCKET=${GCP_PROJECT}-media-dev" >> "$GITHUB_ENV"
+            echo "STAGING_BUCKET=${GCP_PROJECT}-media-staging-dev" >> "$GITHUB_ENV"
+            echo "SQL_INSTANCE=cadmus" >> "$GITHUB_ENV"
+            echo "DB_SECRET=DATABASE_URL_DEV" >> "$GITHUB_ENV"
+            echo "JWT_SECRET_NAME=JWT_SECRET_DEV" >> "$GITHUB_ENV"
+            echo "STRIPE_KEY_SECRET=STRIPE_SECRET_KEY_DEV" >> "$GITHUB_ENV"
+            echo "STRIPE_MONTHLY_SECRET=STRIPE_PRICE_MONTHLY_DEV" >> "$GITHUB_ENV"
+            echo "STRIPE_ANNUAL_SECRET=STRIPE_PRICE_ANNUAL_DEV" >> "$GITHUB_ENV"
+            echo "STRIPE_WH_SECRET=STRIPE_WEBHOOK_SECRET_DEV" >> "$GITHUB_ENV"
+            echo "BASE_DOMAIN=dev.cadmus.digital" >> "$GITHUB_ENV"
+            echo "IMAGE_TAG=cadmus-api-dev" >> "$GITHUB_ENV"
+            echo "SCANNER_SA=cadmus-scanner@${GCP_PROJECT}.iam.gserviceaccount.com" >> "$GITHUB_ENV"
+            echo "CLOUD_TASKS_QUEUE=projects/${GCP_PROJECT}/locations/${GCP_REGION}/queues/media-scan-dev" >> "$GITHUB_ENV"
+          fi
+
+      - name: Build and push API image
+        run: |
+          SHORT_SHA=$(echo "${{ github.sha }}" | head -c 7)
+          IMAGE="${GCP_REGION}-docker.pkg.dev/${GCP_PROJECT}/cadmus/${IMAGE_TAG}:${SHORT_SHA}"
+          docker build --platform linux/amd64 -f apps/api/Dockerfile -t "$IMAGE" .
+          docker push "$IMAGE"
+          echo "API_IMAGE=$IMAGE" >> "$GITHUB_ENV"
+          echo "GIT_SHA=$SHORT_SHA" >> "$GITHUB_ENV"
+          echo "BUILT_AT=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_ENV"
+          GIT_TAG="${{ github.ref_name }}"
+          [[ "${{ github.ref }}" == refs/tags/* ]] || GIT_TAG=""
+          echo "GIT_TAG=$GIT_TAG" >> "$GITHUB_ENV"
+
+      - name: Resolve scanner URL
+        run: |
+          if [ "$ENV" = "production" ]; then
+            SCANNER_SVC="cadmus-scanner"
+          else
+            SCANNER_SVC="cadmus-scanner-dev"
+          fi
+          SCANNER_URL=$(gcloud run services describe "$SCANNER_SVC" \
+            --region="${GCP_REGION}" --format="value(status.url)" 2>/dev/null || true)
+          echo "SCANNER_SERVICE_URL=${SCANNER_URL:-}" >> "$GITHUB_ENV"
+
+      - name: Deploy API to Cloud Run (dev — immediate traffic)
+        if: env.ENV == 'dev'
+        run: |
+          IMAGE="${API_IMAGE}"
+          CLOUD_SQL_CONNECTION="${GCP_PROJECT}:${GCP_REGION}:${SQL_INSTANCE}"
+
+          SECRETS="DATABASE_URL=${DB_SECRET}:latest"
+          SECRETS="${SECRETS},JWT_SECRET=${JWT_SECRET_NAME}:latest"
+          SECRETS="${SECRETS},ANTHROPIC_API_KEY=ANTHROPIC_API_KEY:latest"
+          SECRETS="${SECRETS},GEMINI_API_KEY=GEMINI_API_KEY:latest"
+          SECRETS="${SECRETS},CLOUDFLARE_API_TOKEN=CLOUDFLARE_API_TOKEN:latest"
+          SECRETS="${SECRETS},CLOUDFLARE_ZONE_ID=CLOUDFLARE_ZONE_ID:latest"
+          SECRETS="${SECRETS},CLOUDFLARE_CACHE_PURGE_TOKEN=CLOUDFLARE_CACHE_PURGE_TOKEN:latest"
+          SECRETS="${SECRETS},MAILGUN_API_KEY=MAILGUN_API_KEY:latest"
+          SECRETS="${SECRETS},MAILGUN_DOMAIN=MAILGUN_DOMAIN:latest"
+          SECRETS="${SECRETS},STITCH_API_KEY=STITCH_API_KEY:latest"
+          SECRETS="${SECRETS},STRIPE_SECRET_KEY=${STRIPE_KEY_SECRET}:latest"
+          SECRETS="${SECRETS},STRIPE_PRICE_MONTHLY=${STRIPE_MONTHLY_SECRET}:latest"
+          SECRETS="${SECRETS},STRIPE_PRICE_ANNUAL=${STRIPE_ANNUAL_SECRET}:latest"
+          SECRETS="${SECRETS},STRIPE_WEBHOOK_SECRET=${STRIPE_WH_SECRET}:latest"
+          SECRETS="${SECRETS},SENTRY_DSN=SENTRY_DSN_API:latest"
+          SECRETS="${SECRETS},SENTRY_AUTH_TOKEN=SENTRY_AUTH_TOKEN:latest"
+          SECRETS="${SECRETS},TURNSTILE_SITE_KEY=TURNSTILE_SITE_KEY:latest"
+          SECRETS="${SECRETS},TURNSTILE_SECRET_KEY=TURNSTILE_SECRET_KEY:latest"
+          SECRETS="${SECRETS},CLOUDFLARE_TURNSTILE_API_TOKEN=CLOUDFLARE_TURNSTILE_API_TOKEN:latest"
+
+          gcloud run deploy "$SERVICE_NAME" \
+            --image="$IMAGE" \
+            --region="${GCP_REGION}" \
+            --platform=managed \
+            --allow-unauthenticated \
+            --service-account="cadmus-api@${GCP_PROJECT}.iam.gserviceaccount.com" \
+            --add-cloudsql-instances="$CLOUD_SQL_CONNECTION" \
+            --set-secrets="$SECRETS" \
+            --set-env-vars="GCS_BUCKET=${MEDIA_BUCKET},GCS_STAGING_BUCKET_NAME=${STAGING_BUCKET},SCANNER_SERVICE_URL=${SCANNER_SERVICE_URL},CLOUD_TASKS_QUEUE=${CLOUD_TASKS_QUEUE},SCANNER_SA_EMAIL=${SCANNER_SA},GOOGLE_CLOUD_VISION_ENABLED=true,GOOGLE_CLOUD_PROJECT=${GCP_PROJECT},NODE_ENV=development,CLOUD_SQL_CONNECTION=${CLOUD_SQL_CONNECTION},BASE_DOMAIN=${BASE_DOMAIN},APP_ENV=${ENV},GIT_SHA=${GIT_SHA},GIT_TAG=${GIT_TAG},BUILT_AT=${BUILT_AT},CLOUDFLARE_ACCOUNT_ID=7fc1ec0400d898cc58cbb2e3cbacf16b,FORM_UPLOADS_BUCKET=${GCP_PROJECT}-form-uploads" \
+            --memory=512Mi \
+            --cpu=1 \
+            --no-cpu-throttling \
+            --min-instances=0 \
+            --max-instances=10 \
+            --port=8080 \
+            --timeout=600
+
+      - name: Deploy API to Cloud Run (prod — no traffic)
+        if: env.ENV == 'production'
+        id: deploy-prod
+        run: |
+          IMAGE="${API_IMAGE}"
+          CLOUD_SQL_CONNECTION="${GCP_PROJECT}:${GCP_REGION}:${SQL_INSTANCE}"
+
+          SECRETS="DATABASE_URL=${DB_SECRET}:latest"
+          SECRETS="${SECRETS},JWT_SECRET=${JWT_SECRET_NAME}:latest"
+          SECRETS="${SECRETS},ANTHROPIC_API_KEY=ANTHROPIC_API_KEY:latest"
+          SECRETS="${SECRETS},GEMINI_API_KEY=GEMINI_API_KEY:latest"
+          SECRETS="${SECRETS},CLOUDFLARE_API_TOKEN=CLOUDFLARE_API_TOKEN:latest"
+          SECRETS="${SECRETS},CLOUDFLARE_ZONE_ID=CLOUDFLARE_ZONE_ID:latest"
+          SECRETS="${SECRETS},CLOUDFLARE_CACHE_PURGE_TOKEN=CLOUDFLARE_CACHE_PURGE_TOKEN:latest"
+          SECRETS="${SECRETS},MAILGUN_API_KEY=MAILGUN_API_KEY:latest"
+          SECRETS="${SECRETS},MAILGUN_DOMAIN=MAILGUN_DOMAIN:latest"
+          SECRETS="${SECRETS},STITCH_API_KEY=STITCH_API_KEY:latest"
+          SECRETS="${SECRETS},STRIPE_SECRET_KEY=${STRIPE_KEY_SECRET}:latest"
+          SECRETS="${SECRETS},STRIPE_PRICE_MONTHLY=${STRIPE_MONTHLY_SECRET}:latest"
+          SECRETS="${SECRETS},STRIPE_PRICE_ANNUAL=${STRIPE_ANNUAL_SECRET}:latest"
+          SECRETS="${SECRETS},STRIPE_WEBHOOK_SECRET=${STRIPE_WH_SECRET}:latest"
+          SECRETS="${SECRETS},SENTRY_DSN=SENTRY_DSN_API:latest"
+          SECRETS="${SECRETS},SENTRY_AUTH_TOKEN=SENTRY_AUTH_TOKEN:latest"
+          SECRETS="${SECRETS},TURNSTILE_SITE_KEY=TURNSTILE_SITE_KEY:latest"
+          SECRETS="${SECRETS},TURNSTILE_SECRET_KEY=TURNSTILE_SECRET_KEY:latest"
+          SECRETS="${SECRETS},CLOUDFLARE_TURNSTILE_API_TOKEN=CLOUDFLARE_TURNSTILE_API_TOKEN:latest"
+
+          # Deploy with --no-traffic + --tag so the revision gets a stable URL
+          # we can health-check before shifting traffic. Without --tag, the
+          # revision has no URL and the service URL still points to the old
+          # revision (since traffic hasn't shifted), so probes hit stale code.
+          gcloud run deploy "$SERVICE_NAME" \
+            --image="$IMAGE" \
+            --region="${GCP_REGION}" \
+            --platform=managed \
+            --allow-unauthenticated \
+            --service-account="cadmus-api@${GCP_PROJECT}.iam.gserviceaccount.com" \
+            --add-cloudsql-instances="$CLOUD_SQL_CONNECTION" \
+            --set-secrets="$SECRETS" \
+            --set-env-vars="GCS_BUCKET=${MEDIA_BUCKET},GCS_STAGING_BUCKET_NAME=${STAGING_BUCKET},SCANNER_SERVICE_URL=${SCANNER_SERVICE_URL},CLOUD_TASKS_QUEUE=${CLOUD_TASKS_QUEUE},SCANNER_SA_EMAIL=${SCANNER_SA},GOOGLE_CLOUD_VISION_ENABLED=true,GOOGLE_CLOUD_PROJECT=${GCP_PROJECT},NODE_ENV=production,CLOUD_SQL_CONNECTION=${CLOUD_SQL_CONNECTION},BASE_DOMAIN=${BASE_DOMAIN},APP_ENV=${ENV},GIT_SHA=${GIT_SHA},GIT_TAG=${GIT_TAG},BUILT_AT=${BUILT_AT},CLOUDFLARE_ACCOUNT_ID=7fc1ec0400d898cc58cbb2e3cbacf16b,FORM_UPLOADS_BUCKET=${GCP_PROJECT}-form-uploads" \
+            --memory=512Mi \
+            --cpu=1 \
+            --no-cpu-throttling \
+            --min-instances=1 \
+            --max-instances=10 \
+            --port=8080 \
+            --timeout=600 \
+            --no-traffic \
+            --tag=candidate
+
+          # Capture the new revision name
+          REVISION=$(gcloud run revisions list \
+            --service="$SERVICE_NAME" \
+            --region="${GCP_REGION}" \
+            --sort-by="~creationTimestamp" \
+            --limit=1 \
+            --format="value(metadata.name)")
+          echo "revision=$REVISION" >> "$GITHUB_OUTPUT"
+          echo "Deployed revision: $REVISION (no traffic, tag=candidate)"
+
+      - name: Health check new revision (prod)
+        if: env.ENV == 'production'
+        run: |
+          # Build the tagged URL: https://candidate---<service-host>
+          SERVICE_URL=$(gcloud run services describe "$SERVICE_NAME" \
+            --region="${GCP_REGION}" \
+            --format="value(status.url)")
+          HOST="${SERVICE_URL#https://}"
+          REVISION_URL="https://candidate---${HOST}"
+
+          echo "Health checking: ${REVISION_URL}/api/health/ready"
+          for i in $(seq 1 10); do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" "${REVISION_URL}/api/health/ready" 2>/dev/null || echo "000")
+            if [ "$STATUS" = "200" ]; then
+              echo "Health check passed on attempt $i"
+              exit 0
+            fi
+            echo "Attempt $i: got $STATUS, retrying in 5s..."
+            sleep 5
+          done
+          echo "ERROR: Health check failed after 10 attempts — NOT shifting traffic"
+          exit 1
+
+      - name: Shift traffic to new revision (prod)
+        if: env.ENV == 'production'
+        run: |
+          REVISION="${{ steps.deploy-prod.outputs.revision }}"
+          echo "Shifting 100% traffic to $REVISION"
+          gcloud run services update-traffic "$SERVICE_NAME" \
+            --region="${GCP_REGION}" \
+            --to-revisions="$REVISION=100"
+          echo "Traffic shifted successfully"
+
+  # ── Deploy Admin SPA ───────────────────────────────────────────────────────
+  deploy-admin:
+    needs: [resolve-env, deploy-api, migrate-db, deploy-scanner]
+    if: always() && (needs.resolve-env.outputs.target == 'admin' || needs.resolve-env.outputs.target == 'all') && (needs.deploy-api.result == 'success' || needs.deploy-api.result == 'skipped') && (needs.migrate-db.result == 'success' || needs.migrate-db.result == 'skipped') && (needs.deploy-scanner.result == 'success' || needs.deploy-scanner.result == 'skipped')
+    runs-on: ubuntu-latest
+    environment: ${{ needs.resolve-env.outputs.environment }}
+    env:
+      ENV: ${{ needs.resolve-env.outputs.environment }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ needs.resolve-env.outputs.ref }}
+
+      - id: auth
+        uses: google-github-actions/auth@v3
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - uses: google-github-actions/setup-gcloud@v3
+
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Set environment-specific variables
+        run: |
+          if [ "$ENV" = "production" ]; then
+            echo "ADMIN_BUCKET=${GCP_PROJECT}-admin" >> "$GITHUB_ENV"
+            echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" >> "$GITHUB_ENV"
+          else
+            echo "ADMIN_BUCKET=${GCP_PROJECT}-admin-dev" >> "$GITHUB_ENV"
+            echo "VITE_API_URL=https://api-dev.cadmus.digital" >> "$GITHUB_ENV"
+            echo "VITE_BASE_DOMAIN=dev.cadmus.digital" >> "$GITHUB_ENV"
+          fi
+
+      - name: Build admin SPA
+        run: pnpm turbo build --filter=@cadmus/admin...
+        env:
+          VITE_API_URL: ${{ env.VITE_API_URL }}
+          VITE_BASE_DOMAIN: ${{ env.VITE_BASE_DOMAIN }}
+
+      - name: Stamp version.json
+        run: |
+          SHORT_SHA=$(echo "${{ github.sha }}" | head -c 7)
+          GIT_TAG="${{ github.ref_name }}"
+          [[ "${{ github.ref }}" == refs/tags/* ]] || GIT_TAG=""
+          printf '{"app":"admin","env":"%s","gitSha":"%s","gitTag":"%s","builtAt":"%s"}\n' \
+            "$ENV" "$SHORT_SHA" "$GIT_TAG" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            > apps/admin/dist/version.json
+
+      - name: Upload assets (long-lived cache)
+        run: |
+          gcloud storage rsync apps/admin/dist/assets "gs://${ADMIN_BUCKET}/assets" \
+            --recursive \
+            --delete-unmatched-destination-objects \
+            --cache-control="public, max-age=31536000, immutable"
+
+      - name: Upload index.html + root files (no cache)
+        run: |
+          for f in apps/admin/dist/*; do
+            [ -d "$f" ] && continue
+            gcloud storage cp "$f" "gs://${ADMIN_BUCKET}/$(basename "$f")" \
+              --cache-control="no-store, no-cache, must-revalidate, max-age=0"
+          done
+
+  # ── Deploy Dashboard SPA ──────────────────────────────────────────────────
+  # Always deploys — builds are cheap and the previous HEAD~1..HEAD diff check
+  # skipped deploys when multi-commit pushes landed together and only the final
+  # commit didn't touch apps/dashboard, leaving a stale bundle on GCS.
+  deploy-dashboard:
+    needs: resolve-env
+    if: always() && needs.resolve-env.result == 'success' && (needs.resolve-env.outputs.target == 'dashboard' || needs.resolve-env.outputs.target == 'all')
+    runs-on: ubuntu-latest
+    environment: ${{ needs.resolve-env.outputs.environment }}
+    env:
+      ENV: ${{ needs.resolve-env.outputs.environment }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ needs.resolve-env.outputs.ref }}
+
+      - id: auth
+        uses: google-github-actions/auth@v3
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - uses: google-github-actions/setup-gcloud@v3
+
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Set environment-specific variables
+        run: |
+          if [ "$ENV" = "production" ]; then
+            echo "DASHBOARD_BUCKET=${GCP_PROJECT}-dashboard" >> "$GITHUB_ENV"
+            echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" >> "$GITHUB_ENV"
+            SENTRY_DSN_DASHBOARD=$(gcloud secrets versions access latest --secret="SENTRY_DSN_DASHBOARD" 2>/dev/null || echo "")
+            echo "VITE_SENTRY_DSN=${SENTRY_DSN_DASHBOARD}" >> "$GITHUB_ENV"
+          else
+            echo "DASHBOARD_BUCKET=${GCP_PROJECT}-dashboard-dev" >> "$GITHUB_ENV"
+            echo "VITE_API_URL=https://api-dev.cadmus.digital" >> "$GITHUB_ENV"
+            echo "VITE_SENTRY_DSN=" >> "$GITHUB_ENV"
+          fi
+
+      - name: Build dashboard SPA
+        run: pnpm turbo build --filter=@cadmus/dashboard...
+        env:
+          VITE_API_URL: ${{ env.VITE_API_URL }}
+          VITE_SENTRY_DSN: ${{ env.VITE_SENTRY_DSN }}
+
+      - name: Stamp version.json
+        run: |
+          SHORT_SHA=$(echo "${{ github.sha }}" | head -c 7)
+          GIT_TAG="${{ github.ref_name }}"
+          [[ "${{ github.ref }}" == refs/tags/* ]] || GIT_TAG=""
+          printf '{"app":"dashboard","env":"%s","gitSha":"%s","gitTag":"%s","builtAt":"%s"}\n' \
+            "$ENV" "$SHORT_SHA" "$GIT_TAG" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            > apps/dashboard/dist/version.json
+
+      - name: Upload assets (long-lived cache)
+        run: |
+          gcloud storage rsync apps/dashboard/dist/assets "gs://${DASHBOARD_BUCKET}/assets" \
+            --recursive \
+            --delete-unmatched-destination-objects \
+            --cache-control="public, max-age=31536000, immutable"
+
+      - name: Upload index.html + root files (no cache)
+        run: |
+          for f in apps/dashboard/dist/*; do
+            [ -d "$f" ] && continue
+            gcloud storage cp "$f" "gs://${DASHBOARD_BUCKET}/$(basename "$f")" \
+              --cache-control="no-store, no-cache, must-revalidate, max-age=0"
+          done
+
+  # ── Deploy Web ─────────────────────────────────────────────────────────────
+  deploy-web:
+    needs: [resolve-env, deploy-api, migrate-db, deploy-scanner]
+    if: always() && (needs.resolve-env.outputs.target == 'web' || needs.resolve-env.outputs.target == 'all') && (needs.deploy-api.result == 'success' || needs.deploy-api.result == 'skipped') && (needs.migrate-db.result == 'success' || needs.migrate-db.result == 'skipped') && (needs.deploy-scanner.result == 'success' || needs.deploy-scanner.result == 'skipped')
+    runs-on: ubuntu-latest
+    environment: ${{ needs.resolve-env.outputs.environment }}
+    env:
+      ENV: ${{ needs.resolve-env.outputs.environment }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ needs.resolve-env.outputs.ref }}
+
+      - id: auth
+        uses: google-github-actions/auth@v3
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - uses: google-github-actions/setup-gcloud@v3
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker ${GCP_REGION}-docker.pkg.dev --quiet
+
+      - name: Set environment-specific variables
+        run: |
+          if [ "$ENV" = "production" ]; then
+            echo "SERVICE_NAME=cadmus-web" >> "$GITHUB_ENV"
+            echo "BASE_DOMAIN=${{ secrets.BASE_DOMAIN }}" >> "$GITHUB_ENV"
+            echo "IMAGE_TAG=cadmus-web" >> "$GITHUB_ENV"
+          else
+            echo "SERVICE_NAME=cadmus-web-dev" >> "$GITHUB_ENV"
+            echo "BASE_DOMAIN=dev.cadmus.digital" >> "$GITHUB_ENV"
+            echo "PUBLIC_API_URL=https://api-dev.cadmus.digital" >> "$GITHUB_ENV"
+            echo "IMAGE_TAG=cadmus-web-dev" >> "$GITHUB_ENV"
+          fi
+
+      - name: Build and push Web image
+        run: |
+          SHORT_SHA=$(echo "${{ github.sha }}" | head -c 7)
+          IMAGE="${GCP_REGION}-docker.pkg.dev/${GCP_PROJECT}/cadmus/${IMAGE_TAG}:${SHORT_SHA}"
+          PUBLIC_API_URL="${PUBLIC_API_URL:-https://api.${BASE_DOMAIN}}"
+          docker build --platform linux/amd64 -f apps/web/Dockerfile \
+            --build-arg PUBLIC_API_URL="$PUBLIC_API_URL" \
+            -t "$IMAGE" .
+          docker push "$IMAGE"
+          echo "WEB_IMAGE=$IMAGE" >> "$GITHUB_ENV"
+          echo "GIT_SHA=$SHORT_SHA" >> "$GITHUB_ENV"
+          echo "BUILT_AT=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_ENV"
+          GIT_TAG="${{ github.ref_name }}"
+          [[ "${{ github.ref }}" == refs/tags/* ]] || GIT_TAG=""
+          echo "GIT_TAG=$GIT_TAG" >> "$GITHUB_ENV"
+
+      - name: Deploy Web to Cloud Run (dev — immediate traffic)
+        if: env.ENV == 'dev'
+        run: |
+          IMAGE="${WEB_IMAGE}"
+          gcloud run deploy "$SERVICE_NAME" \
+            --image="$IMAGE" \
+            --region="${GCP_REGION}" \
+            --platform=managed \
+            --allow-unauthenticated \
+            --service-account="cadmus-web@${GCP_PROJECT}.iam.gserviceaccount.com" \
+            --set-secrets="SENTRY_DSN=SENTRY_DSN_WEB:latest" \
+            --set-env-vars="NODE_ENV=development,BASE_DOMAIN=${BASE_DOMAIN},PUBLIC_API_URL=${PUBLIC_API_URL:-https://api.${BASE_DOMAIN}},APP_ENV=${ENV},GIT_SHA=${GIT_SHA},GIT_TAG=${GIT_TAG},BUILT_AT=${BUILT_AT}" \
+            --memory=256Mi \
+            --cpu=1 \
+            --min-instances=0 \
+            --max-instances=10 \
+            --port=8080
+
+      - name: Deploy Web to Cloud Run (prod — no traffic)
+        if: env.ENV == 'production'
+        id: deploy-web-prod
+        run: |
+          # Deploy with --no-traffic + --tag so we can health-check the new
+          # revision via a stable URL before shifting traffic.
+          gcloud run deploy "$SERVICE_NAME" \
+            --image="${WEB_IMAGE}" \
+            --region="${GCP_REGION}" \
+            --platform=managed \
+            --allow-unauthenticated \
+            --service-account="cadmus-web@${GCP_PROJECT}.iam.gserviceaccount.com" \
+            --set-secrets="SENTRY_DSN=SENTRY_DSN_WEB:latest" \
+            --set-env-vars="NODE_ENV=production,BASE_DOMAIN=${BASE_DOMAIN},PUBLIC_API_URL=${PUBLIC_API_URL:-https://api.${BASE_DOMAIN}},APP_ENV=${ENV},GIT_SHA=${GIT_SHA},GIT_TAG=${GIT_TAG},BUILT_AT=${BUILT_AT}" \
+            --memory=256Mi \
+            --cpu=1 \
+            --min-instances=0 \
+            --max-instances=10 \
+            --port=8080 \
+            --no-traffic \
+            --tag=candidate
+
+          # Capture the new revision name
+          REVISION=$(gcloud run revisions list \
+            --service="$SERVICE_NAME" \
+            --region="${GCP_REGION}" \
+            --sort-by="~creationTimestamp" \
+            --limit=1 \
+            --format="value(metadata.name)")
+          echo "revision=$REVISION" >> "$GITHUB_OUTPUT"
+          echo "Deployed revision: $REVISION (no traffic, tag=candidate)"
+
+      - name: Health check new revision (prod)
+        if: env.ENV == 'production'
+        run: |
+          # Build the tagged URL: https://candidate---<service-host>
+          SERVICE_URL=$(gcloud run services describe "$SERVICE_NAME" \
+            --region="${GCP_REGION}" \
+            --format="value(status.url)")
+          HOST="${SERVICE_URL#https://}"
+          REVISION_URL="https://candidate---${HOST}"
+
+          echo "Health checking: ${REVISION_URL}/health"
+          for i in $(seq 1 10); do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" "${REVISION_URL}/health" 2>/dev/null || echo "000")
+            if [ "$STATUS" = "200" ]; then
+              echo "Health check passed on attempt $i"
+              exit 0
+            fi
+            echo "Attempt $i: got $STATUS, retrying in 5s..."
+            sleep 5
+          done
+          echo "ERROR: Health check failed after 10 attempts — NOT shifting traffic"
+          exit 1
+
+      - name: Shift traffic to new revision (prod)
+        if: env.ENV == 'production'
+        run: |
+          REVISION="${{ steps.deploy-web-prod.outputs.revision }}"
+          echo "Shifting 100% traffic to $REVISION"
+          gcloud run services update-traffic "$SERVICE_NAME" \
+            --region="${GCP_REGION}" \
+            --to-revisions="$REVISION=100"
+          echo "Traffic shifted successfully"
+
+  # ── Deploy Scanner ────────────────────────────────────────────────────────
+  deploy-scanner:
+    needs: [resolve-env, migrate-db]
+    if: always() && (needs.resolve-env.outputs.target == 'scanner' || needs.resolve-env.outputs.target == 'all') && (needs.migrate-db.result == 'success' || needs.migrate-db.result == 'skipped')
+    runs-on: ubuntu-latest
+    environment: ${{ needs.resolve-env.outputs.environment }}
+    env:
+      ENV: ${{ needs.resolve-env.outputs.environment }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ needs.resolve-env.outputs.ref }}
+
+      - id: auth
+        uses: google-github-actions/auth@v3
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - uses: google-github-actions/setup-gcloud@v3
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker ${GCP_REGION}-docker.pkg.dev --quiet
+
+      - name: Set environment-specific variables
+        run: |
+          if [ "$ENV" = "production" ]; then
+            echo "SERVICE_NAME=cadmus-scanner" >> "$GITHUB_ENV"
+            echo "IMAGE_TAG=cadmus-scanner" >> "$GITHUB_ENV"
+            echo "MEDIA_BUCKET=${GCP_PROJECT}-media" >> "$GITHUB_ENV"
+            echo "STAGING_BUCKET=${GCP_PROJECT}-media-staging" >> "$GITHUB_ENV"
+            echo "DB_SECRET=DATABASE_URL" >> "$GITHUB_ENV"
+            echo "SQL_INSTANCE=cadmus" >> "$GITHUB_ENV"
+          else
+            echo "SERVICE_NAME=cadmus-scanner-dev" >> "$GITHUB_ENV"
+            echo "IMAGE_TAG=cadmus-scanner-dev" >> "$GITHUB_ENV"
+            echo "MEDIA_BUCKET=${GCP_PROJECT}-media-dev" >> "$GITHUB_ENV"
+            echo "STAGING_BUCKET=${GCP_PROJECT}-media-staging-dev" >> "$GITHUB_ENV"
+            echo "DB_SECRET=DATABASE_URL_DEV" >> "$GITHUB_ENV"
+            echo "SQL_INSTANCE=cadmus" >> "$GITHUB_ENV"
+          fi
+
+      - name: Build and push Scanner image
+        run: |
+          SHORT_SHA=$(echo "${{ github.sha }}" | head -c 7)
+          IMAGE="${GCP_REGION}-docker.pkg.dev/${GCP_PROJECT}/cadmus/${IMAGE_TAG}:${SHORT_SHA}"
+          docker build --platform linux/amd64 -f apps/scanner/Dockerfile -t "$IMAGE" .
+          docker push "$IMAGE"
+          echo "SCANNER_IMAGE=$IMAGE" >> "$GITHUB_ENV"
+
+      - name: Deploy Scanner to Cloud Run
+        run: |
+          CLOUD_SQL_CONNECTION="${GCP_PROJECT}:${GCP_REGION}:${SQL_INSTANCE}"
+          SCANNER_SA="cadmus-scanner@${GCP_PROJECT}.iam.gserviceaccount.com"
+          NODE_ENV_VAL=$([[ "$ENV" == "production" ]] && echo "production" || echo "development")
+
+          gcloud run deploy "$SERVICE_NAME" \
+            --image="${SCANNER_IMAGE}" \
+            --region="${GCP_REGION}" \
+            --platform=managed \
+            --no-allow-unauthenticated \
+            --service-account="${SCANNER_SA}" \
+            --add-cloudsql-instances="$CLOUD_SQL_CONNECTION" \
+            --set-secrets="DATABASE_URL=${DB_SECRET}:latest,SENTRY_DSN=SENTRY_DSN_SCANNER:latest" \
+            --set-env-vars="GCS_BUCKET_NAME=${MEDIA_BUCKET},GCS_STAGING_BUCKET_NAME=${STAGING_BUCKET},NODE_ENV=${NODE_ENV_VAL},CLOUD_SQL_CONNECTION=${CLOUD_SQL_CONNECTION}" \
+            --memory=4Gi \
+            --cpu=2 \
+            --no-cpu-throttling \
+            --min-instances=0 \
+            --max-instances=5 \
+            --port=8080 \
+            --timeout=300
+
+          # The API enqueues scans to Cloud Tasks, which invokes this service
+          # with an OIDC token for the scanner SA. That call needs run.invoker
+          # on this service. Self-heal it on every deploy (idempotent) so a
+          # fresh environment can't silently leave scans stuck in "pending".
+          gcloud run services add-iam-policy-binding "$SERVICE_NAME" \
+            --region="${GCP_REGION}" \
+            --member="serviceAccount:${SCANNER_SA}" \
+            --role=roles/run.invoker \
+            --condition=None --quiet
+
+  # ── Deploy Cloudflare Worker ──────────────────────────────────────────────
+  # Always deploys — wrangler is idempotent and this avoids "stale worker" bugs
+  # caused by diffing only HEAD~1..HEAD (which misses changes from earlier commits).
+  deploy-worker:
+    needs: resolve-env
+    if: always() && needs.resolve-env.result == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ needs.resolve-env.outputs.ref }}
+
+      - name: Deploy Cloudflare Worker
+        working-directory: scripts
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          for attempt in 1 2 3; do
+            if npx wrangler deploy; then
+              exit 0
+            fi
+            echo "Wrangler deploy attempt $attempt failed; retrying in 15s..."
+            sleep 15
+          done
+          echo "All wrangler deploy attempts failed."
+          exit 1
