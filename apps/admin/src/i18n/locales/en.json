@@ -1,0 +1,1690 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "insights": "Insights",
+    "content": "Content",
+    "collections": "Collections",
+    "forms": "Forms",
+    "media": "Media",
+    "style": "Style",
+    "seo": "SEO",
+    "addons": "Add-ons",
+    "redirects": "Redirects",
+    "activity": "Activity",
+    "team": "Team",
+    "account": "Account",
+    "settings": "Settings",
+    "help": "Help & Support"
+  },
+  "sidebar": {
+    "brand": "Cadmus",
+    "viewSite": "View site ↗",
+    "logout": "Log out",
+    "toggleMenu": "Toggle menu",
+    "insightsBadge_one": "{{count}} insight",
+    "insightsBadge_other": "{{count}} insights"
+  },
+  "account": {
+    "language": {
+      "title": "Language",
+      "label": "Display language",
+      "hint": "Changes the language of the Cadmus admin dashboard for your account only.",
+      "save": "Save Language",
+      "saving": "Saving...",
+      "saved": "Language updated!",
+      "error": "Failed to save language"
+    },
+    "title": "Account",
+    "profile": {
+      "title": "Profile",
+      "email": "Email",
+      "firstName": "First Name",
+      "firstNamePlaceholder": "First name",
+      "lastName": "Last Name",
+      "lastNamePlaceholder": "Last name",
+      "save": "Save Profile",
+      "saving": "Saving...",
+      "saved": "Profile saved!",
+      "errors": {
+        "saveFailed": "Failed to save profile"
+      }
+    },
+    "password": {
+      "title": "Change Password",
+      "current": "Current Password",
+      "new": "New Password",
+      "newPlaceholder": "At least 12 characters",
+      "confirm": "Confirm New Password",
+      "change": "Change Password",
+      "saved": "Password changed!",
+      "errors": {
+        "mismatch": "New passwords do not match",
+        "requirements": "Please meet all password requirements",
+        "changeFailed": "Failed to change password"
+      }
+    },
+    "storage": {
+      "title": "Storage",
+      "unavailable": "Usage unavailable.",
+      "usedOf": "{{used}} of {{quota}} used",
+      "fileCount_one": "{{count}} file · up to {{limit}} per upload",
+      "fileCount_other": "{{count}} files · up to {{limit}} per upload",
+      "lowSpace": "· running low on space"
+    },
+    "billing": {
+      "title": "Billing",
+      "loading": "Loading billing information...",
+      "activating": "Activating your plan… this can take a few seconds after checkout.",
+      "compedAllUnlocked": "All features unlocked",
+      "planSuffix": "{{plan}} Plan",
+      "staffOverride": "Staff override",
+      "compedBodyAll": "This site has been comped by a Cadmus administrator — every feature is unlocked and there's no Stripe subscription to manage.",
+      "compedBodyPlan": "This site has been granted the {{plan}} plan by a Cadmus administrator — all paid features are unlocked. There's no Stripe subscription to manage.",
+      "freePlan": "Free Plan",
+      "freeBody": "You're currently on the free plan. Upgrade to unlock custom domains, unlimited team members, and more.",
+      "upgradeTo": "Upgrade to {{plan}}",
+      "redirectingCheckout": "Redirecting to checkout...",
+      "redirecting": "Redirecting...",
+      "upgradePlan": "Upgrade Plan",
+      "statusActive": "Active",
+      "statusPastDue": "Past Due",
+      "statusCanceled": "Canceled",
+      "statusUnpaid": "Unpaid",
+      "statusPaused": "Paused",
+      "planStatus": "Plan Status",
+      "daysRemaining_one": "({{count}} day remaining)",
+      "daysRemaining_other": "({{count}} days remaining)",
+      "cancelsAtEnd": "(cancels at end of period)",
+      "plan": "Plan",
+      "planAnnual": "Annual",
+      "planMonthly": "Monthly",
+      "trialEnds": "Trial Ends",
+      "periodEnds": "Current Period Ends",
+      "paymentMethod": "Payment Method",
+      "cardEndingIn": "{{brand}} ending in {{last4}}",
+      "noPaymentMethod": "None on file",
+      "billedTo": "Billed To",
+      "partnerLabel": "Partner: {{name}}",
+      "addons": "Add-ons",
+      "addPaymentMethod": "Add Payment Method",
+      "manageBilling": "Manage Billing",
+      "switchTo": "Switch to {{plan}}",
+      "cancelSubscription": "Cancel Subscription",
+      "reactivateSubscription": "Reactivate Subscription",
+      "reactivating": "Reactivating...",
+      "transferBilling": "Transfer Billing",
+      "errors": {
+        "checkoutFailed": "Failed to create checkout session",
+        "portalFailed": "Failed to open billing portal",
+        "cancelFailed": "Failed to cancel subscription",
+        "planChangeFailed": "Failed to change plan",
+        "reactivateFailed": "Failed to reactivate subscription"
+      },
+      "transferModal": {
+        "title": "Transfer Billing",
+        "description": "Move billing responsibility to another team member or a partner. They'll be charged for future invoices.",
+        "teamMemberTab": "Team Member",
+        "partnerCodeTab": "Partner Code",
+        "chooseTeamMember": "Choose a team member",
+        "loadingTeam": "Loading team...",
+        "noEligibleMembers": "No eligible team members. Invite someone first or use a partner code.",
+        "selectPlaceholder": "— Select —",
+        "partnerCodeLabel": "Partner code",
+        "partnerCodePlaceholder": "e.g. WEBDEV2026",
+        "partnerCodeHint": "The partner will be billed going forward. Ask your partner for their code.",
+        "errors": {
+          "chooseMember": "Choose a team member.",
+          "enterCode": "Enter a partner code.",
+          "transferFailed": "Transfer failed"
+        },
+        "transferring": "Transferring...",
+        "transfer": "Transfer"
+      },
+      "planSwitchModal": {
+        "title": "Switch to {{plan}} ({{price}})",
+        "annualNote": "You'll be charged the prorated annual amount today and billed yearly going forward.",
+        "monthlyNote": "You'll receive a prorated credit and be billed monthly going forward.",
+        "confirm": "Confirm {{plan}}",
+        "switching": "Switching..."
+      },
+      "cancelModal": {
+        "title": "Cancel subscription?",
+        "trialMessageWithDate": "Your site will remain active through your trial (until {{date}}). You won't be charged.",
+        "trialMessageNoDate": "Your site will remain active through your trial. You won't be charged.",
+        "activeMessageWithDate": "Your site will remain active until the end of the current billing period ({{date}}). After that, your subscription will end.",
+        "activeMessageNoDate": "Your site will remain active until the end of the current billing period. After that, your subscription will end.",
+        "keepSubscription": "Keep Subscription",
+        "confirmCancel": "Confirm Cancel",
+        "canceling": "Canceling..."
+      }
+    }
+  },
+  "languages": {
+    "en": "English",
+    "hi": "हिन्दी (Hindi)"
+  },
+  "common": {
+    "loading": "Loading...",
+    "justNow": "just now",
+    "minutesAgo_one": "{{count}}m ago",
+    "minutesAgo_other": "{{count}}m ago",
+    "hoursAgo_one": "{{count}}h ago",
+    "hoursAgo_other": "{{count}}h ago",
+    "daysAgo_one": "{{count}}d ago",
+    "daysAgo_other": "{{count}}d ago",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "save": "Save",
+    "saving": "Saving...",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "add": "Add",
+    "adding": "Adding...",
+    "upload": "Upload",
+    "uploading": "Uploading...",
+    "generate": "Generate",
+    "generating": "Generating...",
+    "restore": "Restore",
+    "restoring": "Restoring...",
+    "uploadFailed": "Upload failed",
+    "addPaymentMethod": "Add a payment method",
+    "send": "Send",
+    "back": "Back",
+    "continue": "Continue",
+    "change": "Change",
+    "remove": "Remove",
+    "saved": "Saved!",
+    "copy": "Copy",
+    "copied": "Copied",
+    "failedToSave": "Failed to save",
+    "generateWithAi": "Generate with AI",
+    "reRollWithAi": "Re-roll with AI",
+    "dismiss": "Dismiss",
+    "previous": "Previous",
+    "next": "Next",
+    "pageOf": "Page {{page}} of {{total}}"
+  },
+  "onboardingBanner": {
+    "message": "Your site isn't built yet. Let Cadmus create it for you — it only takes a few minutes.",
+    "setUp": "Set up my site",
+    "starting": "Starting…",
+    "dismiss": "Dismiss"
+  },
+  "dashboard": {
+    "pages": "Pages",
+    "posts": "Posts",
+    "media": "Media",
+    "published": "Published",
+    "drafts": "Drafts",
+    "newPage": "New Page",
+    "newPost": "New Post",
+    "uploadMedia": "Upload Media",
+    "aiAssistant": "AI Assistant",
+    "recentActivity": "Recent Activity",
+    "noActivity": "No activity yet.",
+    "activity": {
+      "createdNamed": "Created \"{{name}}\"",
+      "createdItem": "Created a new content item",
+      "updatedNamed": "Updated \"{{name}}\"",
+      "updatedItem": "Updated a content item",
+      "deletedNamed": "Deleted \"{{name}}\"",
+      "deletedItem": "Deleted a content item",
+      "collectionCreatedNamed": "Created collection \"{{name}}\"",
+      "collectionCreated": "Created collection",
+      "collectionUpdatedNamed": "Updated collection \"{{name}}\"{{suffix}}",
+      "collectionUpdated": "Updated collection{{suffix}}",
+      "collectionDeletedNamed": "Deleted collection \"{{name}}\"",
+      "collectionDeleted": "Deleted collection",
+      "uploadedNamed": "Uploaded \"{{name}}\"",
+      "uploadedItem": "Uploaded a file",
+      "mediaDeletedNamed": "Deleted media \"{{name}}\"",
+      "mediaDeleted": "Deleted media",
+      "siteUpdated": "Updated site settings"
+    }
+  },
+  "aiDrawer": {
+    "title": "AI Assistant",
+    "send": "Send",
+    "inputPlaceholder": "Ask the AI anything about your site...",
+    "working": "Working",
+    "runningTool": "Running {{tool}}",
+    "errorGeneric": "Something went wrong. Please try again.",
+    "decisionFailed": "Decision failed",
+    "kept": "Kept",
+    "undone": "Undone",
+    "keep": "Keep",
+    "undo": "Undo",
+    "suggestionsTitle_one": "Suggestion for this page",
+    "suggestionsTitle_other": "Suggestions for this page",
+    "askAiToFix": "Ask AI to fix",
+    "dismiss": "Dismiss",
+    "toolLabels": {
+      "readContent": "Reading page content…",
+      "listContent": "Listing pages…",
+      "searchContent": "Searching content…",
+      "createContent": "Creating page…",
+      "updateContent": "Updating page…",
+      "getHtmlBlock": "Fetching HTML…",
+      "updateHtmlBlock": "Updating section…",
+      "deleteContent": "Deleting page…",
+      "setMetadata": "Updating metadata…",
+      "listMedia": "Listing media…",
+      "updateMedia": "Updating media…",
+      "deleteMedia": "Deleting media…",
+      "generateImage": "Generating image…",
+      "updateHeader": "Updating header…",
+      "updateFooter": "Updating footer…",
+      "readHeaderFooter": "Reading header & footer…",
+      "listNavigation": "Reading navigation…",
+      "updateNavigation": "Updating navigation…",
+      "createCollection": "Creating collection…",
+      "updateCollection": "Updating collection…",
+      "deleteCollection": "Deleting collection…",
+      "addToCollection": "Adding to collection…",
+      "removeFromCollection": "Removing from collection…",
+      "listCollections": "Listing collections…",
+      "getPageContext": "Reading page context…",
+      "designPage": "Designing page…",
+      "createRedirect": "Creating redirect…",
+      "deleteRedirect": "Deleting redirect…",
+      "listRedirects": "Listing redirects…",
+      "listTeam": "Reading team…",
+      "inviteTeamMember": "Sending invitation…",
+      "changeTeamRole": "Updating team member…"
+    },
+    "actionCard": {
+      "startInterview": "Start interview →",
+      "edit": "Edit →",
+      "designedPage": "Designed page:",
+      "designedDraftPage": "Designed draft page:",
+      "sectionsCount_one": "— {{count}} section",
+      "sectionsCount_other": "— {{count}} sections",
+      "created": "Created",
+      "updated": "Updated",
+      "draftPrefix": "draft ",
+      "post": "post",
+      "page": "page",
+      "contentAction": "{{verb}} {{draft}}{{typeLabel}}:",
+      "updatedMetadata": "Updated metadata",
+      "metaDescriptionSet": "— meta description set",
+      "featuredImageSet": "— featured image set",
+      "generatedImage": "Generated image",
+      "setAsFeaturedImage": "— set as featured image",
+      "generatedImageAlt": "AI generated",
+      "updatedMenu": "Updated {{location}} menu",
+      "itemsCount_one": "— {{count}} item",
+      "itemsCount_other": "— {{count}} items",
+      "createdCollection": "Created {{type}}:",
+      "addedToCollection": "Added to collection",
+      "removedFromCollection": "Removed from collection",
+      "deletedCollection": "Deleted collection:",
+      "deletedContent": "Deleted {{type}}:",
+      "createdRedirect": "Created redirect:",
+      "deletedRedirect": "Deleted redirect:",
+      "invitedTeamMember": "Invited team member:",
+      "asRole": "as",
+      "changedRole": "Changed role:",
+      "wasRole": "(was {{role}})",
+      "deletedMedia": "Deleted media:",
+      "updatedDesignDirection": "Updated the site's design direction",
+      "nowVersion": "— now v{{version}}",
+      "designDirectionHint": "Future pages and edits will follow this direction. You can review or fine-tune it in Settings → Design Direction.",
+      "actionCompleted": "Action completed: {{type}}"
+    }
+  },
+  "aiDrawerButton": {
+    "label": "AI",
+    "badgeMax": "9+",
+    "badgeAriaLabel_one": "{{count}} suggestion",
+    "badgeAriaLabel_other": "{{count}} suggestions"
+  },
+  "login": {
+    "title": "Sign in",
+    "signIn": "Sign in",
+    "signingIn": "Signing in...",
+    "error": "Login failed",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "Don't have an account?",
+    "signUp": "Sign up"
+  },
+  "signup": {
+    "error": {
+      "passwordRequirements": "Please meet all password requirements",
+      "generic": "Signup failed",
+      "emailExists": "An account with this email already exists."
+    },
+    "signInInstead": "Sign in instead",
+    "promoLoadError": "Could not load promotion details.",
+    "claimTrial": "Claim your {{days}}-day free trial",
+    "startPro": "Start your Pro plan",
+    "createSite": "Create a site that actually works",
+    "promoBanner": "{{days}} days of Pro, free — no credit card required.",
+    "promoInvalidDefault": "This promotion is not valid.",
+    "promoInvalidSuffix": "You can still sign up for a free account.",
+    "agencyDisclosureTitle": "You're signing up with {{agencyName}}",
+    "agencyDisclosureBody": "{{agencyName}} will be added to your site as an administrator and will manage the site and its billing on your behalf.",
+    "monthly": "Monthly",
+    "annual": "Annual",
+    "saveBadge": "Save ~17%",
+    "siteNameLabel": "Site Name",
+    "siteNamePlaceholder": "My New Site",
+    "activatingTrial": "Activating your trial...",
+    "settingUpAccount": "Setting up your account...",
+    "creatingSite": "Creating your site...",
+    "activateTrial": "Activate free trial",
+    "continueToPayment": "Continue to payment →",
+    "createFreeSite": "Create free site",
+    "wantFreePlan": "Just want the free plan?",
+    "signUpFree": "Sign up for free",
+    "alreadyHaveAccount": "Already have an account?",
+    "signIn": "Sign in"
+  },
+  "forgotPassword": {
+    "error": {
+      "generic": "Something went wrong"
+    },
+    "checkEmailTitle": "Check your email",
+    "checkEmailBodyPrefix": "If an account exists for",
+    "checkEmailBodySuffix": ", we sent a password reset link. It expires in 1 hour.",
+    "backToSignIn": "Back to sign in",
+    "title": "Forgot password",
+    "description": "Enter your email and we'll send you a link to reset your password.",
+    "sending": "Sending...",
+    "submit": "Send reset link"
+  },
+  "resetPassword": {
+    "invalidTitle": "Invalid link",
+    "invalidBody": "This password reset link is invalid. Please request a new one.",
+    "requestNewLink": "Request new link",
+    "error": {
+      "mismatch": "Passwords do not match",
+      "requirements": "Please meet all password requirements",
+      "generic": "Something went wrong"
+    },
+    "successTitle": "Password reset",
+    "successBody": "Your password has been updated. You can now sign in with your new password.",
+    "signIn": "Sign in",
+    "title": "Set new password",
+    "newPasswordLabel": "New password",
+    "passwordPlaceholder": "At least 12 characters",
+    "confirmLabel": "Confirm password",
+    "submitting": "Resetting...",
+    "submit": "Reset password"
+  },
+  "verifyEmail": {
+    "error": {
+      "generic": "Verification failed",
+      "resendFailed": "Failed to resend email"
+    },
+    "verifying": "Verifying your email...",
+    "successTitle": "Email verified!",
+    "successBody": "Your email has been verified. Redirecting to setup...",
+    "errorTitle": "Verification failed",
+    "needNewLink": "Need a new link?",
+    "resendSuccess": "A new verification email has been sent.",
+    "sending": "Sending...",
+    "resendCooldown": "Resend in {{seconds}}s",
+    "resend": "Resend verification email",
+    "checkInboxTitle": "Check your inbox",
+    "checkInboxBodyPrefix": "We sent a verification link to",
+    "checkInboxBodySuffix": ". Click the link in that email to continue.",
+    "yourEmailAddress": "your email address",
+    "expiryNotice": "The link expires in 24 hours. Check your spam folder if you don't see it."
+  },
+  "subdomainSetup": {
+    "error": {
+      "noneSelected": "Please choose an available subdomain first.",
+      "generic": "Failed to set subdomain"
+    },
+    "checking": "Checking...",
+    "available": "Available",
+    "taken": "Taken",
+    "tryPrefix": "try",
+    "invalidHint": "Use 3–40 lowercase letters, numbers, or hyphens",
+    "title": "Choose your subdomain",
+    "description": "This will be your site's address on Cadmus. You can connect a custom domain later.",
+    "subdomainLabel": "Subdomain",
+    "placeholder": "my-site",
+    "pickForMe": "Pick one for me",
+    "saving": "Saving...",
+    "continue": "Continue"
+  },
+  "acceptInvite": {
+    "invalidMissing": "This invitation link is missing or invalid.",
+    "invalidExpired": "This invitation link is invalid or has expired.",
+    "error": {
+      "loadFailed": "Something went wrong. Please try again later.",
+      "requirements": "Please meet all password requirements.",
+      "mismatch": "Passwords do not match.",
+      "acceptFailed": "Failed to accept invitation.",
+      "generic": "Something went wrong. Please try again."
+    },
+    "acceptedRedirectMessage": "Invitation accepted! Please log in.",
+    "checkingTitle": "Checking invitation...",
+    "unavailableTitle": "Invitation Unavailable",
+    "goToLogin": "Go to Login",
+    "title": "Accept Invitation",
+    "joiningAsPrefix": "You're joining as",
+    "joiningAsSuffix": ". Since you already have an account, just click below to accept.",
+    "accepting": "Accepting...",
+    "acceptInvitation": "Accept Invitation",
+    "setPasswordBody": "Set a password to complete your account setup{{suffix}}.",
+    "passwordPlaceholder": "At least 12 characters",
+    "confirmPasswordLabel": "Confirm Password",
+    "confirmPasswordPlaceholder": "Confirm your password",
+    "acceptAndSetPassword": "Accept & Set Password"
+  },
+  "partnerHome": {
+    "error": {
+      "loadFailed": "Failed to load"
+    },
+    "copied": "Copied!",
+    "copy": "Copy",
+    "title": "Cadmus Partner",
+    "code": "code",
+    "commission": "{{rate}}% commission",
+    "planAddons": "plan + add-ons",
+    "logout": "Log out",
+    "yourLinks": "Your links",
+    "referralLinkLabel": "Referral link",
+    "referralLinkHint": "Anyone who signs up through this link is attributed to you for commission.",
+    "clientInviteLinkLabel": "Client invite link",
+    "clientInviteLinkHint": "For your clients: you're added as an admin on their new site and manage its billing.",
+    "referralsTitle": "Referrals ({{count}})",
+    "noReferrals": "No referrals yet — share your referral link to get started.",
+    "tableSite": "Site",
+    "tableStatus": "Status",
+    "tableSignedUp": "Signed up",
+    "tableQualified": "Qualified",
+    "clientSitesTitle": "Client sites ({{count}})",
+    "noClientSites": "No client sites yet — share your client invite link.",
+    "tableBilling": "Billing by you",
+    "tableLinked": "Linked",
+    "yes": "Yes",
+    "notYet": "Not yet",
+    "clientSitesFooter": "You're an admin on each client site — log in and pick the site from the site switcher to manage it or set up billing from its Account page."
+  },
+  "contentList": {
+    "title": "Content",
+    "importHtml": "Import HTML",
+    "newItem": "+ New {{type}}",
+    "tabs": {
+      "page": "Pages",
+      "post": "Posts"
+    },
+    "statuses": {
+      "all": "All",
+      "draft": "Draft",
+      "published": "Published",
+      "archive": "Archive"
+    },
+    "emptyState": {
+      "text": "No {{type}}s yet.",
+      "createLink": "Create your first one",
+      "orAskAi": "or ask the AI to generate content."
+    },
+    "table": {
+      "title": "Title",
+      "slug": "Slug",
+      "collections": "Collections",
+      "status": "Status",
+      "updated": "Updated"
+    },
+    "untitled": "Untitled",
+    "statusBadge": {
+      "draft": "Draft",
+      "published": "Published",
+      "archived": "Archived"
+    },
+    "archive": "Archive",
+    "importModal": {
+      "title": "Import HTML Page",
+      "checkingSite": "Checking site…",
+      "themeIntro": "Your site doesn't have a theme yet. Choose how to set one up:",
+      "extractOption": "Extract from my page",
+      "extractDesc": "AI will detect your colors, fonts, and header/footer from the imported HTML.",
+      "briefOption": "Describe my brand",
+      "briefDesc": "Describe your brand colors and style and AI will generate a theme.",
+      "briefPlaceholder": "e.g. Modern SaaS, navy and white, Inter font, clean and minimal",
+      "continue": "Continue",
+      "pageTitleLabel": "Page Title",
+      "optional": "(optional)",
+      "titlePlaceholder": "Auto-detect from HTML",
+      "fileSizeClickChange": "{{size}} KB — click to change",
+      "dropZoneText": "Drop an HTML file here, or click to browse",
+      "acceptedFiles": "Accepts .html and .htm files",
+      "importingWithTheme": "Importing and setting up your theme…",
+      "importingDefault": "Importing… downloading images and rewriting with your theme",
+      "back": "Back",
+      "importingBtn": "Importing…",
+      "importBtn": "Import",
+      "invalidFileError": "Please drop an HTML file (.html or .htm).",
+      "importFailed": "Import failed"
+    }
+  },
+  "contentEditor": {
+    "unsavedChangesConfirm": "You have unsaved changes. Are you sure you want to leave?",
+    "unknownError": "Unknown error",
+    "loadFailed": "Failed to load content: {{message}}",
+    "titleRequired": "Title is required.",
+    "slugRequired": "Slug is required.",
+    "createdSuccess": "Content created successfully.",
+    "savedSuccess": "Content saved successfully.",
+    "saveFailed": "Failed to save: {{message}}",
+    "previewFailed": "Preview failed: {{message}}",
+    "historyLoadFailed": "Failed to load version history.",
+    "restoreConfirm": "Restore version {{version}}? This will replace the current content and create a new version.",
+    "restoredSuccess": "Restored to version {{version}}.",
+    "restoreFailed": "Failed to restore: {{message}}",
+    "imageGenFailed": "Image generation failed: {{message}}",
+    "newTitle": "New Content",
+    "editTitle": "Edit Content",
+    "history": "History",
+    "opening": "Opening...",
+    "preview": "Preview",
+    "fields": {
+      "title": "Title",
+      "slug": "Slug",
+      "contentType": "Content Type",
+      "status": "Status",
+      "seoTitle": "SEO Title",
+      "metaDescription": "Meta Description",
+      "featuredImage": "Featured Image"
+    },
+    "titlePlaceholder": "Page title...",
+    "slugPlaceholder": "url-friendly-slug",
+    "contentTypeOptions": {
+      "page": "Page",
+      "post": "Post"
+    },
+    "statusOptions": {
+      "draft": "Draft",
+      "published": "Published",
+      "archived": "Archived"
+    },
+    "seoTitlePlaceholderDefault": "Defaults to page title if left blank",
+    "seoTitleHint": "{{count}}/60 — shown in browser tab and search results",
+    "metaDescriptionPlaceholder": "Brief description for search engines (150-160 characters recommended)",
+    "metaDescriptionHint": "{{count}}/160",
+    "featuredImageAlt": "Featured",
+    "change": "Change",
+    "generateWithAi": "Generate with AI",
+    "remove": "Remove",
+    "browseMedia": "Browse Media",
+    "imagePromptPlaceholder": "Describe the image you want...",
+    "versionHistory": {
+      "title": "Version History",
+      "loading": "Loading versions...",
+      "empty": "No versions found.",
+      "versionLabel": "Version {{version}}",
+      "current": "Current",
+      "byAuthor": "by {{name}}"
+    }
+  },
+  "collections": {
+    "title": "Collections",
+    "newNamePlaceholder": "New collection name...",
+    "createFailed": "Failed to create collection",
+    "empty": "No collections yet.",
+    "table": {
+      "name": "Name",
+      "slug": "Slug"
+    }
+  },
+  "mediaLibrary": {
+    "title": "Media Library",
+    "generateImage": "Generate Image",
+    "generatePromptPlaceholder": "Describe the image you want to generate...",
+    "generateFailed": "Image generation failed",
+    "saveMetaFailed": "Failed to save",
+    "invalidFileType": "\"{{name}}\" is not an allowed file type. Accepted: images, videos, and PDFs.",
+    "fileTooLarge": "\"{{name}}\" exceeds the {{limit}} upload limit.",
+    "uploadingFile": "Uploading {{name}}",
+    "uploadingFileWithCount": "Uploading {{name}} ({{index}} of {{total}})",
+    "trialLimitMessage": "This file exceeds the 100 MB limit for trial accounts.",
+    "trialLimitSuffix": "to upload files up to 500 MB.",
+    "filters": {
+      "all": "All",
+      "images": "Images",
+      "videos": "Videos",
+      "pdfs": "PDFs"
+    },
+    "dropZone": "Drop files here or click Upload",
+    "loadingMedia": "Loading media...",
+    "empty": "No media uploaded yet. Upload files or let the AI generate images for your site.",
+    "blockedVideo": "Video has been blocked",
+    "blockedFile": "File has been blocked",
+    "processing": "Processing",
+    "underReview": "Under Review",
+    "blocked": "Blocked",
+    "displayName": "Display Name",
+    "altTitle": "Alt / Title",
+    "altPlaceholder": "Describe this image...",
+    "view": "View",
+    "copyUrl": "Copy URL",
+    "copied": "Copied!",
+    "previous": "Previous",
+    "next": "Next",
+    "pageOf": "Page {{page}} of {{total}}"
+  },
+  "contentPicker": {
+    "title": "Select a page or post",
+    "tabs": {
+      "pages": "Pages",
+      "posts": "Posts"
+    },
+    "noPublished": {
+      "pages": "No published pages yet.",
+      "posts": "No published posts yet."
+    }
+  },
+  "collectionPicker": {
+    "label": "Collections"
+  },
+  "mediaPicker": {
+    "title": "Select Media",
+    "trialLimitMessage": "File exceeds the 100 MB trial limit.",
+    "trialLimitSuffix": "to upload up to 500 MB.",
+    "noImages": "No images yet. Upload one above."
+  },
+  "onboarding": {
+    "title": "Set up your site",
+    "subtitle": {
+      "choose": "How would you like to set up your site?",
+      "briefPaste": "Paste your brief or copy below.",
+      "interview": "Answer a few questions so we can build your website. The more detailed your answers, the better your site will be!",
+      "review": "Review your site brief.",
+      "launch": "Generating your starter content."
+    },
+    "steps": {
+      "interview": "Interview",
+      "review": "Review",
+      "launch": "Launch"
+    },
+    "choose": {
+      "voiceTitle": "Build my voice",
+      "voiceDesc": "Answer a few questions and we'll craft your site's voice and design",
+      "startInterview": "Start interview",
+      "briefTitle": "I have a brief",
+      "briefDesc": "Paste your copy, brand guidelines, or notes and we'll set everything up",
+      "pasteMyBrief": "Paste my brief",
+      "skipForNow": "Skip for now — I'll set things up later"
+    },
+    "briefPaste": {
+      "pdfNotSupported": "PDF files can't be read directly. Please copy and paste the text content instead.",
+      "parseFailed": "Failed to parse brief. Please try again.",
+      "intro": "Paste any copy, brand guidelines, or notes about your site below. We'll extract the key details automatically.",
+      "textareaPlaceholder": "Paste your brief, copy, or brand notes here…",
+      "uploadFile": "Upload .txt or .md file",
+      "uploadHint": "File contents will be appended to the text above",
+      "analyzing": "Analyzing…"
+    },
+    "interview": {
+      "fallbackGreeting": "Welcome! Let's set up your website. Tell me about your business.",
+      "errorFallback": "Something went wrong. Please try again.",
+      "thinking": "Thinking",
+      "completeCountdown": "Interview complete! Reviewing in {{count}}...",
+      "logoAlt": "Logo",
+      "removeLogo": "Remove logo",
+      "uploadLogo": "Upload Logo (optional)",
+      "answerPlaceholder": "Type your answer...",
+      "backToOptions": "← Back to options"
+    },
+    "pageTypes": {
+      "selectPlaceholder": "Add a page...",
+      "homepage": "Homepage",
+      "about": "About",
+      "services": "Services",
+      "contact": "Contact",
+      "blog": "Blog",
+      "pricing": "Pricing",
+      "faq": "FAQ",
+      "portfolio": "Portfolio",
+      "testimonials": "Testimonials",
+      "features": "Features",
+      "landing": "Landing Page",
+      "custom": "Custom..."
+    },
+    "addPage": {
+      "customNamePlaceholder": "Page name (e.g. careers)",
+      "purposePlaceholder": "Purpose (optional)",
+      "add": "Add"
+    },
+    "review": {
+      "intro": "Review and edit your site brief before we generate your starter content.",
+      "logoLabel": "Logo",
+      "logoAlt": "Logo",
+      "rerollWithAi": "Re-roll with AI",
+      "uploadLogo": "Upload Logo",
+      "generateWithAi": "Generate with AI",
+      "logoGenerationFailed": "Generation failed",
+      "logoHint": "AI generates a simple brand icon (no lettering). You can always upload your own.",
+      "inspirationLabel": "Design Inspiration (optional)",
+      "inspirationHint": "Upload screenshots of websites or designs you like. We'll analyze them to match your site's style. The images will not be included in your new site directly.",
+      "inspirationAlt": "Inspiration {{index}}",
+      "addImage": "Add Image",
+      "addImages": "Add Images",
+      "maxImagesReached": "Maximum 5 images reached.",
+      "businessNameLabel": "Business Name *",
+      "businessDescriptionLabel": "Business Description *",
+      "locationLabel": "Location",
+      "targetAudienceLabel": "Target Audience",
+      "differentiatorsLabel": "Differentiators",
+      "toneLabel": "Tone",
+      "tonePlaceholder": "e.g. Professional, Friendly, Bold",
+      "brandColorsLabel": "Brand Colors",
+      "brandColorsPlaceholder": "e.g. Navy blue and orange, #1a365d, forest green",
+      "primaryGoalLabel": "Primary Goal",
+      "primaryGoalPlaceholder": "e.g. Generate leads, Sell products, Bookings",
+      "constraintsLabel": "Must / Must-not (one per line)",
+      "constraintsPlaceholder": "e.g. Do not use stock photos\nNever add a testimonials section\nAlways show the phone number in the header",
+      "constraintsHint": "Hard rules the design must follow. We pull these from your brief — edit or add any we missed.",
+      "plannedPagesLabel": "Planned Pages ({{count}})",
+      "removePage": "Remove page",
+      "noPagesPlanned": "No pages planned. Add at least one page below, or defaults will be used (Home + About)."
+    },
+    "generate": {
+      "patience": {
+        "0": "Your homepage generation will take longer than additional pages, since we have to create the theme styles first. Other pages will reuse the same styling to make sure the whole site is consistent.",
+        "1": "Most agency websites take 6 – 12 weeks to complete, but yours only will be done in a matter of minutes!",
+        "2": "For each page, we create a design mockup, then convert it to reusable blocks that are easy to edit later on.",
+        "3": "We're crafting unique content tailored to your business — no cookie-cutter templates here.",
+        "4": "Your site is being optimized for search engines right out of the gate.",
+        "5": "Every section is built with conversion in mind — headlines, CTAs, and layout all working together.",
+        "6": "Fun fact: the average small business spends $5,000–$10,000 on a new website. You can redesign yours anytime!"
+      },
+      "statusGeneratingPage": "Generating {{label}} page...",
+      "statusGeneratingParallel_one": "Generating {{count}} page in parallel...",
+      "statusGeneratingParallel_other": "Generating {{count}} pages in parallel...",
+      "statusFinalizing": "Finalizing site styles...",
+      "statusReady": "Your site is ready!",
+      "statusReadyToLaunch": "Ready to launch!",
+      "progressLabel": "{{progress}}% — {{currentIndex}} of {{totalPages}} pages",
+      "createdPagesHeading": "Created {{count}} pages:",
+      "sitePreviewTitle": "Site preview",
+      "viewYourSite": "View Your Site",
+      "launching": "Launching...",
+      "goToDashboard": "Go to Dashboard"
+    }
+  },
+  "siteSettings": {
+    "title": "Settings",
+    "general": {
+      "heading": "General",
+      "siteName": "Site Name",
+      "siteLanguage": "Site Language"
+    },
+    "domain": {
+      "heading": "Domain",
+      "subdomainLabel": "Subdomain:",
+      "change": "Change",
+      "subdomainUpdated": "Subdomain updated!",
+      "subdomainChangePaidWarning": "Your old URL will redirect to the new one for 48 hours. After that, only the new URL will work. We will email you a confirmation.",
+      "subdomainChangeFreeWarning": "Your old URL will stop working immediately after this change.",
+      "newSubdomain": "New subdomain",
+      "checkingAvailability": "Checking...",
+      "available": "Available",
+      "notAvailable": "Not available",
+      "customDomainLabel": "Custom domain:",
+      "status": {
+        "active": "Active",
+        "sslProvisioning": "SSL Provisioning...",
+        "failed": "Failed",
+        "pending": "Pending"
+      },
+      "sslStatusSuffix": "(SSL: {{status}})",
+      "checking": "Checking...",
+      "checkStatus": "Check Status",
+      "disconnecting": "Disconnecting...",
+      "disconnect": "Disconnect",
+      "verificationFailed": "Verification failed.",
+      "commonCauses": "Common causes:",
+      "causeCnameNotAdded": "CNAME record not yet added at your DNS provider, or not yet propagated (DNS can take a few hours).",
+      "causeCnameWrongTargetPrefix": "CNAME points somewhere other than",
+      "causeCnameWrongTargetSuffix": "— double-check the value exactly.",
+      "causeProxyEnabled": "Proxy/CDN enabled at your DNS provider (turn off proxying; we handle SSL).",
+      "updateDnsThenCheckPrefix": "Update your DNS, then click",
+      "updateDnsThenCheckSuffix": ". You can also disconnect and try again with a different domain.",
+      "waitingForVerification": "Waiting for DNS & SSL verification — we check every 15 seconds automatically.",
+      "dnsSetup": "DNS Setup:",
+      "tableType": "Type",
+      "tableName": "Name",
+      "tableValue": "Value",
+      "connectCustomDomain": "Connect Custom Domain",
+      "connect": "Connect",
+      "dnsMessageRoot": "Add a CNAME for www pointing to origin.cadmus.digital. If your DNS provider supports CNAME flattening (like Cloudflare), you can also add a CNAME for the root domain. Otherwise, set up a redirect from your root domain to www. DNS changes usually take 5 minutes to a few hours to propagate.",
+      "dnsMessageSubdomain": "Add a CNAME record pointing to origin.cadmus.digital. SSL is provisioned automatically. DNS changes usually take 5 minutes to a few hours to propagate.",
+      "copyToClipboard": "Copy to clipboard",
+      "disconnectConfirm": "Disconnect {{domain}}?\n\nVisitors using this domain will immediately stop reaching your site until you reconnect it or update DNS elsewhere. Your subdomain URL keeps working.",
+      "failedToConnect": "Failed to connect domain",
+      "failedToCheckStatus": "Failed to check status",
+      "failedToDisconnect": "Failed to disconnect domain",
+      "failedToChangeSubdomain": "Failed to change subdomain"
+    },
+    "brief": {
+      "heading": "Site Brief",
+      "businessName": "Business Name",
+      "businessDescription": "Business Description",
+      "targetAudience": "Target Audience",
+      "tone": "Tone",
+      "tonePlaceholder": "e.g. professional, friendly, casual",
+      "primaryGoal": "Primary Goal",
+      "primaryGoalPlaceholder": "e.g. generate leads, sell products",
+      "saveBrief": "Save Brief"
+    },
+    "businessInfo": {
+      "heading": "Business Info",
+      "description": "Contact details and address for your site's structured data (helps with SEO and Google Knowledge Panel).",
+      "contactEmail": "Contact Email",
+      "phoneNumber": "Phone Number",
+      "streetAddress": "Street Address",
+      "city": "City",
+      "state": "State / Province",
+      "postalCode": "Postal Code",
+      "country": "Country",
+      "countryPlaceholder": "United States"
+    },
+    "social": {
+      "heading": "Social Links",
+      "description": "Links to your social profiles. These appear in your footer and in the Organization schema for SEO.",
+      "facebook": "Facebook",
+      "instagram": "Instagram",
+      "twitter": "X / Twitter",
+      "linkedin": "LinkedIn",
+      "youtube": "YouTube",
+      "tiktok": "TikTok"
+    },
+    "forms": {
+      "heading": "Form Defaults",
+      "description": "Default settings for forms that don't have their own notification configured (e.g. Stitch design forms).",
+      "notificationEmail": "Notification Email",
+      "sendConfirmationEmail": "Send confirmation email to submitter",
+      "confirmationMessage": "Confirmation Message",
+      "confirmationMessagePlaceholder": "Thank you for reaching out. We'll get back to you soon.",
+      "webhookHeading": "Webhook",
+      "webhookDescription": "Default webhook for forms without their own. Individual forms can override this in the page editor.",
+      "sendEachSubmissionToWebhook": "Send each submission to a webhook URL",
+      "webhookUrl": "Webhook URL",
+      "signingSecret": "Signing secret",
+      "signingSecretDescription": "We sign every webhook with this secret (HMAC-SHA256 of \"<timestamp>.<body>\" in the X-Cadmus-Signature header). Use it to verify requests are from us.",
+      "rotateSecret": "Rotate secret",
+      "rotating": "Rotating…",
+      "revealSigningSecret": "Reveal signing secret",
+      "rotateSecretConfirm": "Rotate the signing secret? The current secret stops working immediately — any receiver verifying signatures must be updated with the new one.",
+      "failedToRotateSecret": "Failed to rotate signing secret",
+      "failedToLoadSecret": "Failed to load signing secret"
+    },
+    "customCode": {
+      "heading": "Custom Code",
+      "description": "Add analytics, pixels, chat widgets, or verification tags. This code is injected verbatim into every page — it is NOT sanitized, so only paste code from sources you trust. Owner-only.",
+      "headCode": "Head code",
+      "headCodeHint": "(injected into <head> — analytics, meta verification)",
+      "bodyEndCode": "Body end code",
+      "bodyEndCodeHint": "(injected before </body> — chat widgets, deferred scripts)",
+      "saveCustomCode": "Save Custom Code"
+    },
+    "import": {
+      "heading": "Import from WordPress",
+      "description": "Import posts, pages, and media from a WordPress XML export (WXR) file.\nGo to WordPress Admin → Tools → Export to download your export file.",
+      "paymentMethodRequired": "A payment method is required to use the importer. Add one in the Account section.",
+      "exportFileLabel": "WordPress Export File (.xml)",
+      "analyzeFile": "Analyze File",
+      "analyzing": "Analyzing...",
+      "fileTooLargeDetailed": "This file is {{sizeMb}} MB, which exceeds the 25 MB upload limit. In WordPress, go to Tools → Export and use the filters to export posts, pages, and media separately.",
+      "fileTooLarge": "File is too large (max {{maxMb}} MB). In WordPress, go to Tools → Export and export posts, pages, and media separately.",
+      "failedToAnalyze": "Failed to analyze the file. Make sure it is a valid WordPress XML export.",
+      "failedToStart": "Failed to start import",
+      "foundLabel": "Found:",
+      "foundSummary": "{{postCount}} posts, {{pageCount}} pages, {{attachmentCount}} attachments",
+      "mediaImportNote": "Media import requires your original WordPress site to still be accessible. Dead links will be skipped and logged.",
+      "contentToImport": "Content to import",
+      "postsCount": "Posts ({{count}})",
+      "pagesCount": "Pages ({{count}})",
+      "importDrafts": "Import draft posts/pages",
+      "importMediaFiles": "Import media files to Cadmus",
+      "authorMapping": "Author Mapping",
+      "ownerOption": "Owner",
+      "categoryMapping": "Category Mapping",
+      "createNewCollection": "Create new collection",
+      "startImport": "Start Import",
+      "importing": "Importing...",
+      "progressOfTotal": "({{progress}} of {{total}})",
+      "importingHint": "This may take a few minutes. You can leave this page — the import will continue in the background.",
+      "importComplete": "Import complete",
+      "importedSummary": "Imported: {{posts}} posts, {{pages}} pages",
+      "importedMediaSuffix": "{{count}} media files",
+      "skippedSummary": "Skipped: {{count}} items",
+      "importFailed": "Import failed",
+      "renamedSlugs_one": "Renamed slugs ({{count}})",
+      "renamedSlugs_other": "Renamed slugs ({{count}})",
+      "mediaErrors_one": "Media errors ({{count}})",
+      "mediaErrors_other": "Media errors ({{count}})",
+      "otherErrors_one": "Other errors ({{count}})",
+      "otherErrors_other": "Other errors ({{count}})",
+      "startAnotherImport": "Start another import"
+    },
+    "export": {
+      "heading": "Export",
+      "description": "Download your site data for backup or migration.",
+      "formatHtml": "HTML",
+      "formatJson": "JSON",
+      "htmlDescription": "Exports all pages as a single self-contained HTML file with embedded styles. Suitable for archiving or viewing offline.",
+      "dataToInclude": "Data to include",
+      "deselectAll": "Deselect all",
+      "selectAll": "Select all",
+      "selectAtLeastOneCategory": "Select at least one category to export.",
+      "exportFailedWithStatus": "Export failed ({{status}})",
+      "exportFailed": "Export failed",
+      "exporting": "Exporting...",
+      "exportAs": "Export as {{format}}",
+      "categories": {
+        "content": {
+          "label": "Content",
+          "description": "All pages, posts, and their blocks"
+        },
+        "submissions": {
+          "label": "Form Submissions",
+          "description": "All form submission data"
+        },
+        "settings": {
+          "label": "Site Settings",
+          "description": "Name, brief, theme, and configuration"
+        },
+        "collections": {
+          "label": "Collections",
+          "description": "Categories, tags, and content groupings"
+        },
+        "navigation": {
+          "label": "Navigation",
+          "description": "Menu items and structure"
+        },
+        "media": {
+          "label": "Media",
+          "description": "Image and file metadata (not the files themselves)"
+        }
+      }
+    },
+    "stitch": {
+      "heading": "Debug: Import Stitch Project",
+      "description": "Fetch screens from an existing Stitch project and apply them to your pages.",
+      "projectId": "Stitch Project ID",
+      "noScreensFound": "No screens found in this project",
+      "failedToFetchScreens": "Failed to fetch screens",
+      "fetching": "Fetching...",
+      "fetchScreens": "Fetch Screens",
+      "foundScreens_one": "Found {{count}} screen. Map it to an existing page:",
+      "foundScreens_other": "Found {{count}} screens. Map each to an existing page:",
+      "screenFallbackName": "Screen {{number}}",
+      "skipOption": "— Skip (don't apply) —",
+      "blogPostTemplate": "Blog Post Template",
+      "genericPage": "page",
+      "applyingProgress": "Applying {{screenName}} → {{target}} ({{current}}/{{total}})...",
+      "applying": "Applying...",
+      "applyToPages": "Apply to Pages",
+      "done": "Done!",
+      "appliedToPages_one": "Applied Stitch designs to {{count}} page.",
+      "appliedToPages_other": "Applied Stitch designs to {{count}} page(s).",
+      "someFailed": "{{count}} failed.",
+      "refreshToSeeChanges": "Refresh your site to see the changes."
+    },
+    "resetSite": {
+      "heading": "Debug: Reset Site",
+      "description": "Delete all content, media, collections, navigation, and design settings, then restart onboarding from scratch. Your account and subdomain are preserved.",
+      "confirm": "Are you sure? This will permanently delete all site content, media, and settings.",
+      "resetting": "Resetting...",
+      "resetButton": "Reset Site & Start Over"
+    },
+    "themeDebug": {
+      "heading": "Platform Admin: Theme Debug",
+      "description": "Inspect the compiled theme (fonts, header/footer, CSS coverage) and recompile Tailwind from the current blocks.",
+      "failedToLoad": "Failed to load theme debug info",
+      "loadThemeDebugInfo": "Load Theme Debug Info",
+      "recompileFailed": "Recompile failed",
+      "recompiling": "Recompiling...",
+      "recompileTheme": "Recompile Theme",
+      "recompiled": "Recompiled.",
+      "compiledCssSummary": "Compiled CSS: {{beforeBytes}} → {{afterBytes}} bytes across {{blockCount}} block(s)."
+    },
+    "aiPreferences": {
+      "heading": "Debug: AI Preferences",
+      "description": "Choose your preferred AI models for different tasks.",
+      "textModel": "Text Generation Model",
+      "imageModel": "Image Generation Model",
+      "savePreferences": "Save Preferences",
+      "preferencesSaved": "Preferences saved.",
+      "failedToSavePreferences": "Failed to save preferences.",
+      "textModelOptions": {
+        "claude-sonnet-4-6": "Claude Sonnet 4.6 (Anthropic)",
+        "gemini-2.5-flash": "Gemini 2.5 Flash (Google)"
+      },
+      "imageModelOptions": {
+        "imagen-4.0-generate-001": "Imagen 4.0 (Google)",
+        "imagen-4.0-fast-generate-001": "Imagen 4.0 Fast (Google)",
+        "imagen-4.0-ultra-generate-001": "Imagen 4.0 Ultra (Google)"
+      }
+    }
+  },
+  "style": {
+    "title": "Style",
+    "menuEditor": {
+      "loading": "Loading menu...",
+      "helpText": "These items are woven into the {{location}} at render time. Save them with the {{location}} below. Items with children become dropdown menus; their URL can be left empty if they are labels only.",
+      "location": {
+        "header": "header",
+        "footer": "footer"
+      },
+      "noItems": "No menu items yet.",
+      "labelHeader": "Label",
+      "urlHeader": "URL",
+      "labelPlaceholder": "Label",
+      "urlPlaceholder": "/path (optional if has children)",
+      "pagePostLinkTitle": "Link to a published page or post",
+      "pagePostButton": "Page/Post",
+      "addChildTitle": "Add child item",
+      "addChildButton": "+ child",
+      "moveUpTitle": "Move up",
+      "moveDownTitle": "Move down",
+      "removeTitle": "Remove",
+      "childLabelPlaceholder": "Child label",
+      "childUrlPlaceholder": "/path",
+      "removeChildTitle": "Remove child",
+      "addItem": "+ Add item"
+    },
+    "recompile": {
+      "button": "Recompile CSS",
+      "recompiling": "Recompiling…",
+      "success": "CSS recompiled!",
+      "error": "Recompile failed"
+    },
+    "theme": {
+      "title": "Theme",
+      "siteLogo": "Site Logo",
+      "logoAlt": "Site logo",
+      "noLogo": "No logo set",
+      "logoHelp": "AI generates a simple brand icon (no lettering). Upload your own anytime.",
+      "chooseTheme": "Choose a visual theme for your public-facing site."
+    },
+    "headerFooter": {
+      "title": "Header & Footer",
+      "help": "Edit the header and footer sections of your theme. Navigation links and logo are wired up automatically — edit layout, copy, and menu items here.",
+      "headerTitle": "Header",
+      "footerTitle": "Footer",
+      "menuTabLabel": "Menu ({{count}})",
+      "saveHeader": "Save header",
+      "saveFooter": "Save footer",
+      "saving": "Saving..."
+    },
+    "errors": {
+      "saveTheme": "Failed to save theme",
+      "generationFailed": "Generation failed",
+      "saveHeader": "Failed to save header",
+      "saveFooter": "Failed to save footer"
+    }
+  },
+  "seo": {
+    "title": "SEO",
+    "freeTier": {
+      "intro": "SEO files",
+      "availablePlans": "are available on paid plans. Free-tier sites are set to",
+      "noIndex": "no-index",
+      "explanation": ", so search engines and AI assistants are asked not to list them. Upgrade to manage these."
+    },
+    "llms": {
+      "custom": "· custom",
+      "autoGenerated": "· auto-generated",
+      "descriptionP1": "A curated guide that helps AI assistants understand your site",
+      "descriptionP2": ". Generated from your site brief and published pages. Edit it or have AI write a richer version — leave it untouched to keep it in sync automatically.",
+      "writeWithAi": "Write with AI",
+      "writing": "Writing…",
+      "resetToAuto": "Reset to auto",
+      "saved": "Saved"
+    },
+    "viewLink": "View ↗",
+    "sitemap": {
+      "description": "Auto-generated from your published pages and posts. Submitted to search engines via robots.txt.",
+      "urlCount_one": "{{count}} URL",
+      "urlCount_other": "{{count}} URLs"
+    },
+    "robots": {
+      "description": "Auto-generated. Allows crawlers and points them to your sitemap."
+    },
+    "errors": {
+      "load": "Failed to load SEO settings",
+      "save": "Failed to save",
+      "reset": "Failed to reset",
+      "draft": "Failed to draft with AI"
+    }
+  },
+  "addons": {
+    "title": "Add-ons",
+    "subtitle": "Extend your site with curated, sandboxed add-ons. Install what you need — no plugins to maintain.",
+    "tabs": {
+      "browse": "Browse",
+      "installed": "Installed",
+      "installedWithCount": "Installed ({{count}})"
+    },
+    "loading": "Loading…",
+    "noneAvailable": "No add-ons available yet.",
+    "noneInstalledPrefix": "No add-ons installed yet. Find some under",
+    "free": "Free",
+    "showLess": "Show less",
+    "showMore": "Show more",
+    "installed": "Installed ✓",
+    "installTitleDisabled": "Only admins can install add-ons",
+    "installing": "Installing…",
+    "install": "Install",
+    "billingNote": "Billed to your subscription, prorated today.",
+    "dismiss": "Dismiss",
+    "suspendedBadge": "suspended — billing issue",
+    "configure": "Configure",
+    "working": "Working…",
+    "uninstall": "Uninstall",
+    "configSaved": "Saved",
+    "mortgageCalculatorHint": "Add the Mortgage Calculator block to any page from the editor.",
+    "noConfigurableSettings": "This add-on has no configurable settings.",
+    "visitorChatbot": {
+      "instructionsLabel": "Instructions for the assistant",
+      "instructionsPlaceholder": "Describe how the assistant should talk to visitors, what it should help with, and anything it should avoid.",
+      "greetingLabel": "Greeting message",
+      "greetingPlaceholder": "Hi! How can I help you today?",
+      "enabled": "Enabled"
+    },
+    "turnstile": {
+      "advancedToggle": "Advanced: bring your own Cloudflare Turnstile keys",
+      "description": "Leave these blank to use the platform's shared Turnstile keys. Enter your own to run spam protection on your Cloudflare account.",
+      "siteKeyLabel": "Site key",
+      "secretKeyLabel": "Secret key",
+      "secretKeyPlaceholder": "Kept private — never shown to visitors"
+    },
+    "confirmUninstall": {
+      "free": "Uninstall {{name}}?",
+      "paid": "Uninstall {{name}}? Paid add-ons are credited pro-rata."
+    },
+    "errors": {
+      "load": "Failed to load add-ons",
+      "install": "Failed to install",
+      "uninstall": "Failed to uninstall",
+      "saveConfig": "Failed to save"
+    }
+  },
+  "redirects": {
+    "title": "URL Redirects",
+    "importCsv": "Import CSV",
+    "importing": "Importing…",
+    "importResult": {
+      "created_one": "Imported {{count}} redirect",
+      "created_other": "Imported {{count}} redirects",
+      "skipped": ", skipped {{count}}"
+    },
+    "fromPlaceholder": "/old-path",
+    "toPlaceholder": "/new-path or https://…",
+    "add": "Add",
+    "adding": "Adding…",
+    "loading": "Loading…",
+    "emptyState": {
+      "title": "No redirects yet.",
+      "hint": "Add a redirect above or import from a CSV file.",
+      "csvFormat": "CSV format:"
+    },
+    "tableHeaders": {
+      "from": "From",
+      "to": "To",
+      "code": "Code",
+      "active": "Active"
+    },
+    "deleteConfirm": {
+      "message": "Delete redirect from"
+    },
+    "toggleEnabled": {
+      "onTitle": "Enabled — click to disable",
+      "offTitle": "Disabled — click to enable"
+    },
+    "statusOptions": {
+      "301": "301 — Permanent",
+      "302": "302 — Temporary",
+      "307": "307 — Temporary (preserve method)",
+      "308": "308 — Permanent (preserve method)"
+    },
+    "errors": {
+      "create": "Failed to create redirect",
+      "noValidRows": "No valid rows found in CSV"
+    }
+  },
+  "branding": {
+    "title": "Branding",
+    "subtitle": "Control how Cadmus is credited on your public site.",
+    "bylineLabel": "Show \"Powered by Cadmus\" byline in footer",
+    "errors": {
+      "saveFailed": "Failed to save"
+    },
+    "favicon": {
+      "title": "Favicon",
+      "subtitle": "The small icon shown in browser tabs and bookmarks. Square PNG, SVG, or ICO at least 256×256.",
+      "imageAlt": "Favicon",
+      "none": "None",
+      "previewNotSaved": "Preview — not yet saved.",
+      "currentFavicon": "Current favicon.",
+      "usingDefault": "Using the default Cadmus icon.",
+      "uploading": "Uploading…",
+      "discard": "Discard",
+      "errors": {
+        "invalidType": "Favicon must be a PNG, SVG, or ICO file.",
+        "mustBeSquare": "Favicon must be square.",
+        "tooSmall": "Favicon must be at least 256×256 pixels.",
+        "readFailed": "Couldn't read image dimensions.",
+        "uploadFailed": "Upload failed",
+        "uploadNoUrl": "Upload returned no URL",
+        "generationFailed": "Generation failed",
+        "saveFailed": "Failed to save",
+        "removeFailed": "Failed to remove"
+      }
+    }
+  },
+  "designDirection": {
+    "title": "Design Direction",
+    "intro": "The AI references this on every edit and new page so your site stays visually and tonally consistent. It's generated from your homepage and evolves as you make global changes in chat — edit it here to correct anything the AI keeps getting wrong.",
+    "versionLabel": "Version {{version}}",
+    "source": {
+      "generated": "auto-generated from homepage",
+      "refined": "refined via AI chat",
+      "edited": "edited by you"
+    },
+    "updatedOn": "updated {{date}}",
+    "notCapturedYet": "No design direction has been captured yet — it's synthesized automatically after your homepage is generated. You can also fill it in manually below.",
+    "fields": {
+      "aesthetic": {
+        "label": "Aesthetic direction",
+        "hint": "(the overall look in a sentence or two)",
+        "placeholder": "e.g. Warm, editorial, and confident — generous whitespace with bold serif headlines over muted earth tones."
+      },
+      "voice": {
+        "label": "Voice & tone",
+        "hint": "(how the copy should sound)",
+        "placeholder": "e.g. Plain-spoken, benefit-led, lightly playful"
+      },
+      "layout": {
+        "label": "Layout & composition",
+        "placeholder": "e.g. Alternating light/dark sections, asymmetric hero, roomy card grids"
+      },
+      "imagery": {
+        "label": "Imagery",
+        "hint": "(used to guide AI-generated images)",
+        "placeholder": "e.g. Natural-light photography, real people, candid moments, no stock-cliché handshakes"
+      },
+      "colorType": {
+        "label": "Color & type",
+        "placeholder": "e.g. Accent reserved for CTAs only; headings in the display serif, body in a clean sans"
+      },
+      "positioning": {
+        "label": "Positioning",
+        "hint": "(differentiators to reinforce in copy — optional)",
+        "placeholder": "e.g. The only locally-owned option with same-day service"
+      },
+      "constraints": {
+        "label": "Constraints",
+        "hint": "(hard rules the AI must never break — one per line)",
+        "placeholder": "e.g. Never use purple\nNo stock photos of offices\nAlways keep the tagline 'Built to last'"
+      }
+    },
+    "saveButton": "Save Design Direction",
+    "errors": {
+      "saveFailed": "Failed to save"
+    }
+  },
+  "themeEditor": {
+    "subtitle": "Colors and fonts for your site theme. Edit any value and save.",
+    "colorGroups": {
+      "primary": "Primary",
+      "secondary": "Secondary",
+      "tertiary": "Tertiary",
+      "surface": "Surface",
+      "error": "Error",
+      "other": "Other"
+    },
+    "fontsHeading": "Fonts",
+    "saving": "Saving...",
+    "saveButton": "Save Theme",
+    "errors": {
+      "saveFailed": "Failed to save"
+    }
+  },
+  "upgradePrompt": {
+    "features": {
+      "custom_domain": {
+        "label": "Custom Domain",
+        "description": "Connect your own domain name to your site."
+      },
+      "team_members": {
+        "label": "Team Members",
+        "description": "Invite collaborators to help manage your site."
+      },
+      "ai_chat_message": {
+        "label": "AI Chat Messages",
+        "description": "Chat with Cadmus AI to edit content and get suggestions."
+      },
+      "ai_image_generation": {
+        "label": "AI Image Generation",
+        "description": "Generate professional images using AI."
+      },
+      "page_count": {
+        "label": "Page Limit",
+        "description": "Create additional pages on your site."
+      },
+      "post_count": {
+        "label": "Post Limit",
+        "description": "Publish additional blog posts."
+      },
+      "storage_upload": {
+        "label": "Media Storage",
+        "description": "Upload images, videos, and documents to your media library."
+      },
+      "form_email_notification": {
+        "label": "Form Email Notifications",
+        "description": "Receive email notifications when visitors submit forms."
+      },
+      "paid_addons": {
+        "label": "Paid Add-ons",
+        "description": "Install premium add-ons from the marketplace."
+      }
+    },
+    "period": {
+      "today": "today",
+      "thisMonth": "this month",
+      "total": "total"
+    },
+    "inline": {
+      "usage": "{{label}}: {{usage}} / {{limit}} {{period}} used.",
+      "notAvailable": "{{label}} is not available on the free plan.",
+      "upgradeToUnlock": "Upgrade to unlock more."
+    },
+    "upgradeButton": "Upgrade",
+    "card": {
+      "limitReached": "{{label}} Limit Reached",
+      "usageFraction": "{{usage}} / {{limit}} {{period}}",
+      "upgradePlanButton": "Upgrade Plan",
+      "unlockText": "Unlock unlimited access with a paid plan."
+    }
+  },
+  "team": {
+    "roles": {
+      "owner": "Owner",
+      "admin": "Admin",
+      "editor": "Editor",
+      "viewer": "Viewer"
+    },
+    "inviteMember": {
+      "title": "Invite Member",
+      "emailLabel": "Email",
+      "emailPlaceholder": "colleague@example.com",
+      "roleLabel": "Role",
+      "send": "Send Invite",
+      "sending": "Sending...",
+      "success": "Invitation sent to {{email}}"
+    },
+    "errors": {
+      "inviteFailed": "Failed to send invitation",
+      "roleChangeFailed": "Failed to change role",
+      "removeFailed": "Failed to remove member"
+    },
+    "confirmLeave": "Leave this site? You will lose access.",
+    "confirmRemove": "Remove {{name}} from this site?",
+    "members": {
+      "title_one": "Members ({{count}})",
+      "title_other": "Members ({{count}})",
+      "columns": {
+        "name": "Name",
+        "email": "Email",
+        "role": "Role",
+        "joined": "Joined"
+      },
+      "you": "(you)",
+      "pending": "Pending",
+      "billingBadge": "Billing",
+      "billingTooltip": "This member is the billing contact",
+      "remove": "Remove",
+      "leave": "Leave"
+    }
+  },
+  "auditLog": {
+    "title": "Activity Log",
+    "totalTurns_one": "{{count}} turn",
+    "totalTurns_other": "{{count}} turns",
+    "totalEntries_one": "{{count}} entries",
+    "totalEntries_other": "{{count}} entries",
+    "filters": {
+      "allActors": "All actors",
+      "allTaskTypes": "All task types",
+      "allDecisions": "All decisions",
+      "allEntities": "All entities"
+    },
+    "actorTypes": {
+      "user": "User",
+      "ai": "AI",
+      "cron": "Cron",
+      "addon": "Addon"
+    },
+    "decisions": {
+      "accepted": "Accepted",
+      "rejected": "Rejected",
+      "modified": "Modified",
+      "partial": "Partial"
+    },
+    "entityTypes": {
+      "content": "Content",
+      "media": "Media",
+      "site": "Site",
+      "navigation": "Navigation",
+      "user": "User",
+      "collection": "Collection"
+    },
+    "noAiActivity": "No AI activity found.",
+    "noActivity": "No activity found.",
+    "actionsCount_one": "{{count}} action",
+    "actionsCount_other": "{{count}} actions",
+    "actions": {
+      "keep": "Keep",
+      "undo": "Undo",
+      "undoing": "Undoing..."
+    },
+    "fallbackBadge": "fallback",
+    "onEntity": "on {{type}}:{{id}}",
+    "byActor": "by {{name}}",
+    "errors": {
+      "decisionFailed": "Decision failed"
+    },
+    "time": {
+      "justNow": "Just now"
+    },
+    "actionLabels": {
+      "site_provisioned": "Site created",
+      "site_updated": "Site updated",
+      "site_activated": "Site activated",
+      "site_billing_changed": "Billing updated",
+      "site_domain_connected": "Domain connected",
+      "site_domain_disconnected": "Domain disconnected",
+      "site_subdomain_set": "Subdomain set",
+      "site_subdomain_changed": "Subdomain changed",
+      "content_created": "Content created",
+      "content_imported": "Content imported",
+      "content_imported_html": "HTML content imported",
+      "content_imported_stitch_html": "Stitch HTML imported",
+      "content_metadata_updated": "Content metadata updated",
+      "content_updated": "Content updated",
+      "content_archived": "Content archived",
+      "content_version_restored": "Version restored",
+      "favicon_generated": "Favicon generated",
+      "media_uploaded": "Media uploaded",
+      "media_deleted": "Media deleted",
+      "media_generated": "Media generated",
+      "footer_updated": "Footer updated",
+      "header_updated": "Header updated",
+      "theme_extract_fields": "Extracted editable fields",
+      "navigation_updated": "Navigation updated",
+      "collection_created": "Collection created",
+      "collection_updated": "Collection updated",
+      "collection_deleted": "Collection deleted",
+      "content_unarchived": "Content restored",
+      "media_updated": "Media updated",
+      "redirect_created": "Redirect created",
+      "redirect_imported": "Redirect(s) imported",
+      "redirect_updated": "Redirect updated",
+      "redirect_deleted": "Redirect deleted",
+      "navigation_created": "Navigation created",
+      "navigation_deleted": "Navigation deleted",
+      "scheduled_task_created": "Task scheduled",
+      "scheduled_task_cancelled": "Task cancelled",
+      "billing_transferred": "Billing transferred",
+      "billing_cancelled": "Subscription cancelled",
+      "billing_reactivated": "Subscription reactivated",
+      "billing_plan_changed": "Subscription updated",
+      "account_password_changed": "Password changed",
+      "account_password_reset": "Password reset",
+      "account_profile_updated": "Profile updated",
+      "site_restart_onboarding": "Onboarding restarted",
+      "site_reset": "Site reset",
+      "team_invited": "Member invited",
+      "team_joined": "Member joined",
+      "team_role_changed": "Role changed",
+      "team_removed": "Member removed",
+      "theme_recompile": "Recompiled theme CSS"
+    }
+  },
+  "formSubmissions": {
+    "title": "Form Submissions",
+    "total_one": "{{count}} total",
+    "total_other": "{{count}} total",
+    "export": "Export CSV",
+    "exporting": "Exporting...",
+    "allForms": "All forms",
+    "untitledForm": "Untitled form",
+    "from": "From",
+    "to": "To",
+    "searchPlaceholder": "Search email, URL, field data",
+    "search": "Search",
+    "clear": "Clear",
+    "noResults": "No submissions found.",
+    "columns": {
+      "date": "Date",
+      "form": "Form",
+      "email": "Email",
+      "source": "Source"
+    },
+    "delete": "Delete",
+    "confirmDelete": "Delete this submission?",
+    "resendWebhook": "Resend webhook",
+    "resending": "Resending…",
+    "attachments": "Attachments",
+    "ipLabel": "IP:",
+    "errors": {
+      "deleteFailed": "Failed to delete submission",
+      "resendFailed": "Failed to resend webhook",
+      "exportFailed": "Export failed",
+      "downloadFailed": "Download failed"
+    },
+    "webhookStatus": {
+      "pending": "Webhook pending",
+      "success": "Webhook sent",
+      "failed": "Webhook failed"
+    }
+  },
+  "help": {
+    "title": "Help & Support",
+    "intro": "Have a question, ran into something unexpected, or have an idea? We're here to help.",
+    "tabs": {
+      "submit": "Submit a Request",
+      "myTickets": "My Requests"
+    },
+    "submitted": {
+      "title": "Request received",
+      "body": "We'll follow up by email. You can track the status under",
+      "another": "Submit another request"
+    },
+    "form": {
+      "typeLabel": "Request type",
+      "typeSupport": "Support ticket",
+      "typeFeature": "Feature request",
+      "subjectLabel": "Subject",
+      "subjectPlaceholderSupport": "Briefly describe the issue",
+      "subjectPlaceholderFeature": "Briefly describe your idea",
+      "bodyLabelSupport": "What's happening?",
+      "bodyLabelFeature": "Tell us more",
+      "bodyPlaceholderSupport": "Describe what you did, what you expected to happen, and what happened instead.",
+      "bodyPlaceholderFeature": "Describe the feature and how it would help you.",
+      "priorityLabel": "Priority",
+      "priorityLow": "Low — minor inconvenience",
+      "priorityNormal": "Normal — something isn't working right",
+      "priorityHigh": "High — my site is broken or unusable",
+      "submit": "Submit request",
+      "submitting": "Submitting…"
+    },
+    "errors": {
+      "submitFailed": "Failed to submit ticket"
+    },
+    "tickets": {
+      "empty": "No requests yet. Submit one under",
+      "loadingReplies": "Loading replies…",
+      "repliesHeading": "Replies from support"
+    },
+    "status": {
+      "open": "Open",
+      "inProgress": "In Progress",
+      "resolved": "Resolved",
+      "closed": "Closed"
+    }
+  },
+  "insights": {
+    "openCount_one": "{{count}} open",
+    "openCount_other": "{{count}} open",
+    "dismissedSuffix_one": " · {{count}} dismissed",
+    "dismissedSuffix_other": " · {{count}} dismissed",
+    "rescan": "Re-scan",
+    "scanning": "Scanning…",
+    "intro": "Things on your site that look incomplete, broken, or worth a second look. Open the page to fix it directly, or use the AI assistant there to help.",
+    "errors": {
+      "loadFailed": "Couldn't load insights. Try again in a moment."
+    },
+    "empty": {
+      "title": "Nothing to address right now",
+      "body": "No open insights. We'll surface anything new the next time you re-scan or visit a page that has a fixable issue."
+    },
+    "showDismissed_one": "Show dismissed ({{count}})",
+    "showDismissed_other": "Show dismissed ({{count}})",
+    "hideDismissed_one": "Hide dismissed ({{count}})",
+    "hideDismissed_other": "Hide dismissed ({{count}})",
+    "openPage": "Open {{page}}",
+    "restore": "Restore",
+    "dismiss": "Dismiss"
+  },
+  "passwordStrength": {
+    "minLength": "At least 12 characters",
+    "uppercase": "Uppercase letter",
+    "numberOrSymbol": "Number or symbol"
+  },
+  "trialBanner": {
+    "endsToday": "Your free trial ends today.",
+    "daysLeft_one": "{{count}} day left in your free trial.",
+    "daysLeft_other": "{{count}} days left in your free trial.",
+    "addPaymentMethod": "Add payment method"
+  },
+  "pastDueBanner": {
+    "message": "Your last payment was declined. Stripe will keep retrying, but your site will be suspended if those attempts also fail — please update your card.",
+    "updatePaymentMethod": "Update payment method"
+  },
+  "suspensionBanner": {
+    "archivedTitle": "This site is archived",
+    "suspendedTitle": "This site is suspended",
+    "body": "You can still sign in and view content, but editing and publishing are disabled.",
+    "reasonSuffix": " Reason: {{reason}}",
+    "deletion_one": "Scheduled for permanent deletion on {{date}} ({{count}} day remaining).",
+    "deletion_other": "Scheduled for permanent deletion on {{date}} ({{count}} days remaining).",
+    "contactPrefix": "Questions? Contact"
+  },
+  "errorBoundary": {
+    "title": "Something went wrong",
+    "body": "The admin app ran into an unexpected error. Reloading usually fixes it.",
+    "reload": "Reload",
+    "tryAgain": "Try again"
+  }
+}

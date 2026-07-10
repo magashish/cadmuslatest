@@ -10,7 +10,8 @@ import { verifyHandoffToken } from "../lib/handoff.js";
 import { readValidatedJson } from "../lib/validate.js";
 import { getEmailProvider } from "../lib/email.js";
 import { createRateLimiter, getClientIp } from "../lib/rate-limit.js";
-import type { AuthUser, SiteMembership } from "@cadmus/shared";
+import type { AuthUser, Locale, SiteMembership } from "@cadmus/shared";
+import { SUPPORTED_LOCALES } from "@cadmus/shared";
 
 // Brute-force protection: 10 failed attempts per IP per 15 minutes.
 // Window resets only when an attempt succeeds (we call reset() on success).
@@ -193,6 +194,9 @@ async function buildAuthUser(dbUser: typeof users.$inferSelect, siteId: string):
   // Platform admins get implicit site-admin role on any site they inspect
   const role = membership?.role || (globalRole === "cadmus_admin" ? "admin" : dbUser.role);
 
+  const rawLocale = (dbUser.preferences as Record<string, unknown> | null)?.locale;
+  const locale = SUPPORTED_LOCALES.includes(rawLocale as Locale) ? (rawLocale as Locale) : undefined;
+
   return {
     id: dbUser.id,
     email: dbUser.email,
@@ -203,6 +207,7 @@ async function buildAuthUser(dbUser: typeof users.$inferSelect, siteId: string):
     globalRole,
     emailVerifiedAt: dbUser.emailVerifiedAt ?? null,
     tokenVersion: dbUser.tokenVersion ?? 0,
+    locale,
   };
 }
 
@@ -938,11 +943,19 @@ authRoutes.get("/me", requireAuth, async (c) => {
 authRoutes.put("/profile", requireAuth, async (c) => {
   const authUser = c.get("user") as AuthUser;
   const body = await c.req.json();
-  const { firstName, lastName } = body as { firstName?: string; lastName?: string };
+  const { firstName, lastName, locale } = body as { firstName?: string; lastName?: string; locale?: string };
+
+  if (locale !== undefined && !SUPPORTED_LOCALES.includes(locale as Locale)) {
+    return c.json({ error: "Unsupported locale" }, 400);
+  }
 
   const updates: Record<string, unknown> = {};
   if (firstName !== undefined) updates.firstName = firstName.trim() || null;
   if (lastName !== undefined) updates.lastName = lastName.trim() || null;
+  if (locale !== undefined) {
+    // Merge into the jsonb preferences blob rather than overwriting it.
+    updates.preferences = sql`coalesce(${users.preferences}, '{}'::jsonb) || ${JSON.stringify({ locale })}::jsonb`;
+  }
 
   if (Object.keys(updates).length === 0) {
     return c.json({ error: "No fields to update" }, 400);

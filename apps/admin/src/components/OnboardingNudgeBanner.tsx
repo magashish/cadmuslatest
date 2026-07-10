@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 import { site } from "../lib/api";
 
 export function OnboardingNudgeBanner() {
+  const { t } = useTranslation();
   const { user, skippedOnboarding, clearSkippedOnboarding, refreshSiteStatus } = useAuth();
   const navigate = useNavigate();
   const [starting, setStarting] = useState(false);
@@ -43,9 +45,7 @@ export function OnboardingNudgeBanner() {
         color: "#1e40af",
       }}
     >
-      <span>
-        Your site isn't built yet. Let Cadmus create it for you — it only takes a few minutes.
-      </span>
+      <span>{t("onboardingBanner.message")}</span>
       <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
         <button
           type="button"
@@ -64,7 +64,7 @@ export function OnboardingNudgeBanner() {
             opacity: starting ? 0.7 : 1,
           }}
         >
-          {starting ? "Starting…" : "Set up my site"}
+          {starting ? t("onboardingBanner.starting") : t("onboardingBanner.setUp")}
         </button>
         <button
           type="button"
@@ -78,7 +78,7 @@ export function OnboardingNudgeBanner() {
             lineHeight: 1,
             padding: "0 0.25rem",
           }}
-          aria-label="Dismiss"
+          aria-label={t("onboardingBanner.dismiss")}
         >
           ×
         </button>

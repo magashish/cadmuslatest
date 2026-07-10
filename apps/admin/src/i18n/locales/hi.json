@@ -1,0 +1,1690 @@
+{
+  "nav": {
+    "dashboard": "डैशबोर्ड",
+    "insights": "इनसाइट्स",
+    "content": "सामग्री",
+    "collections": "संग्रह",
+    "forms": "फ़ॉर्म",
+    "media": "मीडिया",
+    "style": "स्टाइल",
+    "seo": "SEO",
+    "addons": "ऐड-ऑन",
+    "redirects": "रीडायरेक्ट",
+    "activity": "गतिविधि",
+    "team": "टीम",
+    "account": "खाता",
+    "settings": "सेटिंग्स",
+    "help": "सहायता और समर्थन"
+  },
+  "sidebar": {
+    "brand": "Cadmus",
+    "viewSite": "साइट देखें ↗",
+    "logout": "लॉग आउट",
+    "toggleMenu": "मेनू टॉगल करें",
+    "insightsBadge_one": "{{count}} इनसाइट",
+    "insightsBadge_other": "{{count}} इनसाइट्स"
+  },
+  "account": {
+    "language": {
+      "title": "भाषा",
+      "label": "प्रदर्शन भाषा",
+      "hint": "यह केवल आपके खाते के लिए Cadmus एडमिन डैशबोर्ड की भाषा बदलता है।",
+      "save": "भाषा सहेजें",
+      "saving": "सहेजा जा रहा है...",
+      "saved": "भाषा अपडेट हो गई!",
+      "error": "भाषा सहेजने में विफल"
+    },
+    "title": "खाता",
+    "profile": {
+      "title": "प्रोफ़ाइल",
+      "email": "ईमेल",
+      "firstName": "पहला नाम",
+      "firstNamePlaceholder": "पहला नाम",
+      "lastName": "अंतिम नाम",
+      "lastNamePlaceholder": "अंतिम नाम",
+      "save": "प्रोफ़ाइल सहेजें",
+      "saving": "सहेजा जा रहा है...",
+      "saved": "प्रोफ़ाइल सहेजी गई!",
+      "errors": {
+        "saveFailed": "प्रोफ़ाइल सहेजने में विफल"
+      }
+    },
+    "password": {
+      "title": "पासवर्ड बदलें",
+      "current": "वर्तमान पासवर्ड",
+      "new": "नया पासवर्ड",
+      "newPlaceholder": "कम से कम 12 वर्ण",
+      "confirm": "नए पासवर्ड की पुष्टि करें",
+      "change": "पासवर्ड बदलें",
+      "saved": "पासवर्ड बदल गया!",
+      "errors": {
+        "mismatch": "नए पासवर्ड मेल नहीं खाते",
+        "requirements": "कृपया सभी पासवर्ड आवश्यकताओं को पूरा करें",
+        "changeFailed": "पासवर्ड बदलने में विफल"
+      }
+    },
+    "storage": {
+      "title": "स्टोरेज",
+      "unavailable": "उपयोग अनुपलब्ध।",
+      "usedOf": "{{quota}} में से {{used}} उपयोग किया गया",
+      "fileCount_one": "{{count}} फ़ाइल · प्रति अपलोड {{limit}} तक",
+      "fileCount_other": "{{count}} फ़ाइलें · प्रति अपलोड {{limit}} तक",
+      "lowSpace": "· जगह कम हो रही है"
+    },
+    "billing": {
+      "title": "बिलिंग",
+      "loading": "बिलिंग जानकारी लोड हो रही है...",
+      "activating": "आपकी योजना सक्रिय की जा रही है… चेकआउट के बाद इसमें कुछ सेकंड लग सकते हैं।",
+      "compedAllUnlocked": "सभी सुविधाएं अनलॉक हैं",
+      "planSuffix": "{{plan}} योजना",
+      "staffOverride": "स्टाफ़ ओवरराइड",
+      "compedBodyAll": "इस साइट को Cadmus एडमिन द्वारा कॉम्प किया गया है — हर सुविधा अनलॉक है और प्रबंधित करने के लिए कोई Stripe सदस्यता नहीं है।",
+      "compedBodyPlan": "इस साइट को Cadmus एडमिन द्वारा {{plan}} योजना दी गई है — सभी पेड सुविधाएं अनलॉक हैं। प्रबंधित करने के लिए कोई Stripe सदस्यता नहीं है।",
+      "freePlan": "मुफ़्त योजना",
+      "freeBody": "आप वर्तमान में मुफ़्त योजना पर हैं। कस्टम डोमेन, असीमित टीम सदस्य और अधिक अनलॉक करने के लिए अपग्रेड करें।",
+      "upgradeTo": "{{plan}} में अपग्रेड करें",
+      "redirectingCheckout": "चेकआउट पर रीडायरेक्ट हो रहा है...",
+      "redirecting": "रीडायरेक्ट हो रहा है...",
+      "upgradePlan": "प्लान अपग्रेड करें",
+      "statusActive": "सक्रिय",
+      "statusPastDue": "अतिदेय",
+      "statusCanceled": "रद्द किया गया",
+      "statusUnpaid": "अवैतनिक",
+      "statusPaused": "रोका गया",
+      "planStatus": "प्लान स्थिति",
+      "daysRemaining_one": "({{count}} दिन शेष)",
+      "daysRemaining_other": "({{count}} दिन शेष)",
+      "cancelsAtEnd": "(अवधि के अंत में रद्द होगा)",
+      "plan": "प्लान",
+      "planAnnual": "वार्षिक",
+      "planMonthly": "मासिक",
+      "trialEnds": "ट्रायल समाप्ति",
+      "periodEnds": "वर्तमान अवधि समाप्ति",
+      "paymentMethod": "भुगतान विधि",
+      "cardEndingIn": "{{brand}} जो {{last4}} पर समाप्त होता है",
+      "noPaymentMethod": "कोई फ़ाइल में नहीं",
+      "billedTo": "इसे बिल किया गया",
+      "partnerLabel": "पार्टनर: {{name}}",
+      "addons": "ऐड-ऑन",
+      "addPaymentMethod": "भुगतान विधि जोड़ें",
+      "manageBilling": "बिलिंग प्रबंधित करें",
+      "switchTo": "{{plan}} पर स्विच करें",
+      "cancelSubscription": "सदस्यता रद्द करें",
+      "reactivateSubscription": "सदस्यता पुनः सक्रिय करें",
+      "reactivating": "पुनः सक्रिय हो रहा है...",
+      "transferBilling": "बिलिंग स्थानांतरित करें",
+      "errors": {
+        "checkoutFailed": "चेकआउट सत्र बनाने में विफल",
+        "portalFailed": "बिलिंग पोर्टल खोलने में विफल",
+        "cancelFailed": "सदस्यता रद्द करने में विफल",
+        "planChangeFailed": "प्लान बदलने में विफल",
+        "reactivateFailed": "सदस्यता पुनः सक्रिय करने में विफल"
+      },
+      "transferModal": {
+        "title": "बिलिंग स्थानांतरित करें",
+        "description": "बिलिंग की ज़िम्मेदारी किसी अन्य टीम सदस्य या पार्टनर को स्थानांतरित करें। भविष्य के इनवॉइस के लिए उनसे शुल्क लिया जाएगा।",
+        "teamMemberTab": "टीम सदस्य",
+        "partnerCodeTab": "पार्टनर कोड",
+        "chooseTeamMember": "एक टीम सदस्य चुनें",
+        "loadingTeam": "टीम लोड हो रही है...",
+        "noEligibleMembers": "कोई योग्य टीम सदस्य नहीं है। पहले किसी को आमंत्रित करें या पार्टनर कोड का उपयोग करें।",
+        "selectPlaceholder": "— चुनें —",
+        "partnerCodeLabel": "पार्टनर कोड",
+        "partnerCodePlaceholder": "जैसे WEBDEV2026",
+        "partnerCodeHint": "पार्टनर को आगे से बिल किया जाएगा। अपने पार्टनर से उनका कोड मांगें।",
+        "errors": {
+          "chooseMember": "एक टीम सदस्य चुनें।",
+          "enterCode": "एक पार्टनर कोड दर्ज करें।",
+          "transferFailed": "स्थानांतरण विफल"
+        },
+        "transferring": "स्थानांतरित हो रहा है...",
+        "transfer": "स्थानांतरित करें"
+      },
+      "planSwitchModal": {
+        "title": "{{plan}} ({{price}}) पर स्विच करें",
+        "annualNote": "आज आपसे प्रोरेटेड वार्षिक राशि ली जाएगी और आगे से आपको सालाना बिल किया जाएगा।",
+        "monthlyNote": "आपको एक प्रोरेटेड क्रेडिट मिलेगा और आगे से आपको मासिक बिल किया जाएगा।",
+        "confirm": "{{plan}} की पुष्टि करें",
+        "switching": "स्विच हो रहा है..."
+      },
+      "cancelModal": {
+        "title": "सदस्यता रद्द करें?",
+        "trialMessageWithDate": "आपकी साइट आपके ट्रायल के दौरान सक्रिय रहेगी (जब तक {{date}})। आपसे शुल्क नहीं लिया जाएगा।",
+        "trialMessageNoDate": "आपकी साइट आपके ट्रायल के दौरान सक्रिय रहेगी। आपसे शुल्क नहीं लिया जाएगा।",
+        "activeMessageWithDate": "आपकी साइट वर्तमान बिलिंग अवधि ({{date}}) के अंत तक सक्रिय रहेगी। उसके बाद, आपकी सदस्यता समाप्त हो जाएगी।",
+        "activeMessageNoDate": "आपकी साइट वर्तमान बिलिंग अवधि के अंत तक सक्रिय रहेगी। उसके बाद, आपकी सदस्यता समाप्त हो जाएगी।",
+        "keepSubscription": "सदस्यता रखें",
+        "confirmCancel": "रद्द करने की पुष्टि करें",
+        "canceling": "रद्द हो रहा है..."
+      }
+    }
+  },
+  "languages": {
+    "en": "English",
+    "hi": "हिन्दी (Hindi)"
+  },
+  "common": {
+    "loading": "लोड हो रहा है...",
+    "justNow": "अभी अभी",
+    "minutesAgo_one": "{{count}} मिनट पहले",
+    "minutesAgo_other": "{{count}} मिनट पहले",
+    "hoursAgo_one": "{{count}} घंटे पहले",
+    "hoursAgo_other": "{{count}} घंटे पहले",
+    "daysAgo_one": "{{count}} दिन पहले",
+    "daysAgo_other": "{{count}} दिन पहले",
+    "emailLabel": "ईमेल",
+    "passwordLabel": "पासवर्ड",
+    "save": "सहेजें",
+    "saving": "सहेजा जा रहा है...",
+    "cancel": "रद्द करें",
+    "delete": "हटाएं",
+    "edit": "संपादित करें",
+    "close": "बंद करें",
+    "add": "जोड़ें",
+    "adding": "जोड़ा जा रहा है...",
+    "upload": "अपलोड करें",
+    "uploading": "अपलोड हो रहा है...",
+    "generate": "जनरेट करें",
+    "generating": "जनरेट हो रहा है...",
+    "restore": "पुनर्स्थापित करें",
+    "restoring": "पुनर्स्थापित हो रहा है...",
+    "uploadFailed": "अपलोड विफल",
+    "addPaymentMethod": "भुगतान विधि जोड़ें",
+    "send": "भेजें",
+    "back": "वापस",
+    "continue": "जारी रखें",
+    "change": "बदलें",
+    "remove": "हटाएं",
+    "saved": "सहेजा गया!",
+    "copy": "कॉपी करें",
+    "copied": "कॉपी हो गया",
+    "failedToSave": "सहेजने में विफल",
+    "generateWithAi": "AI से जनरेट करें",
+    "reRollWithAi": "AI से फिर से बनाएं",
+    "dismiss": "खारिज करें",
+    "previous": "पिछला",
+    "next": "अगला",
+    "pageOf": "{{total}} में से पेज {{page}}"
+  },
+  "onboardingBanner": {
+    "message": "आपकी साइट अभी तक नहीं बनी है। Cadmus को इसे आपके लिए बनाने दें — इसमें बस कुछ ही मिनट लगते हैं।",
+    "setUp": "मेरी साइट सेट अप करें",
+    "starting": "शुरू हो रहा है…",
+    "dismiss": "खारिज करें"
+  },
+  "dashboard": {
+    "pages": "पेज",
+    "posts": "पोस्ट",
+    "media": "मीडिया",
+    "published": "प्रकाशित",
+    "drafts": "ड्राफ़्ट",
+    "newPage": "नया पेज",
+    "newPost": "नई पोस्ट",
+    "uploadMedia": "मीडिया अपलोड करें",
+    "aiAssistant": "AI सहायक",
+    "recentActivity": "हाल की गतिविधि",
+    "noActivity": "अभी तक कोई गतिविधि नहीं।",
+    "activity": {
+      "createdNamed": "\"{{name}}\" बनाया गया",
+      "createdItem": "एक नया कॉन्टेंट आइटम बनाया गया",
+      "updatedNamed": "\"{{name}}\" अपडेट किया गया",
+      "updatedItem": "एक कॉन्टेंट आइटम अपडेट किया गया",
+      "deletedNamed": "\"{{name}}\" हटाया गया",
+      "deletedItem": "एक कॉन्टेंट आइटम हटाया गया",
+      "collectionCreatedNamed": "संग्रह \"{{name}}\" बनाया गया",
+      "collectionCreated": "संग्रह बनाया गया",
+      "collectionUpdatedNamed": "संग्रह \"{{name}}\" अपडेट किया गया{{suffix}}",
+      "collectionUpdated": "संग्रह अपडेट किया गया{{suffix}}",
+      "collectionDeletedNamed": "संग्रह \"{{name}}\" हटाया गया",
+      "collectionDeleted": "संग्रह हटाया गया",
+      "uploadedNamed": "\"{{name}}\" अपलोड किया गया",
+      "uploadedItem": "एक फ़ाइल अपलोड की गई",
+      "mediaDeletedNamed": "मीडिया \"{{name}}\" हटाया गया",
+      "mediaDeleted": "मीडिया हटाया गया",
+      "siteUpdated": "साइट सेटिंग्स अपडेट की गईं"
+    }
+  },
+  "aiDrawer": {
+    "title": "AI सहायक",
+    "send": "भेजें",
+    "inputPlaceholder": "अपनी साइट के बारे में AI से कुछ भी पूछें...",
+    "working": "काम हो रहा है",
+    "runningTool": "{{tool}} चल रहा है",
+    "errorGeneric": "कुछ गड़बड़ हो गई। कृपया पुनः प्रयास करें।",
+    "decisionFailed": "निर्णय विफल रहा",
+    "kept": "रखा गया",
+    "undone": "पूर्ववत किया गया",
+    "keep": "रखें",
+    "undo": "पूर्ववत करें",
+    "suggestionsTitle_one": "इस पेज के लिए सुझाव",
+    "suggestionsTitle_other": "इस पेज के लिए सुझाव",
+    "askAiToFix": "AI से ठीक करने को कहें",
+    "dismiss": "खारिज करें",
+    "toolLabels": {
+      "readContent": "पेज कॉन्टेंट पढ़ा जा रहा है…",
+      "listContent": "पेज सूचीबद्ध किए जा रहे हैं…",
+      "searchContent": "कॉन्टेंट खोजा जा रहा है…",
+      "createContent": "पेज बनाया जा रहा है…",
+      "updateContent": "पेज अपडेट किया जा रहा है…",
+      "getHtmlBlock": "HTML लाया जा रहा है…",
+      "updateHtmlBlock": "सेक्शन अपडेट किया जा रहा है…",
+      "deleteContent": "पेज हटाया जा रहा है…",
+      "setMetadata": "मेटाडेटा अपडेट किया जा रहा है…",
+      "listMedia": "मीडिया सूचीबद्ध किया जा रहा है…",
+      "updateMedia": "मीडिया अपडेट किया जा रहा है…",
+      "deleteMedia": "मीडिया हटाया जा रहा है…",
+      "generateImage": "इमेज बनाई जा रही है…",
+      "updateHeader": "हेडर अपडेट किया जा रहा है…",
+      "updateFooter": "फ़ूटर अपडेट किया जा रहा है…",
+      "readHeaderFooter": "हेडर और फ़ूटर पढ़ा जा रहा है…",
+      "listNavigation": "नेविगेशन पढ़ा जा रहा है…",
+      "updateNavigation": "नेविगेशन अपडेट किया जा रहा है…",
+      "createCollection": "संग्रह बनाया जा रहा है…",
+      "updateCollection": "संग्रह अपडेट किया जा रहा है…",
+      "deleteCollection": "संग्रह हटाया जा रहा है…",
+      "addToCollection": "संग्रह में जोड़ा जा रहा है…",
+      "removeFromCollection": "संग्रह से हटाया जा रहा है…",
+      "listCollections": "संग्रह सूचीबद्ध किए जा रहे हैं…",
+      "getPageContext": "पेज संदर्भ पढ़ा जा रहा है…",
+      "designPage": "पेज डिज़ाइन किया जा रहा है…",
+      "createRedirect": "रीडायरेक्ट बनाया जा रहा है…",
+      "deleteRedirect": "रीडायरेक्ट हटाया जा रहा है…",
+      "listRedirects": "रीडायरेक्ट सूचीबद्ध किए जा रहे हैं…",
+      "listTeam": "टीम पढ़ी जा रही है…",
+      "inviteTeamMember": "आमंत्रण भेजा जा रहा है…",
+      "changeTeamRole": "टीम सदस्य अपडेट किया जा रहा है…"
+    },
+    "actionCard": {
+      "startInterview": "इंटरव्यू शुरू करें →",
+      "edit": "संपादित करें →",
+      "designedPage": "डिज़ाइन किया गया पेज:",
+      "designedDraftPage": "डिज़ाइन किया गया ड्राफ़्ट पेज:",
+      "sectionsCount_one": "— {{count}} सेक्शन",
+      "sectionsCount_other": "— {{count}} सेक्शन",
+      "created": "बनाया गया",
+      "updated": "अपडेट किया गया",
+      "draftPrefix": "ड्राफ़्ट ",
+      "post": "पोस्ट",
+      "page": "पेज",
+      "contentAction": "{{verb}} {{draft}}{{typeLabel}}:",
+      "updatedMetadata": "मेटाडेटा अपडेट किया गया",
+      "metaDescriptionSet": "— मेटा विवरण सेट किया गया",
+      "featuredImageSet": "— फ़ीचर्ड इमेज सेट की गई",
+      "generatedImage": "इमेज बनाई गई",
+      "setAsFeaturedImage": "— फ़ीचर्ड इमेज के रूप में सेट किया गया",
+      "generatedImageAlt": "AI द्वारा बनाई गई",
+      "updatedMenu": "{{location}} मेनू अपडेट किया गया",
+      "itemsCount_one": "— {{count}} आइटम",
+      "itemsCount_other": "— {{count}} आइटम",
+      "createdCollection": "{{type}} बनाया गया:",
+      "addedToCollection": "संग्रह में जोड़ा गया",
+      "removedFromCollection": "संग्रह से हटाया गया",
+      "deletedCollection": "संग्रह हटाया गया:",
+      "deletedContent": "{{type}} हटाया गया:",
+      "createdRedirect": "रीडायरेक्ट बनाया गया:",
+      "deletedRedirect": "रीडायरेक्ट हटाया गया:",
+      "invitedTeamMember": "टीम सदस्य को आमंत्रित किया गया:",
+      "asRole": "के रूप में",
+      "changedRole": "भूमिका बदली गई:",
+      "wasRole": "(पहले {{role}} था)",
+      "deletedMedia": "मीडिया हटाया गया:",
+      "updatedDesignDirection": "साइट की डिज़ाइन दिशा अपडेट की गई",
+      "nowVersion": "— अब v{{version}}",
+      "designDirectionHint": "भविष्य के पेज और संपादन इस दिशा का पालन करेंगे। आप इसे सेटिंग्स → डिज़ाइन दिशा में देख या समायोजित कर सकते हैं।",
+      "actionCompleted": "कार्रवाई पूरी हुई: {{type}}"
+    }
+  },
+  "aiDrawerButton": {
+    "label": "AI",
+    "badgeMax": "9+",
+    "badgeAriaLabel_one": "{{count}} सुझाव",
+    "badgeAriaLabel_other": "{{count}} सुझाव"
+  },
+  "login": {
+    "title": "साइन इन करें",
+    "signIn": "साइन इन करें",
+    "signingIn": "साइन इन हो रहा है...",
+    "error": "लॉगिन विफल",
+    "forgotPassword": "पासवर्ड भूल गए?",
+    "noAccount": "खाता नहीं है?",
+    "signUp": "साइन अप करें"
+  },
+  "signup": {
+    "error": {
+      "passwordRequirements": "कृपया सभी पासवर्ड आवश्यकताओं को पूरा करें",
+      "generic": "साइन अप विफल",
+      "emailExists": "इस ईमेल से पहले से एक खाता मौजूद है।"
+    },
+    "signInInstead": "इसके बजाय साइन इन करें",
+    "promoLoadError": "प्रमोशन विवरण लोड नहीं हो सका।",
+    "claimTrial": "अपना {{days}}-दिन का मुफ़्त ट्रायल पाएं",
+    "startPro": "अपनी Pro योजना शुरू करें",
+    "createSite": "एक साइट बनाएं जो वाकई काम करे",
+    "promoBanner": "{{days}} दिनों का Pro, मुफ़्त — किसी क्रेडिट कार्ड की ज़रूरत नहीं।",
+    "promoInvalidDefault": "यह प्रमोशन मान्य नहीं है।",
+    "promoInvalidSuffix": "आप अभी भी एक मुफ़्त खाते के लिए साइन अप कर सकते हैं।",
+    "agencyDisclosureTitle": "आप {{agencyName}} के साथ साइन अप कर रहे हैं",
+    "agencyDisclosureBody": "{{agencyName}} को आपकी साइट पर एडमिन के रूप में जोड़ा जाएगा और वे आपकी ओर से साइट और उसकी बिलिंग का प्रबंधन करेंगे।",
+    "monthly": "मासिक",
+    "annual": "वार्षिक",
+    "saveBadge": "~17% बचाएं",
+    "siteNameLabel": "साइट का नाम",
+    "siteNamePlaceholder": "मेरी नई साइट",
+    "activatingTrial": "आपका ट्रायल सक्रिय किया जा रहा है...",
+    "settingUpAccount": "आपका खाता सेट अप किया जा रहा है...",
+    "creatingSite": "आपकी साइट बनाई जा रही है...",
+    "activateTrial": "मुफ़्त ट्रायल सक्रिय करें",
+    "continueToPayment": "भुगतान पर जारी रखें →",
+    "createFreeSite": "मुफ़्त साइट बनाएं",
+    "wantFreePlan": "बस मुफ़्त योजना चाहिए?",
+    "signUpFree": "मुफ़्त में साइन अप करें",
+    "alreadyHaveAccount": "पहले से खाता है?",
+    "signIn": "साइन इन करें"
+  },
+  "forgotPassword": {
+    "error": {
+      "generic": "कुछ गड़बड़ हो गई"
+    },
+    "checkEmailTitle": "अपना ईमेल जांचें",
+    "checkEmailBodyPrefix": "यदि किसी खाते के लिए मौजूद है",
+    "checkEmailBodySuffix": ", तो हमने एक पासवर्ड रीसेट लिंक भेजा है। यह 1 घंटे में समाप्त हो जाता है।",
+    "backToSignIn": "साइन इन पर वापस जाएं",
+    "title": "पासवर्ड भूल गए",
+    "description": "अपना ईमेल दर्ज करें और हम आपको अपना पासवर्ड रीसेट करने के लिए एक लिंक भेजेंगे।",
+    "sending": "भेजा जा रहा है...",
+    "submit": "रीसेट लिंक भेजें"
+  },
+  "resetPassword": {
+    "invalidTitle": "अमान्य लिंक",
+    "invalidBody": "यह पासवर्ड रीसेट लिंक अमान्य है। कृपया एक नया अनुरोध करें।",
+    "requestNewLink": "नया लिंक अनुरोध करें",
+    "error": {
+      "mismatch": "पासवर्ड मेल नहीं खाते",
+      "requirements": "कृपया सभी पासवर्ड आवश्यकताओं को पूरा करें",
+      "generic": "कुछ गड़बड़ हो गई"
+    },
+    "successTitle": "पासवर्ड रीसेट हो गया",
+    "successBody": "आपका पासवर्ड अपडेट कर दिया गया है। अब आप अपने नए पासवर्ड से साइन इन कर सकते हैं।",
+    "signIn": "साइन इन करें",
+    "title": "नया पासवर्ड सेट करें",
+    "newPasswordLabel": "नया पासवर्ड",
+    "passwordPlaceholder": "कम से कम 12 वर्ण",
+    "confirmLabel": "पासवर्ड की पुष्टि करें",
+    "submitting": "रीसेट किया जा रहा है...",
+    "submit": "पासवर्ड रीसेट करें"
+  },
+  "verifyEmail": {
+    "error": {
+      "generic": "सत्यापन विफल",
+      "resendFailed": "ईमेल फिर से भेजने में विफल"
+    },
+    "verifying": "आपका ईमेल सत्यापित किया जा रहा है...",
+    "successTitle": "ईमेल सत्यापित हो गया!",
+    "successBody": "आपका ईमेल सत्यापित हो गया है। सेटअप पर रीडायरेक्ट किया जा रहा है...",
+    "errorTitle": "सत्यापन विफल",
+    "needNewLink": "नए लिंक की आवश्यकता है?",
+    "resendSuccess": "एक नया सत्यापन ईमेल भेजा गया है।",
+    "sending": "भेजा जा रहा है...",
+    "resendCooldown": "{{seconds}}s में फिर से भेजें",
+    "resend": "सत्यापन ईमेल फिर से भेजें",
+    "checkInboxTitle": "अपना इनबॉक्स जांचें",
+    "checkInboxBodyPrefix": "हमने एक सत्यापन लिंक भेजा है",
+    "checkInboxBodySuffix": "। जारी रखने के लिए उस ईमेल में लिंक पर क्लिक करें।",
+    "yourEmailAddress": "आपका ईमेल पता",
+    "expiryNotice": "लिंक 24 घंटे में समाप्त हो जाता है। यदि आपको यह नहीं दिखता है तो अपना स्पैम फ़ोल्डर जांचें।"
+  },
+  "subdomainSetup": {
+    "error": {
+      "noneSelected": "कृपया पहले एक उपलब्ध सबडोमेन चुनें।",
+      "generic": "सबडोमेन सेट करने में विफल"
+    },
+    "checking": "जांच हो रही है...",
+    "available": "उपलब्ध",
+    "taken": "लिया जा चुका है",
+    "tryPrefix": "आज़माएं",
+    "invalidHint": "3–40 लोअरकेस अक्षर, संख्याएं, या हाइफ़न का उपयोग करें",
+    "title": "अपना सबडोमेन चुनें",
+    "description": "यह Cadmus पर आपकी साइट का पता होगा। आप बाद में एक कस्टम डोमेन कनेक्ट कर सकते हैं।",
+    "subdomainLabel": "सबडोमेन",
+    "placeholder": "my-site",
+    "pickForMe": "मेरे लिए एक चुनें",
+    "saving": "सहेजा जा रहा है...",
+    "continue": "जारी रखें"
+  },
+  "acceptInvite": {
+    "invalidMissing": "यह आमंत्रण लिंक गायब है या अमान्य है।",
+    "invalidExpired": "यह आमंत्रण लिंक अमान्य है या समाप्त हो गया है।",
+    "error": {
+      "loadFailed": "कुछ गड़बड़ हो गई। कृपया बाद में पुनः प्रयास करें।",
+      "requirements": "कृपया सभी पासवर्ड आवश्यकताओं को पूरा करें।",
+      "mismatch": "पासवर्ड मेल नहीं खाते।",
+      "acceptFailed": "आमंत्रण स्वीकार करने में विफल।",
+      "generic": "कुछ गड़बड़ हो गई। कृपया पुनः प्रयास करें।"
+    },
+    "acceptedRedirectMessage": "आमंत्रण स्वीकार किया गया! कृपया लॉग इन करें।",
+    "checkingTitle": "आमंत्रण जांचा जा रहा है...",
+    "unavailableTitle": "आमंत्रण अनुपलब्ध",
+    "goToLogin": "लॉगिन पर जाएं",
+    "title": "आमंत्रण स्वीकार करें",
+    "joiningAsPrefix": "आप इस रूप में शामिल हो रहे हैं",
+    "joiningAsSuffix": "। चूंकि आपके पास पहले से एक खाता है, स्वीकार करने के लिए बस नीचे क्लिक करें।",
+    "accepting": "स्वीकार किया जा रहा है...",
+    "acceptInvitation": "आमंत्रण स्वीकार करें",
+    "setPasswordBody": "अपना खाता सेटअप पूरा करने के लिए एक पासवर्ड सेट करें{{suffix}}।",
+    "passwordPlaceholder": "कम से कम 12 वर्ण",
+    "confirmPasswordLabel": "पासवर्ड की पुष्टि करें",
+    "confirmPasswordPlaceholder": "अपने पासवर्ड की पुष्टि करें",
+    "acceptAndSetPassword": "स्वीकार करें और पासवर्ड सेट करें"
+  },
+  "partnerHome": {
+    "error": {
+      "loadFailed": "लोड करने में विफल"
+    },
+    "copied": "कॉपी हो गया!",
+    "copy": "कॉपी करें",
+    "title": "Cadmus पार्टनर",
+    "code": "कोड",
+    "commission": "{{rate}}% कमीशन",
+    "planAddons": "योजना + ऐड-ऑन",
+    "logout": "लॉग आउट",
+    "yourLinks": "आपके लिंक",
+    "referralLinkLabel": "रेफ़रल लिंक",
+    "referralLinkHint": "जो कोई भी इस लिंक के माध्यम से साइन अप करता है, वह कमीशन के लिए आपको जिम्मेदार माना जाता है।",
+    "clientInviteLinkLabel": "क्लाइंट आमंत्रण लिंक",
+    "clientInviteLinkHint": "आपके क्लाइंट्स के लिए: आपको उनकी नई साइट पर एडमिन के रूप में जोड़ा जाता है और आप उसकी बिलिंग का प्रबंधन करते हैं।",
+    "referralsTitle": "रेफ़रल्स ({{count}})",
+    "noReferrals": "अभी तक कोई रेफ़रल नहीं — शुरू करने के लिए अपना रेफ़रल लिंक साझा करें।",
+    "tableSite": "साइट",
+    "tableStatus": "स्थिति",
+    "tableSignedUp": "साइन अप किया",
+    "tableQualified": "योग्य",
+    "clientSitesTitle": "क्लाइंट साइट्स ({{count}})",
+    "noClientSites": "अभी तक कोई क्लाइंट साइट नहीं — अपना क्लाइंट आमंत्रण लिंक साझा करें।",
+    "tableBilling": "आपके द्वारा बिलिंग",
+    "tableLinked": "लिंक किया गया",
+    "yes": "हां",
+    "notYet": "अभी नहीं",
+    "clientSitesFooter": "आप प्रत्येक क्लाइंट साइट पर एडमिन हैं — इसे प्रबंधित करने या इसके अकाउंट पेज से बिलिंग सेट अप करने के लिए लॉग इन करें और साइट स्विचर से साइट चुनें।"
+  },
+  "contentList": {
+    "title": "सामग्री",
+    "importHtml": "HTML आयात करें",
+    "newItem": "+ नया {{type}}",
+    "tabs": {
+      "page": "पेज",
+      "post": "पोस्ट"
+    },
+    "statuses": {
+      "all": "सभी",
+      "draft": "ड्राफ़्ट",
+      "published": "प्रकाशित",
+      "archive": "आर्काइव"
+    },
+    "emptyState": {
+      "text": "अभी तक कोई {{type}} नहीं।",
+      "createLink": "अपना पहला बनाएं",
+      "orAskAi": "या AI से कॉन्टेंट जनरेट करने के लिए कहें।"
+    },
+    "table": {
+      "title": "शीर्षक",
+      "slug": "स्लग",
+      "collections": "संग्रह",
+      "status": "स्थिति",
+      "updated": "अपडेट किया गया"
+    },
+    "untitled": "शीर्षकहीन",
+    "statusBadge": {
+      "draft": "ड्राफ़्ट",
+      "published": "प्रकाशित",
+      "archived": "आर्काइव किया गया"
+    },
+    "archive": "आर्काइव",
+    "importModal": {
+      "title": "HTML पेज आयात करें",
+      "checkingSite": "साइट जांची जा रही है…",
+      "themeIntro": "आपकी साइट पर अभी तक कोई थीम नहीं है। एक सेट अप करने का तरीका चुनें:",
+      "extractOption": "मेरे पेज से निकालें",
+      "extractDesc": "AI आयातित HTML से आपके रंग, फ़ॉन्ट और हेडर/फ़ूटर का पता लगाएगा।",
+      "briefOption": "मेरे ब्रांड का वर्णन करें",
+      "briefDesc": "अपने ब्रांड के रंग और स्टाइल का वर्णन करें और AI एक थीम जनरेट करेगा।",
+      "briefPlaceholder": "जैसे Modern SaaS, नेवी और सफ़ेद, Inter फ़ॉन्ट, स्वच्छ और सरल",
+      "continue": "जारी रखें",
+      "pageTitleLabel": "पेज शीर्षक",
+      "optional": "(वैकल्पिक)",
+      "titlePlaceholder": "HTML से स्वतः पता लगाएं",
+      "fileSizeClickChange": "{{size}} KB — बदलने के लिए क्लिक करें",
+      "dropZoneText": "यहां एक HTML फ़ाइल छोड़ें, या ब्राउज़ करने के लिए क्लिक करें",
+      "acceptedFiles": ".html और .htm फ़ाइलें स्वीकार करता है",
+      "importingWithTheme": "आपकी थीम आयात और सेट अप की जा रही है…",
+      "importingDefault": "आयात हो रहा है… इमेज डाउनलोड हो रही हैं और आपकी थीम के साथ फिर से लिखा जा रहा है",
+      "back": "वापस",
+      "importingBtn": "आयात हो रहा है…",
+      "importBtn": "आयात करें",
+      "invalidFileError": "कृपया एक HTML फ़ाइल (.html या .htm) छोड़ें।",
+      "importFailed": "आयात विफल"
+    }
+  },
+  "contentEditor": {
+    "unsavedChangesConfirm": "आपके पास असहेजे बदलाव हैं। क्या आप वाकई छोड़ना चाहते हैं?",
+    "unknownError": "अज्ञात त्रुटि",
+    "loadFailed": "कॉन्टेंट लोड करने में विफल: {{message}}",
+    "titleRequired": "शीर्षक आवश्यक है।",
+    "slugRequired": "स्लग आवश्यक है।",
+    "createdSuccess": "कॉन्टेंट सफलतापूर्वक बनाया गया।",
+    "savedSuccess": "कॉन्टेंट सफलतापूर्वक सहेजा गया।",
+    "saveFailed": "सहेजने में विफल: {{message}}",
+    "previewFailed": "पूर्वावलोकन विफल: {{message}}",
+    "historyLoadFailed": "वर्शन इतिहास लोड करने में विफल।",
+    "restoreConfirm": "वर्शन {{version}} पुनर्स्थापित करें? यह वर्तमान कॉन्टेंट को बदल देगा और एक नया वर्शन बनाएगा।",
+    "restoredSuccess": "वर्शन {{version}} पर पुनर्स्थापित किया गया।",
+    "restoreFailed": "पुनर्स्थापित करने में विफल: {{message}}",
+    "imageGenFailed": "इमेज जनरेशन विफल: {{message}}",
+    "newTitle": "नया कॉन्टेंट",
+    "editTitle": "कॉन्टेंट संपादित करें",
+    "history": "इतिहास",
+    "opening": "खुल रहा है...",
+    "preview": "पूर्वावलोकन",
+    "fields": {
+      "title": "शीर्षक",
+      "slug": "स्लग",
+      "contentType": "कॉन्टेंट प्रकार",
+      "status": "स्थिति",
+      "seoTitle": "SEO शीर्षक",
+      "metaDescription": "मेटा विवरण",
+      "featuredImage": "फ़ीचर्ड इमेज"
+    },
+    "titlePlaceholder": "पेज शीर्षक...",
+    "slugPlaceholder": "url-friendly-slug",
+    "contentTypeOptions": {
+      "page": "पेज",
+      "post": "पोस्ट"
+    },
+    "statusOptions": {
+      "draft": "ड्राफ़्ट",
+      "published": "प्रकाशित",
+      "archived": "आर्काइव किया गया"
+    },
+    "seoTitlePlaceholderDefault": "यदि खाली छोड़ा जाए तो पेज शीर्षक डिफ़ॉल्ट होगा",
+    "seoTitleHint": "{{count}}/60 — ब्राउज़र टैब और खोज परिणामों में दिखाया जाता है",
+    "metaDescriptionPlaceholder": "खोज इंजनों के लिए संक्षिप्त विवरण (150-160 वर्ण अनुशंसित)",
+    "metaDescriptionHint": "{{count}}/160",
+    "featuredImageAlt": "फ़ीचर्ड",
+    "change": "बदलें",
+    "generateWithAi": "AI से जनरेट करें",
+    "remove": "हटाएं",
+    "browseMedia": "मीडिया ब्राउज़ करें",
+    "imagePromptPlaceholder": "आप जो इमेज चाहते हैं उसका वर्णन करें...",
+    "versionHistory": {
+      "title": "वर्शन इतिहास",
+      "loading": "वर्शन लोड हो रहे हैं...",
+      "empty": "कोई वर्शन नहीं मिला।",
+      "versionLabel": "वर्शन {{version}}",
+      "current": "वर्तमान",
+      "byAuthor": "{{name}} द्वारा"
+    }
+  },
+  "collections": {
+    "title": "संग्रह",
+    "newNamePlaceholder": "नए संग्रह का नाम...",
+    "createFailed": "संग्रह बनाने में विफल",
+    "empty": "अभी तक कोई संग्रह नहीं।",
+    "table": {
+      "name": "नाम",
+      "slug": "स्लग"
+    }
+  },
+  "mediaLibrary": {
+    "title": "मीडिया लाइब्रेरी",
+    "generateImage": "इमेज जनरेट करें",
+    "generatePromptPlaceholder": "जो इमेज आप जनरेट करना चाहते हैं उसका वर्णन करें...",
+    "generateFailed": "इमेज जनरेशन विफल",
+    "saveMetaFailed": "सहेजने में विफल",
+    "invalidFileType": "\"{{name}}\" एक अनुमत फ़ाइल प्रकार नहीं है। स्वीकृत: इमेज, वीडियो और PDF।",
+    "fileTooLarge": "\"{{name}}\" {{limit}} अपलोड सीमा से अधिक है।",
+    "uploadingFile": "{{name}} अपलोड हो रहा है",
+    "uploadingFileWithCount": "{{name}} अपलोड हो रहा है ({{index}} में से {{total}})",
+    "trialLimitMessage": "यह फ़ाइल ट्रायल खातों के लिए 100 MB सीमा से अधिक है।",
+    "trialLimitSuffix": "500 MB तक फ़ाइलें अपलोड करने के लिए।",
+    "filters": {
+      "all": "सभी",
+      "images": "इमेज",
+      "videos": "वीडियो",
+      "pdfs": "PDF"
+    },
+    "dropZone": "फ़ाइलें यहां छोड़ें या अपलोड पर क्लिक करें",
+    "loadingMedia": "मीडिया लोड हो रहा है...",
+    "empty": "अभी तक कोई मीडिया अपलोड नहीं किया गया। फ़ाइलें अपलोड करें या AI को अपनी साइट के लिए इमेज जनरेट करने दें।",
+    "blockedVideo": "वीडियो को ब्लॉक कर दिया गया है",
+    "blockedFile": "फ़ाइल को ब्लॉक कर दिया गया है",
+    "processing": "प्रोसेस हो रहा है",
+    "underReview": "समीक्षा के अधीन",
+    "blocked": "ब्लॉक किया गया",
+    "displayName": "प्रदर्शन नाम",
+    "altTitle": "Alt / शीर्षक",
+    "altPlaceholder": "इस इमेज का वर्णन करें...",
+    "view": "देखें",
+    "copyUrl": "URL कॉपी करें",
+    "copied": "कॉपी हो गया!",
+    "previous": "पिछला",
+    "next": "अगला",
+    "pageOf": "{{total}} में से पेज {{page}}"
+  },
+  "contentPicker": {
+    "title": "एक पेज या पोस्ट चुनें",
+    "tabs": {
+      "pages": "पेज",
+      "posts": "पोस्ट"
+    },
+    "noPublished": {
+      "pages": "अभी तक कोई प्रकाशित पेज नहीं।",
+      "posts": "अभी तक कोई प्रकाशित पोस्ट नहीं।"
+    }
+  },
+  "collectionPicker": {
+    "label": "संग्रह"
+  },
+  "mediaPicker": {
+    "title": "मीडिया चुनें",
+    "trialLimitMessage": "फ़ाइल 100 MB ट्रायल सीमा से अधिक है।",
+    "trialLimitSuffix": "500 MB तक अपलोड करने के लिए।",
+    "noImages": "अभी तक कोई इमेज नहीं। ऊपर एक अपलोड करें।"
+  },
+  "onboarding": {
+    "title": "अपनी साइट सेट अप करें",
+    "subtitle": {
+      "choose": "आप अपनी साइट कैसे सेट अप करना चाहेंगे?",
+      "briefPaste": "अपना ब्रीफ़ पेस्ट करें या नीचे कॉपी करें।",
+      "interview": "कुछ सवालों के जवाब दें ताकि हम आपकी वेबसाइट बना सकें। आपके जवाब जितने विस्तृत होंगे, आपकी साइट उतनी ही बेहतर होगी!",
+      "review": "अपनी साइट ब्रीफ़ की समीक्षा करें।",
+      "launch": "आपका स्टार्टर कॉन्टेंट जनरेट किया जा रहा है।"
+    },
+    "steps": {
+      "interview": "इंटरव्यू",
+      "review": "समीक्षा",
+      "launch": "लॉन्च"
+    },
+    "choose": {
+      "voiceTitle": "मेरी आवाज़ बनाएं",
+      "voiceDesc": "कुछ सवालों के जवाब दें और हम आपकी साइट की आवाज़ और डिज़ाइन तैयार करेंगे",
+      "startInterview": "इंटरव्यू शुरू करें",
+      "briefTitle": "मेरे पास एक ब्रीफ़ है",
+      "briefDesc": "अपनी कॉपी, ब्रांड दिशानिर्देश, या नोट्स पेस्ट करें और हम सब कुछ सेट अप कर देंगे",
+      "pasteMyBrief": "मेरा ब्रीफ़ पेस्ट करें",
+      "skipForNow": "अभी के लिए छोड़ें — मैं बाद में सेट अप करूंगा"
+    },
+    "briefPaste": {
+      "pdfNotSupported": "PDF फ़ाइलें सीधे नहीं पढ़ी जा सकतीं। कृपया इसके बजाय टेक्स्ट कॉन्टेंट कॉपी और पेस्ट करें।",
+      "parseFailed": "ब्रीफ़ पार्स करने में विफल। कृपया पुनः प्रयास करें।",
+      "intro": "अपनी साइट के बारे में कोई भी कॉपी, ब्रांड दिशानिर्देश, या नोट्स नीचे पेस्ट करें। हम मुख्य विवरण अपने आप निकाल लेंगे।",
+      "textareaPlaceholder": "अपना ब्रीफ़, कॉपी, या ब्रांड नोट्स यहां पेस्ट करें…",
+      "uploadFile": ".txt या .md फ़ाइल अपलोड करें",
+      "uploadHint": "फ़ाइल की सामग्री ऊपर दिए गए टेक्स्ट में जोड़ दी जाएगी",
+      "analyzing": "विश्लेषण हो रहा है…"
+    },
+    "interview": {
+      "fallbackGreeting": "स्वागत है! आइए आपकी वेबसाइट सेट अप करें। मुझे अपने व्यवसाय के बारे में बताएं।",
+      "errorFallback": "कुछ गड़बड़ हो गई। कृपया पुनः प्रयास करें।",
+      "thinking": "सोच रहा है",
+      "completeCountdown": "इंटरव्यू पूरा हुआ! {{count}} में समीक्षा हो रही है...",
+      "logoAlt": "लोगो",
+      "removeLogo": "लोगो हटाएं",
+      "uploadLogo": "लोगो अपलोड करें (वैकल्पिक)",
+      "answerPlaceholder": "अपना उत्तर टाइप करें...",
+      "backToOptions": "← विकल्पों पर वापस जाएं"
+    },
+    "pageTypes": {
+      "selectPlaceholder": "एक पेज जोड़ें...",
+      "homepage": "होमपेज",
+      "about": "हमारे बारे में",
+      "services": "सेवाएं",
+      "contact": "संपर्क करें",
+      "blog": "ब्लॉग",
+      "pricing": "मूल्य निर्धारण",
+      "faq": "सामान्य प्रश्न",
+      "portfolio": "पोर्टफ़ोलियो",
+      "testimonials": "प्रशंसापत्र",
+      "features": "विशेषताएं",
+      "landing": "लैंडिंग पेज",
+      "custom": "कस्टम..."
+    },
+    "addPage": {
+      "customNamePlaceholder": "पेज का नाम (जैसे careers)",
+      "purposePlaceholder": "उद्देश्य (वैकल्पिक)",
+      "add": "जोड़ें"
+    },
+    "review": {
+      "intro": "हमारे स्टार्टर कॉन्टेंट जनरेट करने से पहले अपनी साइट ब्रीफ़ की समीक्षा करें और उसे संपादित करें।",
+      "logoLabel": "लोगो",
+      "logoAlt": "लोगो",
+      "rerollWithAi": "AI से फिर से बनाएं",
+      "uploadLogo": "लोगो अपलोड करें",
+      "generateWithAi": "AI से जनरेट करें",
+      "logoGenerationFailed": "जनरेशन विफल",
+      "logoHint": "AI एक सरल ब्रांड आइकन जनरेट करता है (बिना लेटरिंग के)। आप हमेशा अपना खुद का अपलोड कर सकते हैं।",
+      "inspirationLabel": "डिज़ाइन प्रेरणा (वैकल्पिक)",
+      "inspirationHint": "आपको पसंद आने वाली वेबसाइटों या डिज़ाइनों के स्क्रीनशॉट अपलोड करें। हम आपकी साइट की स्टाइल से मेल खाने के लिए उनका विश्लेषण करेंगे। इमेज सीधे आपकी नई साइट में शामिल नहीं की जाएंगी।",
+      "inspirationAlt": "प्रेरणा {{index}}",
+      "addImage": "इमेज जोड़ें",
+      "addImages": "इमेज जोड़ें",
+      "maxImagesReached": "अधिकतम 5 इमेज तक पहुंच गया।",
+      "businessNameLabel": "व्यवसाय का नाम *",
+      "businessDescriptionLabel": "व्यवसाय का विवरण *",
+      "locationLabel": "स्थान",
+      "targetAudienceLabel": "लक्षित दर्शक",
+      "differentiatorsLabel": "विशिष्टताएं",
+      "toneLabel": "टोन",
+      "tonePlaceholder": "जैसे Professional, Friendly, Bold",
+      "brandColorsLabel": "ब्रांड रंग",
+      "brandColorsPlaceholder": "जैसे नेवी ब्लू और ऑरेंज, #1a365d, फ़ॉरेस्ट ग्रीन",
+      "primaryGoalLabel": "मुख्य लक्ष्य",
+      "primaryGoalPlaceholder": "जैसे लीड जनरेट करना, उत्पाद बेचना, बुकिंग",
+      "constraintsLabel": "अवश्य / अवश्य-नहीं (प्रति पंक्ति एक)",
+      "constraintsPlaceholder": "जैसे स्टॉक फ़ोटो का उपयोग न करें\nकभी भी प्रशंसापत्र सेक्शन न जोड़ें\nहमेशा हेडर में फ़ोन नंबर दिखाएं",
+      "constraintsHint": "सख्त नियम जिनका डिज़ाइन को पालन करना चाहिए। हम इन्हें आपके ब्रीफ़ से लेते हैं — छूटे हुए किसी भी नियम को संपादित करें या जोड़ें।",
+      "plannedPagesLabel": "योजनाबद्ध पेज ({{count}})",
+      "removePage": "पेज हटाएं",
+      "noPagesPlanned": "कोई पेज योजनाबद्ध नहीं है। नीचे कम से कम एक पेज जोड़ें, या डिफ़ॉल्ट का उपयोग किया जाएगा (होम + हमारे बारे में)।"
+    },
+    "generate": {
+      "patience": {
+        "0": "आपकी होमपेज जनरेशन में अतिरिक्त पेजों की तुलना में अधिक समय लगेगा, क्योंकि हमें पहले थीम स्टाइल बनानी होती हैं। अन्य पेज एक जैसी स्टाइलिंग का पुन: उपयोग करेंगे ताकि पूरी साइट एक जैसी बनी रहे।",
+        "1": "अधिकांश एजेंसी वेबसाइटों को पूरा होने में 6-12 हफ़्ते लगते हैं, लेकिन आपकी साइट कुछ ही मिनटों में तैयार हो जाएगी!",
+        "2": "हर पेज के लिए, हम पहले एक डिज़ाइन मॉकअप बनाते हैं, फिर उसे पुन: उपयोग करने योग्य ब्लॉक्स में बदलते हैं जिन्हें बाद में आसानी से संपादित किया जा सकता है।",
+        "3": "हम आपके व्यवसाय के अनुरूप अनूठा कॉन्टेंट तैयार कर रहे हैं — यहां कोई घिसा-पिटा टेम्पलेट नहीं है।",
+        "4": "आपकी साइट शुरू से ही सर्च इंजन के लिए ऑप्टिमाइज़ की जा रही है।",
+        "5": "हर सेक्शन कन्वर्ज़न को ध्यान में रखकर बनाया गया है — हेडलाइन, CTA और लेआउट सभी एक साथ काम करते हैं।",
+        "6": "रोचक तथ्य: औसत छोटा व्यवसाय एक नई वेबसाइट पर $5,000–$10,000 खर्च करता है। आप अपनी साइट को कभी भी फिर से डिज़ाइन कर सकते हैं!"
+      },
+      "statusGeneratingPage": "{{label}} पेज जनरेट किया जा रहा है...",
+      "statusGeneratingParallel_one": "{{count}} पेज समानांतर में जनरेट किया जा रहा है...",
+      "statusGeneratingParallel_other": "{{count}} पेज समानांतर में जनरेट किए जा रहे हैं...",
+      "statusFinalizing": "साइट स्टाइल को अंतिम रूप दिया जा रहा है...",
+      "statusReady": "आपकी साइट तैयार है!",
+      "statusReadyToLaunch": "लॉन्च के लिए तैयार!",
+      "progressLabel": "{{progress}}% — {{totalPages}} में से {{currentIndex}} पेज",
+      "createdPagesHeading": "{{count}} पेज बनाए गए:",
+      "sitePreviewTitle": "साइट पूर्वावलोकन",
+      "viewYourSite": "अपनी साइट देखें",
+      "launching": "लॉन्च हो रहा है...",
+      "goToDashboard": "डैशबोर्ड पर जाएं"
+    }
+  },
+  "siteSettings": {
+    "title": "सेटिंग्स",
+    "general": {
+      "heading": "सामान्य",
+      "siteName": "साइट का नाम",
+      "siteLanguage": "साइट की भाषा"
+    },
+    "domain": {
+      "heading": "डोमेन",
+      "subdomainLabel": "सबडोमेन:",
+      "change": "बदलें",
+      "subdomainUpdated": "सबडोमेन अपडेट हो गया!",
+      "subdomainChangePaidWarning": "आपका पुराना URL 48 घंटों के लिए नए पर रीडायरेक्ट होगा। उसके बाद, केवल नया URL काम करेगा। हम आपको एक पुष्टिकरण ईमेल भेजेंगे।",
+      "subdomainChangeFreeWarning": "यह बदलाव करते ही आपका पुराना URL तुरंत काम करना बंद कर देगा।",
+      "newSubdomain": "नया सबडोमेन",
+      "checkingAvailability": "जांच हो रही है...",
+      "available": "उपलब्ध",
+      "notAvailable": "उपलब्ध नहीं",
+      "customDomainLabel": "कस्टम डोमेन:",
+      "status": {
+        "active": "सक्रिय",
+        "sslProvisioning": "SSL प्रावधान हो रहा है...",
+        "failed": "विफल",
+        "pending": "लंबित"
+      },
+      "sslStatusSuffix": "(SSL: {{status}})",
+      "checking": "जांच हो रही है...",
+      "checkStatus": "स्थिति जांचें",
+      "disconnecting": "डिस्कनेक्ट हो रहा है...",
+      "disconnect": "डिस्कनेक्ट करें",
+      "verificationFailed": "सत्यापन विफल।",
+      "commonCauses": "सामान्य कारण:",
+      "causeCnameNotAdded": "आपके DNS प्रदाता पर CNAME रिकॉर्ड अभी तक नहीं जोड़ा गया है, या अभी तक प्रचारित नहीं हुआ है (DNS में कुछ घंटे लग सकते हैं)।",
+      "causeCnameWrongTargetPrefix": "CNAME किसी और जगह इंगित करता है, न कि",
+      "causeCnameWrongTargetSuffix": "— मान को ठीक से दोबारा जांचें।",
+      "causeProxyEnabled": "आपके DNS प्रदाता पर प्रॉक्सी/CDN सक्षम है (प्रॉक्सींग बंद करें; हम SSL संभालते हैं)।",
+      "updateDnsThenCheckPrefix": "अपना DNS अपडेट करें, फिर क्लिक करें",
+      "updateDnsThenCheckSuffix": "। आप डिस्कनेक्ट भी कर सकते हैं और किसी अन्य डोमेन के साथ फिर से प्रयास कर सकते हैं।",
+      "waitingForVerification": "DNS और SSL सत्यापन की प्रतीक्षा है — हम हर 15 सेकंड में स्वचालित रूप से जांच करते हैं।",
+      "dnsSetup": "DNS सेटअप:",
+      "tableType": "प्रकार",
+      "tableName": "नाम",
+      "tableValue": "मान",
+      "connectCustomDomain": "कस्टम डोमेन कनेक्ट करें",
+      "connect": "कनेक्ट करें",
+      "dnsMessageRoot": "www के लिए origin.cadmus.digital की ओर इंगित करने वाला एक CNAME जोड़ें। यदि आपका DNS प्रदाता CNAME फ़्लैटनिंग (जैसे Cloudflare) का समर्थन करता है, तो आप रूट डोमेन के लिए भी एक CNAME जोड़ सकते हैं। अन्यथा, अपने रूट डोमेन से www पर एक रीडायरेक्ट सेट अप करें। DNS बदलावों को प्रचारित होने में आमतौर पर 5 मिनट से कुछ घंटे लगते हैं।",
+      "dnsMessageSubdomain": "origin.cadmus.digital की ओर इंगित करने वाला एक CNAME रिकॉर्ड जोड़ें। SSL स्वचालित रूप से प्रावधानित किया जाता है। DNS बदलावों को प्रचारित होने में आमतौर पर 5 मिनट से कुछ घंटे लगते हैं।",
+      "copyToClipboard": "क्लिपबोर्ड पर कॉपी करें",
+      "disconnectConfirm": "{{domain}} को डिस्कनेक्ट करें?\n\nजब तक आप इसे फिर से कनेक्ट नहीं करते या कहीं और DNS अपडेट नहीं करते, तब तक इस डोमेन का उपयोग करने वाले विज़िटर तुरंत आपकी साइट तक पहुंचना बंद कर देंगे। आपका सबडोमेन URL काम करता रहेगा।",
+      "failedToConnect": "डोमेन कनेक्ट करने में विफल",
+      "failedToCheckStatus": "स्थिति जांचने में विफल",
+      "failedToDisconnect": "डोमेन डिस्कनेक्ट करने में विफल",
+      "failedToChangeSubdomain": "सबडोमेन बदलने में विफल"
+    },
+    "brief": {
+      "heading": "साइट ब्रीफ़",
+      "businessName": "व्यवसाय का नाम",
+      "businessDescription": "व्यवसाय का विवरण",
+      "targetAudience": "लक्षित दर्शक",
+      "tone": "टोन",
+      "tonePlaceholder": "जैसे professional, friendly, casual",
+      "primaryGoal": "मुख्य लक्ष्य",
+      "primaryGoalPlaceholder": "जैसे लीड जनरेट करना, उत्पाद बेचना",
+      "saveBrief": "ब्रीफ़ सहेजें"
+    },
+    "businessInfo": {
+      "heading": "व्यवसाय जानकारी",
+      "description": "आपकी साइट के संरचित डेटा के लिए संपर्क विवरण और पता (SEO और Google नॉलेज पैनल में मदद करता है)।",
+      "contactEmail": "संपर्क ईमेल",
+      "phoneNumber": "फ़ोन नंबर",
+      "streetAddress": "सड़क का पता",
+      "city": "शहर",
+      "state": "राज्य / प्रांत",
+      "postalCode": "पोस्टल कोड",
+      "country": "देश",
+      "countryPlaceholder": "United States"
+    },
+    "social": {
+      "heading": "सोशल लिंक",
+      "description": "आपकी सोशल प्रोफ़ाइल के लिंक। ये आपके फ़ूटर में और SEO के लिए Organization schema में दिखाई देते हैं।",
+      "facebook": "Facebook",
+      "instagram": "Instagram",
+      "twitter": "X / Twitter",
+      "linkedin": "LinkedIn",
+      "youtube": "YouTube",
+      "tiktok": "TikTok"
+    },
+    "forms": {
+      "heading": "फ़ॉर्म डिफ़ॉल्ट",
+      "description": "उन फ़ॉर्मों के लिए डिफ़ॉल्ट सेटिंग्स जिनका अपना नोटिफ़िकेशन कॉन्फ़िगर नहीं है (जैसे Stitch डिज़ाइन फ़ॉर्म)।",
+      "notificationEmail": "नोटिफ़िकेशन ईमेल",
+      "sendConfirmationEmail": "सबमिट करने वाले को पुष्टिकरण ईमेल भेजें",
+      "confirmationMessage": "पुष्टिकरण संदेश",
+      "confirmationMessagePlaceholder": "संपर्क करने के लिए धन्यवाद। हम जल्द ही आपसे संपर्क करेंगे।",
+      "webhookHeading": "वेबहुक",
+      "webhookDescription": "बिना अपने वेबहुक वाले फ़ॉर्मों के लिए डिफ़ॉल्ट वेबहुक। व्यक्तिगत फ़ॉर्म पेज एडिटर में इसे ओवरराइड कर सकते हैं।",
+      "sendEachSubmissionToWebhook": "प्रत्येक सबमिशन को एक वेबहुक URL पर भेजें",
+      "webhookUrl": "वेबहुक URL",
+      "signingSecret": "साइनिंग सीक्रेट",
+      "signingSecretDescription": "हम हर वेबहुक पर इस सीक्रेट के साथ हस्ताक्षर करते हैं (X-Cadmus-Signature हेडर में \"<timestamp>.<body>\" का HMAC-SHA256)। इसका उपयोग यह सत्यापित करने के लिए करें कि अनुरोध हमारी ओर से हैं।",
+      "rotateSecret": "सीक्रेट रोटेट करें",
+      "rotating": "रोटेट हो रहा है…",
+      "revealSigningSecret": "साइनिंग सीक्रेट दिखाएं",
+      "rotateSecretConfirm": "साइनिंग सीक्रेट रोटेट करें? वर्तमान सीक्रेट तुरंत काम करना बंद कर देगा — हस्ताक्षर सत्यापित करने वाले किसी भी रिसीवर को नए के साथ अपडेट करना होगा।",
+      "failedToRotateSecret": "साइनिंग सीक्रेट रोटेट करने में विफल",
+      "failedToLoadSecret": "साइनिंग सीक्रेट लोड करने में विफल"
+    },
+    "customCode": {
+      "heading": "कस्टम कोड",
+      "description": "एनालिटिक्स, पिक्सल, चैट विजेट, या सत्यापन टैग जोड़ें। यह कोड हर पेज में ज्यों का त्यों इंजेक्ट किया जाता है — यह सैनिटाइज़ नहीं किया जाता, इसलिए केवल उन स्रोतों से कोड पेस्ट करें जिन पर आप भरोसा करते हैं। केवल मालिक।",
+      "headCode": "हेड कोड",
+      "headCodeHint": "(<head> में इंजेक्ट किया गया — एनालिटिक्स, मेटा सत्यापन)",
+      "bodyEndCode": "बॉडी एंड कोड",
+      "bodyEndCodeHint": "(</body> से पहले इंजेक्ट किया गया — चैट विजेट, विलंबित स्क्रिप्ट)",
+      "saveCustomCode": "कस्टम कोड सहेजें"
+    },
+    "import": {
+      "heading": "WordPress से आयात करें",
+      "description": "WordPress XML एक्सपोर्ट (WXR) फ़ाइल से पोस्ट, पेज और मीडिया आयात करें।\nअपनी एक्सपोर्ट फ़ाइल डाउनलोड करने के लिए WordPress Admin → Tools → Export पर जाएं।",
+      "paymentMethodRequired": "इम्पोर्टर का उपयोग करने के लिए एक भुगतान विधि आवश्यक है। इसे अकाउंट सेक्शन में जोड़ें।",
+      "exportFileLabel": "WordPress Export File (.xml)",
+      "analyzeFile": "फ़ाइल का विश्लेषण करें",
+      "analyzing": "विश्लेषण हो रहा है...",
+      "fileTooLargeDetailed": "यह फ़ाइल {{sizeMb}} MB की है, जो 25 MB अपलोड सीमा से अधिक है। WordPress में, Tools → Export पर जाएं और पोस्ट, पेज और मीडिया को अलग-अलग एक्सपोर्ट करने के लिए फ़िल्टर का उपयोग करें।",
+      "fileTooLarge": "फ़ाइल बहुत बड़ी है (अधिकतम {{maxMb}} MB)। WordPress में, Tools → Export पर जाएं और पोस्ट, पेज और मीडिया को अलग-अलग एक्सपोर्ट करें।",
+      "failedToAnalyze": "फ़ाइल का विश्लेषण करने में विफल। सुनिश्चित करें कि यह एक मान्य WordPress XML एक्सपोर्ट है।",
+      "failedToStart": "आयात शुरू करने में विफल",
+      "foundLabel": "मिला:",
+      "foundSummary": "{{postCount}} पोस्ट, {{pageCount}} पेज, {{attachmentCount}} अटैचमेंट",
+      "mediaImportNote": "मीडिया आयात के लिए आपकी मूल WordPress साइट का अभी भी सुलभ होना आवश्यक है। डेड लिंक छोड़ दिए जाएंगे और लॉग किए जाएंगे।",
+      "contentToImport": "आयात करने के लिए कॉन्टेंट",
+      "postsCount": "पोस्ट ({{count}})",
+      "pagesCount": "पेज ({{count}})",
+      "importDrafts": "ड्राफ़्ट पोस्ट/पेज आयात करें",
+      "importMediaFiles": "मीडिया फ़ाइलें Cadmus में आयात करें",
+      "authorMapping": "लेखक मैपिंग",
+      "ownerOption": "मालिक",
+      "categoryMapping": "श्रेणी मैपिंग",
+      "createNewCollection": "नया संग्रह बनाएं",
+      "startImport": "आयात शुरू करें",
+      "importing": "आयात हो रहा है...",
+      "progressOfTotal": "({{total}} में से {{progress}})",
+      "importingHint": "इसमें कुछ मिनट लग सकते हैं। आप इस पेज को छोड़ सकते हैं — आयात पृष्ठभूमि में जारी रहेगा।",
+      "importComplete": "आयात पूर्ण",
+      "importedSummary": "आयातित: {{posts}} पोस्ट, {{pages}} पेज",
+      "importedMediaSuffix": "{{count}} मीडिया फ़ाइलें",
+      "skippedSummary": "छोड़ा गया: {{count}} आइटम",
+      "importFailed": "आयात विफल",
+      "renamedSlugs_one": "नाम बदले गए स्लग ({{count}})",
+      "renamedSlugs_other": "नाम बदले गए स्लग ({{count}})",
+      "mediaErrors_one": "मीडिया त्रुटियां ({{count}})",
+      "mediaErrors_other": "मीडिया त्रुटियां ({{count}})",
+      "otherErrors_one": "अन्य त्रुटियां ({{count}})",
+      "otherErrors_other": "अन्य त्रुटियां ({{count}})",
+      "startAnotherImport": "एक और आयात शुरू करें"
+    },
+    "export": {
+      "heading": "एक्सपोर्ट",
+      "description": "बैकअप या माइग्रेशन के लिए अपना साइट डेटा डाउनलोड करें।",
+      "formatHtml": "HTML",
+      "formatJson": "JSON",
+      "htmlDescription": "एम्बेडेड स्टाइल के साथ सभी पेजों को एक ही स्व-निहित HTML फ़ाइल के रूप में एक्सपोर्ट करता है। संग्रह या ऑफ़लाइन देखने के लिए उपयुक्त।",
+      "dataToInclude": "शामिल करने के लिए डेटा",
+      "deselectAll": "सभी अचयनित करें",
+      "selectAll": "सभी चुनें",
+      "selectAtLeastOneCategory": "एक्सपोर्ट करने के लिए कम से कम एक श्रेणी चुनें।",
+      "exportFailedWithStatus": "एक्सपोर्ट विफल ({{status}})",
+      "exportFailed": "एक्सपोर्ट विफल",
+      "exporting": "एक्सपोर्ट हो रहा है...",
+      "exportAs": "{{format}} के रूप में एक्सपोर्ट करें",
+      "categories": {
+        "content": {
+          "label": "कॉन्टेंट",
+          "description": "सभी पेज, पोस्ट और उनके ब्लॉक"
+        },
+        "submissions": {
+          "label": "फ़ॉर्म सबमिशन",
+          "description": "सभी फ़ॉर्म सबमिशन डेटा"
+        },
+        "settings": {
+          "label": "साइट सेटिंग्स",
+          "description": "नाम, ब्रीफ़, थीम और कॉन्फ़िगरेशन"
+        },
+        "collections": {
+          "label": "संग्रह",
+          "description": "श्रेणियां, टैग और कॉन्टेंट समूह"
+        },
+        "navigation": {
+          "label": "नेविगेशन",
+          "description": "मेनू आइटम और संरचना"
+        },
+        "media": {
+          "label": "मीडिया",
+          "description": "इमेज और फ़ाइल मेटाडेटा (फ़ाइलें स्वयं नहीं)"
+        }
+      }
+    },
+    "stitch": {
+      "heading": "डीबग: Stitch प्रोजेक्ट आयात करें",
+      "description": "किसी मौजूदा Stitch प्रोजेक्ट से स्क्रीन प्राप्त करें और उन्हें अपने पेजों पर लागू करें।",
+      "projectId": "Stitch प्रोजेक्ट ID",
+      "noScreensFound": "इस प्रोजेक्ट में कोई स्क्रीन नहीं मिली",
+      "failedToFetchScreens": "स्क्रीन प्राप्त करने में विफल",
+      "fetching": "प्राप्त हो रहा है...",
+      "fetchScreens": "स्क्रीन प्राप्त करें",
+      "foundScreens_one": "{{count}} स्क्रीन मिली। इसे किसी मौजूदा पेज पर मैप करें:",
+      "foundScreens_other": "{{count}} स्क्रीन मिलीं। प्रत्येक को किसी मौजूदा पेज पर मैप करें:",
+      "screenFallbackName": "स्क्रीन {{number}}",
+      "skipOption": "— छोड़ें (लागू न करें) —",
+      "blogPostTemplate": "ब्लॉग पोस्ट टेम्पलेट",
+      "genericPage": "पेज",
+      "applyingProgress": "{{screenName}} → {{target}} लागू किया जा रहा है ({{current}}/{{total}})...",
+      "applying": "लागू हो रहा है...",
+      "applyToPages": "पेजों पर लागू करें",
+      "done": "पूर्ण!",
+      "appliedToPages_one": "Stitch डिज़ाइन {{count}} पेज पर लागू किए गए।",
+      "appliedToPages_other": "Stitch डिज़ाइन {{count}} पेज(पेजों) पर लागू किए गए।",
+      "someFailed": "{{count}} विफल रहे।",
+      "refreshToSeeChanges": "बदलाव देखने के लिए अपनी साइट को रीफ़्रेश करें।"
+    },
+    "resetSite": {
+      "heading": "डीबग: साइट रीसेट करें",
+      "description": "सभी कॉन्टेंट, मीडिया, संग्रह, नेविगेशन और डिज़ाइन सेटिंग्स हटाएं, फिर शुरू से ऑनबोर्डिंग फिर से शुरू करें। आपका खाता और सबडोमेन सुरक्षित रहेंगे।",
+      "confirm": "क्या आप वाकई सुनिश्चित हैं? इससे सभी साइट कॉन्टेंट, मीडिया और सेटिंग्स स्थायी रूप से हट जाएंगी।",
+      "resetting": "रीसेट हो रहा है...",
+      "resetButton": "साइट रीसेट करें और फिर से शुरू करें"
+    },
+    "themeDebug": {
+      "heading": "प्लेटफ़ॉर्म एडमिन: थीम डीबग",
+      "description": "कंपाइल की गई थीम (फ़ॉन्ट, हेडर/फ़ूटर, CSS कवरेज) का निरीक्षण करें और वर्तमान ब्लॉक्स से Tailwind को फिर से कंपाइल करें।",
+      "failedToLoad": "थीम डीबग जानकारी लोड करने में विफल",
+      "loadThemeDebugInfo": "थीम डीबग जानकारी लोड करें",
+      "recompileFailed": "पुनः कंपाइल विफल",
+      "recompiling": "पुनः कंपाइल हो रहा है...",
+      "recompileTheme": "थीम पुनः कंपाइल करें",
+      "recompiled": "पुनः कंपाइल किया गया।",
+      "compiledCssSummary": "कंपाइल किया गया CSS: {{blockCount}} ब्लॉक(ब्लॉकों) में {{beforeBytes}} → {{afterBytes}} बाइट्स।"
+    },
+    "aiPreferences": {
+      "heading": "डीबग: AI प्राथमिकताएं",
+      "description": "विभिन्न कार्यों के लिए अपने पसंदीदा AI मॉडल चुनें।",
+      "textModel": "टेक्स्ट जनरेशन मॉडल",
+      "imageModel": "इमेज जनरेशन मॉडल",
+      "savePreferences": "प्राथमिकताएं सहेजें",
+      "preferencesSaved": "प्राथमिकताएं सहेजी गईं।",
+      "failedToSavePreferences": "प्राथमिकताएं सहेजने में विफल।",
+      "textModelOptions": {
+        "claude-sonnet-4-6": "Claude Sonnet 4.6 (Anthropic)",
+        "gemini-2.5-flash": "Gemini 2.5 Flash (Google)"
+      },
+      "imageModelOptions": {
+        "imagen-4.0-generate-001": "Imagen 4.0 (Google)",
+        "imagen-4.0-fast-generate-001": "Imagen 4.0 Fast (Google)",
+        "imagen-4.0-ultra-generate-001": "Imagen 4.0 Ultra (Google)"
+      }
+    }
+  },
+  "style": {
+    "title": "स्टाइल",
+    "menuEditor": {
+      "loading": "मेनू लोड हो रहा है...",
+      "helpText": "ये आइटम रेंडर के समय {{location}} में बुने जाते हैं। इन्हें नीचे दिए गए {{location}} के साथ सहेजें। चाइल्ड वाले आइटम ड्रॉपडाउन मेनू बन जाते हैं; यदि वे केवल लेबल हैं तो उनका URL खाली छोड़ा जा सकता है।",
+      "location": {
+        "header": "हेडर",
+        "footer": "फ़ूटर"
+      },
+      "noItems": "अभी तक कोई मेनू आइटम नहीं है।",
+      "labelHeader": "लेबल",
+      "urlHeader": "URL",
+      "labelPlaceholder": "लेबल",
+      "urlPlaceholder": "/path (यदि चाइल्ड हैं तो वैकल्पिक)",
+      "pagePostLinkTitle": "किसी प्रकाशित पेज या पोस्ट से लिंक करें",
+      "pagePostButton": "पेज/पोस्ट",
+      "addChildTitle": "चाइल्ड आइटम जोड़ें",
+      "addChildButton": "+ चाइल्ड",
+      "moveUpTitle": "ऊपर ले जाएं",
+      "moveDownTitle": "नीचे ले जाएं",
+      "removeTitle": "हटाएं",
+      "childLabelPlaceholder": "चाइल्ड लेबल",
+      "childUrlPlaceholder": "/path",
+      "removeChildTitle": "चाइल्ड हटाएं",
+      "addItem": "+ आइटम जोड़ें"
+    },
+    "recompile": {
+      "button": "CSS पुनः कंपाइल करें",
+      "recompiling": "पुनः कंपाइल हो रहा है…",
+      "success": "CSS पुनः कंपाइल हो गया!",
+      "error": "पुनः कंपाइल विफल"
+    },
+    "theme": {
+      "title": "थीम",
+      "siteLogo": "साइट लोगो",
+      "logoAlt": "साइट लोगो",
+      "noLogo": "कोई लोगो सेट नहीं है",
+      "logoHelp": "AI एक सरल ब्रांड आइकन जनरेट करता है (बिना लेटरिंग के)। कभी भी अपना खुद का अपलोड करें।",
+      "chooseTheme": "अपनी सार्वजनिक साइट के लिए एक विज़ुअल थीम चुनें।"
+    },
+    "headerFooter": {
+      "title": "हेडर और फ़ूटर",
+      "help": "अपनी थीम के हेडर और फ़ूटर सेक्शन को संपादित करें। नेविगेशन लिंक और लोगो स्वचालित रूप से जुड़े होते हैं — यहां लेआउट, कॉपी और मेनू आइटम संपादित करें।",
+      "headerTitle": "हेडर",
+      "footerTitle": "फ़ूटर",
+      "menuTabLabel": "मेनू ({{count}})",
+      "saveHeader": "हेडर सहेजें",
+      "saveFooter": "फ़ूटर सहेजें",
+      "saving": "सहेजा जा रहा है..."
+    },
+    "errors": {
+      "saveTheme": "थीम सहेजने में विफल",
+      "generationFailed": "जनरेशन विफल",
+      "saveHeader": "हेडर सहेजने में विफल",
+      "saveFooter": "फ़ूटर सहेजने में विफल"
+    }
+  },
+  "seo": {
+    "title": "SEO",
+    "freeTier": {
+      "intro": "SEO फ़ाइलें",
+      "availablePlans": "पेड प्लान पर उपलब्ध हैं। फ़्री-टियर साइटों को सेट किया गया है",
+      "noIndex": "नो-इंडेक्स",
+      "explanation": ", ताकि सर्च इंजन और AI सहायकों से उन्हें सूचीबद्ध न करने के लिए कहा जाए। इन्हें प्रबंधित करने के लिए अपग्रेड करें।"
+    },
+    "llms": {
+      "custom": "· कस्टम",
+      "autoGenerated": "· स्वतः जनरेट किया गया",
+      "descriptionP1": "एक क्यूरेटेड गाइड जो AI सहायकों को आपकी साइट को समझने में मदद करती है",
+      "descriptionP2": "। आपकी साइट ब्रीफ़ और प्रकाशित पेजों से जनरेट किया गया। इसे संपादित करें या AI से एक बेहतर वर्शन लिखवाएं — इसे स्वचालित रूप से सिंक रखने के लिए इसे न छुएं।",
+      "writeWithAi": "AI से लिखें",
+      "writing": "लिखा जा रहा है…",
+      "resetToAuto": "ऑटो पर रीसेट करें",
+      "saved": "सहेजा गया"
+    },
+    "viewLink": "देखें ↗",
+    "sitemap": {
+      "description": "आपके प्रकाशित पेजों और पोस्ट से स्वतः जनरेट किया गया। robots.txt के माध्यम से सर्च इंजनों को सबमिट किया गया।",
+      "urlCount_one": "{{count}} URL",
+      "urlCount_other": "{{count}} URLs"
+    },
+    "robots": {
+      "description": "स्वतः जनरेट किया गया। क्रॉलरों को अनुमति देता है और उन्हें आपके साइटमैप की ओर इंगित करता है।"
+    },
+    "errors": {
+      "load": "SEO सेटिंग्स लोड करने में विफल",
+      "save": "सहेजने में विफल",
+      "reset": "रीसेट करने में विफल",
+      "draft": "AI से ड्राफ़्ट करने में विफल"
+    }
+  },
+  "addons": {
+    "title": "ऐड-ऑन",
+    "subtitle": "क्यूरेटेड, सैंडबॉक्स्ड ऐड-ऑन के साथ अपनी साइट का विस्तार करें। जो चाहिए इंस्टॉल करें — कोई प्लगइन बनाए नहीं रखना है।",
+    "tabs": {
+      "browse": "ब्राउज़ करें",
+      "installed": "इंस्टॉल किए गए",
+      "installedWithCount": "इंस्टॉल किए गए ({{count}})"
+    },
+    "loading": "लोड हो रहा है…",
+    "noneAvailable": "अभी तक कोई ऐड-ऑन उपलब्ध नहीं है।",
+    "noneInstalledPrefix": "अभी तक कोई ऐड-ऑन इंस्टॉल नहीं किया गया है। कुछ यहां खोजें",
+    "free": "मुफ़्त",
+    "showLess": "कम दिखाएं",
+    "showMore": "अधिक दिखाएं",
+    "installed": "इंस्टॉल किया गया ✓",
+    "installTitleDisabled": "केवल एडमिन ही ऐड-ऑन इंस्टॉल कर सकते हैं",
+    "installing": "इंस्टॉल हो रहा है…",
+    "install": "इंस्टॉल करें",
+    "billingNote": "आज ही आपकी सदस्यता में प्रोरेटेड रूप से बिल किया जाएगा।",
+    "dismiss": "खारिज करें",
+    "suspendedBadge": "निलंबित — बिलिंग समस्या",
+    "configure": "कॉन्फ़िगर करें",
+    "working": "काम हो रहा है…",
+    "uninstall": "अनइंस्टॉल करें",
+    "configSaved": "सहेजा गया",
+    "mortgageCalculatorHint": "एडिटर से किसी भी पेज पर मॉर्गेज कैलकुलेटर ब्लॉक जोड़ें।",
+    "noConfigurableSettings": "इस ऐड-ऑन में कोई कॉन्फ़िगर करने योग्य सेटिंग्स नहीं हैं।",
+    "visitorChatbot": {
+      "instructionsLabel": "सहायक के लिए निर्देश",
+      "instructionsPlaceholder": "वर्णन करें कि सहायक को विज़िटर्स से कैसे बात करनी चाहिए, उसे किसमें मदद करनी चाहिए, और उसे किससे बचना चाहिए।",
+      "greetingLabel": "अभिवादन संदेश",
+      "greetingPlaceholder": "नमस्ते! आज मैं आपकी कैसे मदद कर सकता हूं?",
+      "enabled": "सक्षम"
+    },
+    "turnstile": {
+      "advancedToggle": "उन्नत: अपनी खुद की Cloudflare Turnstile कुंजियां लाएं",
+      "description": "प्लेटफ़ॉर्म की साझा Turnstile कुंजियों का उपयोग करने के लिए इन्हें खाली छोड़ें। अपने Cloudflare खाते पर स्पैम सुरक्षा चलाने के लिए अपनी खुद की दर्ज करें।",
+      "siteKeyLabel": "साइट कुंजी",
+      "secretKeyLabel": "सीक्रेट कुंजी",
+      "secretKeyPlaceholder": "निजी रखी गई — विज़िटर्स को कभी नहीं दिखाई जाती"
+    },
+    "confirmUninstall": {
+      "free": "{{name}} अनइंस्टॉल करें?",
+      "paid": "{{name}} अनइंस्टॉल करें? पेड ऐड-ऑन का प्रो-रेटा क्रेडिट दिया जाता है।"
+    },
+    "errors": {
+      "load": "ऐड-ऑन लोड करने में विफल",
+      "install": "इंस्टॉल करने में विफल",
+      "uninstall": "अनइंस्टॉल करने में विफल",
+      "saveConfig": "सहेजने में विफल"
+    }
+  },
+  "redirects": {
+    "title": "URL रीडायरेक्ट",
+    "importCsv": "CSV आयात करें",
+    "importing": "आयात हो रहा है…",
+    "importResult": {
+      "created_one": "{{count}} रीडायरेक्ट आयात किया गया",
+      "created_other": "{{count}} रीडायरेक्ट आयात किए गए",
+      "skipped": ", {{count}} छोड़े गए"
+    },
+    "fromPlaceholder": "/old-path",
+    "toPlaceholder": "/new-path या https://…",
+    "add": "जोड़ें",
+    "adding": "जोड़ा जा रहा है…",
+    "loading": "लोड हो रहा है…",
+    "emptyState": {
+      "title": "अभी तक कोई रीडायरेक्ट नहीं है।",
+      "hint": "ऊपर एक रीडायरेक्ट जोड़ें या CSV फ़ाइल से आयात करें।",
+      "csvFormat": "CSV फ़ॉर्मेट:"
+    },
+    "tableHeaders": {
+      "from": "से",
+      "to": "तक",
+      "code": "कोड",
+      "active": "सक्रिय"
+    },
+    "deleteConfirm": {
+      "message": "इससे रीडायरेक्ट हटाएं"
+    },
+    "toggleEnabled": {
+      "onTitle": "सक्षम — अक्षम करने के लिए क्लिक करें",
+      "offTitle": "अक्षम — सक्षम करने के लिए क्लिक करें"
+    },
+    "statusOptions": {
+      "301": "301 — स्थायी",
+      "302": "302 — अस्थायी",
+      "307": "307 — अस्थायी (विधि सुरक्षित रखें)",
+      "308": "308 — स्थायी (विधि सुरक्षित रखें)"
+    },
+    "errors": {
+      "create": "रीडायरेक्ट बनाने में विफल",
+      "noValidRows": "CSV में कोई मान्य पंक्ति नहीं मिली"
+    }
+  },
+  "branding": {
+    "title": "ब्रांडिंग",
+    "subtitle": "नियंत्रित करें कि आपकी सार्वजनिक साइट पर Cadmus को कैसे श्रेय दिया जाता है।",
+    "bylineLabel": "फ़ूटर में \"Powered by Cadmus\" बाईलाइन दिखाएं",
+    "errors": {
+      "saveFailed": "सहेजने में विफल"
+    },
+    "favicon": {
+      "title": "फ़ेविकॉन",
+      "subtitle": "ब्राउज़र टैब और बुकमार्क में दिखाया जाने वाला छोटा आइकन। कम से कम 256×256 का स्क्वायर PNG, SVG, या ICO।",
+      "imageAlt": "फ़ेविकॉन",
+      "none": "कोई नहीं",
+      "previewNotSaved": "पूर्वावलोकन — अभी तक सहेजा नहीं गया।",
+      "currentFavicon": "वर्तमान फ़ेविकॉन।",
+      "usingDefault": "डिफ़ॉल्ट Cadmus आइकन का उपयोग किया जा रहा है।",
+      "uploading": "अपलोड हो रहा है…",
+      "discard": "छोड़ें",
+      "errors": {
+        "invalidType": "फ़ेविकॉन एक PNG, SVG, या ICO फ़ाइल होनी चाहिए।",
+        "mustBeSquare": "फ़ेविकॉन स्क्वायर होना चाहिए।",
+        "tooSmall": "फ़ेविकॉन कम से कम 256×256 पिक्सेल का होना चाहिए।",
+        "readFailed": "इमेज आयाम पढ़ने में असमर्थ।",
+        "uploadFailed": "अपलोड विफल",
+        "uploadNoUrl": "अपलोड से कोई URL नहीं मिला",
+        "generationFailed": "जनरेशन विफल",
+        "saveFailed": "सहेजने में विफल",
+        "removeFailed": "हटाने में विफल"
+      }
+    }
+  },
+  "designDirection": {
+    "title": "डिज़ाइन दिशा",
+    "intro": "AI हर संपादन और नए पेज पर इसका संदर्भ लेता है ताकि आपकी साइट विज़ुअल और टोनल रूप से सुसंगत बनी रहे। यह आपके होमपेज से जनरेट होता है और चैट में आपके वैश्विक बदलावों के साथ विकसित होता है — यहां इसे संपादित करें ताकि AI जो भी गलतियां बार-बार करता है उन्हें ठीक कर सकें।",
+    "versionLabel": "वर्शन {{version}}",
+    "source": {
+      "generated": "होमपेज से स्वतः जनरेट किया गया",
+      "refined": "AI चैट के माध्यम से परिष्कृत",
+      "edited": "आपके द्वारा संपादित"
+    },
+    "updatedOn": "{{date}} को अपडेट किया गया",
+    "notCapturedYet": "अभी तक कोई डिज़ाइन दिशा नहीं ली गई है — आपके होमपेज के जनरेट होने के बाद यह स्वचालित रूप से तैयार हो जाती है। आप इसे नीचे मैन्युअल रूप से भी भर सकते हैं।",
+    "fields": {
+      "aesthetic": {
+        "label": "सौंदर्यबोध दिशा",
+        "hint": "(एक या दो वाक्यों में समग्र रूप)",
+        "placeholder": "जैसे गर्मजोशी भरा, संपादकीय, और आत्मविश्वासी — मौन मिट्टी के रंगों पर बोल्ड सेरिफ़ हेडलाइन के साथ उदार व्हाइटस्पेस।"
+      },
+      "voice": {
+        "label": "आवाज़ और टोन",
+        "hint": "(कॉपी कैसी सुनाई देनी चाहिए)",
+        "placeholder": "जैसे सीधी बात, लाभ-केंद्रित, हल्का चंचल"
+      },
+      "layout": {
+        "label": "लेआउट और संरचना",
+        "placeholder": "जैसे बारी-बारी से लाइट/डार्क सेक्शन, असममित हीरो, विशाल कार्ड ग्रिड"
+      },
+      "imagery": {
+        "label": "इमेजरी",
+        "hint": "(AI-जनरेटेड इमेज को दिशा देने के लिए उपयोग किया जाता है)",
+        "placeholder": "जैसे प्राकृतिक-प्रकाश फ़ोटोग्राफ़ी, असली लोग, स्वाभाविक क्षण, कोई स्टॉक-क्लिशे हैंडशेक नहीं"
+      },
+      "colorType": {
+        "label": "रंग और टाइप",
+        "placeholder": "जैसे एक्सेंट केवल CTA के लिए आरक्षित; हेडिंग डिस्प्ले सेरिफ़ में, बॉडी एक स्वच्छ सैंस में"
+      },
+      "positioning": {
+        "label": "पोज़िशनिंग",
+        "hint": "(कॉपी में मज़बूत करने के लिए विशिष्टताएं — वैकल्पिक)",
+        "placeholder": "जैसे उसी दिन सेवा वाला एकमात्र स्थानीय-स्वामित्व वाला विकल्प"
+      },
+      "constraints": {
+        "label": "बाधाएं",
+        "hint": "(सख्त नियम जो AI को कभी नहीं तोड़ने चाहिए — प्रति पंक्ति एक)",
+        "placeholder": "जैसे कभी बैंगनी का उपयोग न करें\nऑफ़िसों की कोई स्टॉक फ़ोटो नहीं\nहमेशा टैगलाइन 'Built to last' रखें"
+      }
+    },
+    "saveButton": "डिज़ाइन दिशा सहेजें",
+    "errors": {
+      "saveFailed": "सहेजने में विफल"
+    }
+  },
+  "themeEditor": {
+    "subtitle": "आपकी साइट थीम के लिए रंग और फ़ॉन्ट। किसी भी मान को संपादित करें और सहेजें।",
+    "colorGroups": {
+      "primary": "प्राथमिक",
+      "secondary": "द्वितीयक",
+      "tertiary": "तृतीयक",
+      "surface": "सतह",
+      "error": "त्रुटि",
+      "other": "अन्य"
+    },
+    "fontsHeading": "फ़ॉन्ट",
+    "saving": "सहेजा जा रहा है...",
+    "saveButton": "थीम सहेजें",
+    "errors": {
+      "saveFailed": "सहेजने में विफल"
+    }
+  },
+  "upgradePrompt": {
+    "features": {
+      "custom_domain": {
+        "label": "कस्टम डोमेन",
+        "description": "अपना खुद का डोमेन नाम अपनी साइट से कनेक्ट करें।"
+      },
+      "team_members": {
+        "label": "टीम सदस्य",
+        "description": "अपनी साइट के प्रबंधन में मदद के लिए सहयोगियों को आमंत्रित करें।"
+      },
+      "ai_chat_message": {
+        "label": "AI चैट संदेश",
+        "description": "कॉन्टेंट संपादित करने और सुझाव पाने के लिए Cadmus AI से चैट करें।"
+      },
+      "ai_image_generation": {
+        "label": "AI इमेज जनरेशन",
+        "description": "AI का उपयोग करके पेशेवर इमेज जनरेट करें।"
+      },
+      "page_count": {
+        "label": "पेज सीमा",
+        "description": "अपनी साइट पर अतिरिक्त पेज बनाएं।"
+      },
+      "post_count": {
+        "label": "पोस्ट सीमा",
+        "description": "अतिरिक्त ब्लॉग पोस्ट प्रकाशित करें।"
+      },
+      "storage_upload": {
+        "label": "मीडिया स्टोरेज",
+        "description": "अपनी मीडिया लाइब्रेरी में इमेज, वीडियो और दस्तावेज़ अपलोड करें।"
+      },
+      "form_email_notification": {
+        "label": "फ़ॉर्म ईमेल सूचनाएं",
+        "description": "जब विज़िटर फ़ॉर्म सबमिट करें तो ईमेल सूचनाएं प्राप्त करें।"
+      },
+      "paid_addons": {
+        "label": "पेड ऐड-ऑन",
+        "description": "मार्केटप्लेस से प्रीमियम ऐड-ऑन इंस्टॉल करें।"
+      }
+    },
+    "period": {
+      "today": "आज",
+      "thisMonth": "इस महीने",
+      "total": "कुल"
+    },
+    "inline": {
+      "usage": "{{label}}: {{usage}} / {{limit}} {{period}} उपयोग किया गया।",
+      "notAvailable": "{{label}} फ़्री प्लान पर उपलब्ध नहीं है।",
+      "upgradeToUnlock": "अधिक अनलॉक करने के लिए अपग्रेड करें।"
+    },
+    "upgradeButton": "अपग्रेड करें",
+    "card": {
+      "limitReached": "{{label}} सीमा समाप्त",
+      "usageFraction": "{{usage}} / {{limit}} {{period}}",
+      "upgradePlanButton": "प्लान अपग्रेड करें",
+      "unlockText": "पेड प्लान के साथ असीमित एक्सेस अनलॉक करें।"
+    }
+  },
+  "team": {
+    "roles": {
+      "owner": "मालिक",
+      "admin": "एडमिन",
+      "editor": "संपादक",
+      "viewer": "दर्शक"
+    },
+    "inviteMember": {
+      "title": "सदस्य आमंत्रित करें",
+      "emailLabel": "ईमेल",
+      "emailPlaceholder": "colleague@example.com",
+      "roleLabel": "भूमिका",
+      "send": "आमंत्रण भेजें",
+      "sending": "भेजा जा रहा है...",
+      "success": "{{email}} को आमंत्रण भेजा गया"
+    },
+    "errors": {
+      "inviteFailed": "आमंत्रण भेजने में विफल",
+      "roleChangeFailed": "भूमिका बदलने में विफल",
+      "removeFailed": "सदस्य हटाने में विफल"
+    },
+    "confirmLeave": "इस साइट को छोड़ें? आप एक्सेस खो देंगे।",
+    "confirmRemove": "{{name}} को इस साइट से हटाएं?",
+    "members": {
+      "title_one": "सदस्य ({{count}})",
+      "title_other": "सदस्य ({{count}})",
+      "columns": {
+        "name": "नाम",
+        "email": "ईमेल",
+        "role": "भूमिका",
+        "joined": "शामिल हुए"
+      },
+      "you": "(आप)",
+      "pending": "लंबित",
+      "billingBadge": "बिलिंग",
+      "billingTooltip": "यह सदस्य बिलिंग संपर्क है",
+      "remove": "हटाएं",
+      "leave": "छोड़ें"
+    }
+  },
+  "auditLog": {
+    "title": "एक्टिविटी लॉग",
+    "totalTurns_one": "{{count}} टर्न",
+    "totalTurns_other": "{{count}} टर्न",
+    "totalEntries_one": "{{count}} एंट्री",
+    "totalEntries_other": "{{count}} एंट्री",
+    "filters": {
+      "allActors": "सभी एक्टर",
+      "allTaskTypes": "सभी कार्य प्रकार",
+      "allDecisions": "सभी निर्णय",
+      "allEntities": "सभी इकाइयां"
+    },
+    "actorTypes": {
+      "user": "यूज़र",
+      "ai": "AI",
+      "cron": "क्रॉन",
+      "addon": "ऐड-ऑन"
+    },
+    "decisions": {
+      "accepted": "स्वीकृत",
+      "rejected": "अस्वीकृत",
+      "modified": "संशोधित",
+      "partial": "आंशिक"
+    },
+    "entityTypes": {
+      "content": "कॉन्टेंट",
+      "media": "मीडिया",
+      "site": "साइट",
+      "navigation": "नेविगेशन",
+      "user": "यूज़र",
+      "collection": "संग्रह"
+    },
+    "noAiActivity": "कोई AI गतिविधि नहीं मिली।",
+    "noActivity": "कोई गतिविधि नहीं मिली।",
+    "actionsCount_one": "{{count}} कार्रवाई",
+    "actionsCount_other": "{{count}} कार्रवाइयां",
+    "actions": {
+      "keep": "रखें",
+      "undo": "पूर्ववत करें",
+      "undoing": "पूर्ववत हो रहा है..."
+    },
+    "fallbackBadge": "फ़ॉलबैक",
+    "onEntity": "{{type}}:{{id}} पर",
+    "byActor": "{{name}} द्वारा",
+    "errors": {
+      "decisionFailed": "निर्णय विफल रहा"
+    },
+    "time": {
+      "justNow": "अभी अभी"
+    },
+    "actionLabels": {
+      "site_provisioned": "साइट बनाई गई",
+      "site_updated": "साइट अपडेट की गई",
+      "site_activated": "साइट सक्रिय की गई",
+      "site_billing_changed": "बिलिंग अपडेट की गई",
+      "site_domain_connected": "डोमेन कनेक्ट किया गया",
+      "site_domain_disconnected": "डोमेन डिस्कनेक्ट किया गया",
+      "site_subdomain_set": "सबडोमेन सेट किया गया",
+      "site_subdomain_changed": "सबडोमेन बदला गया",
+      "content_created": "कॉन्टेंट बनाया गया",
+      "content_imported": "कॉन्टेंट आयात किया गया",
+      "content_imported_html": "HTML कॉन्टेंट आयात किया गया",
+      "content_imported_stitch_html": "Stitch HTML आयात किया गया",
+      "content_metadata_updated": "कॉन्टेंट मेटाडेटा अपडेट किया गया",
+      "content_updated": "कॉन्टेंट अपडेट किया गया",
+      "content_archived": "कॉन्टेंट आर्काइव किया गया",
+      "content_version_restored": "वर्शन पुनर्स्थापित किया गया",
+      "favicon_generated": "फ़ेविकॉन जनरेट किया गया",
+      "media_uploaded": "मीडिया अपलोड किया गया",
+      "media_deleted": "मीडिया हटाया गया",
+      "media_generated": "मीडिया जनरेट किया गया",
+      "footer_updated": "फ़ूटर अपडेट किया गया",
+      "header_updated": "हेडर अपडेट किया गया",
+      "theme_extract_fields": "संपादन योग्य फ़ील्ड निकाले गए",
+      "navigation_updated": "नेविगेशन अपडेट किया गया",
+      "collection_created": "संग्रह बनाया गया",
+      "collection_updated": "संग्रह अपडेट किया गया",
+      "collection_deleted": "संग्रह हटाया गया",
+      "content_unarchived": "कॉन्टेंट पुनर्स्थापित किया गया",
+      "media_updated": "मीडिया अपडेट किया गया",
+      "redirect_created": "रीडायरेक्ट बनाया गया",
+      "redirect_imported": "रीडायरेक्ट आयात किया गया",
+      "redirect_updated": "रीडायरेक्ट अपडेट किया गया",
+      "redirect_deleted": "रीडायरेक्ट हटाया गया",
+      "navigation_created": "नेविगेशन बनाया गया",
+      "navigation_deleted": "नेविगेशन हटाया गया",
+      "scheduled_task_created": "कार्य शेड्यूल किया गया",
+      "scheduled_task_cancelled": "कार्य रद्द किया गया",
+      "billing_transferred": "बिलिंग स्थानांतरित की गई",
+      "billing_cancelled": "सदस्यता रद्द की गई",
+      "billing_reactivated": "सदस्यता पुनः सक्रिय की गई",
+      "billing_plan_changed": "सदस्यता अपडेट की गई",
+      "account_password_changed": "पासवर्ड बदला गया",
+      "account_password_reset": "पासवर्ड रीसेट किया गया",
+      "account_profile_updated": "प्रोफ़ाइल अपडेट की गई",
+      "site_restart_onboarding": "ऑनबोर्डिंग फिर से शुरू की गई",
+      "site_reset": "साइट रीसेट की गई",
+      "team_invited": "सदस्य को आमंत्रित किया गया",
+      "team_joined": "सदस्य शामिल हुआ",
+      "team_role_changed": "भूमिका बदली गई",
+      "team_removed": "सदस्य हटाया गया",
+      "theme_recompile": "थीम CSS पुनः कंपाइल किया गया"
+    }
+  },
+  "formSubmissions": {
+    "title": "फ़ॉर्म सबमिशन",
+    "total_one": "{{count}} कुल",
+    "total_other": "{{count}} कुल",
+    "export": "CSV एक्सपोर्ट करें",
+    "exporting": "एक्सपोर्ट हो रहा है...",
+    "allForms": "सभी फ़ॉर्म",
+    "untitledForm": "शीर्षकहीन फ़ॉर्म",
+    "from": "से",
+    "to": "तक",
+    "searchPlaceholder": "ईमेल, URL, फ़ील्ड डेटा खोजें",
+    "search": "खोजें",
+    "clear": "साफ़ करें",
+    "noResults": "कोई सबमिशन नहीं मिला।",
+    "columns": {
+      "date": "तारीख़",
+      "form": "फ़ॉर्म",
+      "email": "ईमेल",
+      "source": "स्रोत"
+    },
+    "delete": "हटाएं",
+    "confirmDelete": "यह सबमिशन हटाएं?",
+    "resendWebhook": "वेबहुक फिर से भेजें",
+    "resending": "फिर से भेजा जा रहा है…",
+    "attachments": "अटैचमेंट",
+    "ipLabel": "IP:",
+    "errors": {
+      "deleteFailed": "सबमिशन हटाने में विफल",
+      "resendFailed": "वेबहुक फिर से भेजने में विफल",
+      "exportFailed": "एक्सपोर्ट विफल",
+      "downloadFailed": "डाउनलोड विफल"
+    },
+    "webhookStatus": {
+      "pending": "वेबहुक लंबित",
+      "success": "वेबहुक भेजा गया",
+      "failed": "वेबहुक विफल"
+    }
+  },
+  "help": {
+    "title": "सहायता और समर्थन",
+    "intro": "कोई सवाल है, कुछ अप्रत्याशित हुआ है, या कोई विचार है? हम मदद के लिए यहां हैं।",
+    "tabs": {
+      "submit": "अनुरोध सबमिट करें",
+      "myTickets": "मेरे अनुरोध"
+    },
+    "submitted": {
+      "title": "अनुरोध प्राप्त हुआ",
+      "body": "हम ईमेल द्वारा फ़ॉलो अप करेंगे। आप स्थिति को यहां ट्रैक कर सकते हैं",
+      "another": "एक और अनुरोध सबमिट करें"
+    },
+    "form": {
+      "typeLabel": "अनुरोध प्रकार",
+      "typeSupport": "सहायता टिकट",
+      "typeFeature": "फ़ीचर अनुरोध",
+      "subjectLabel": "विषय",
+      "subjectPlaceholderSupport": "समस्या का संक्षेप में वर्णन करें",
+      "subjectPlaceholderFeature": "अपने विचार का संक्षेप में वर्णन करें",
+      "bodyLabelSupport": "क्या हो रहा है?",
+      "bodyLabelFeature": "हमें और बताएं",
+      "bodyPlaceholderSupport": "वर्णन करें कि आपने क्या किया, आपने क्या होने की उम्मीद की थी, और इसके बजाय क्या हुआ।",
+      "bodyPlaceholderFeature": "फ़ीचर का वर्णन करें और यह आपकी कैसे मदद करेगा।",
+      "priorityLabel": "प्राथमिकता",
+      "priorityLow": "कम — मामूली असुविधा",
+      "priorityNormal": "सामान्य — कुछ ठीक से काम नहीं कर रहा है",
+      "priorityHigh": "उच्च — मेरी साइट टूटी हुई या अनुपयोगी है",
+      "submit": "अनुरोध सबमिट करें",
+      "submitting": "सबमिट हो रहा है…"
+    },
+    "errors": {
+      "submitFailed": "टिकट सबमिट करने में विफल"
+    },
+    "tickets": {
+      "empty": "अभी तक कोई अनुरोध नहीं है। यहां एक सबमिट करें",
+      "loadingReplies": "जवाब लोड हो रहे हैं…",
+      "repliesHeading": "समर्थन से जवाब"
+    },
+    "status": {
+      "open": "खुला",
+      "inProgress": "प्रगति पर",
+      "resolved": "हल हो गया",
+      "closed": "बंद"
+    }
+  },
+  "insights": {
+    "openCount_one": "{{count}} खुला",
+    "openCount_other": "{{count}} खुले",
+    "dismissedSuffix_one": " · {{count}} खारिज किया गया",
+    "dismissedSuffix_other": " · {{count}} खारिज किए गए",
+    "rescan": "फिर से स्कैन करें",
+    "scanning": "स्कैन हो रहा है…",
+    "intro": "आपकी साइट पर ऐसी चीज़ें जो अधूरी, टूटी हुई, या दोबारा देखने लायक लगती हैं। इसे सीधे ठीक करने के लिए पेज खोलें, या वहां मदद के लिए AI सहायक का उपयोग करें।",
+    "errors": {
+      "loadFailed": "इनसाइट्स लोड नहीं हो सके। कुछ समय बाद पुनः प्रयास करें।"
+    },
+    "empty": {
+      "title": "अभी संबोधित करने के लिए कुछ नहीं है",
+      "body": "कोई खुला इनसाइट नहीं है। अगली बार जब आप फिर से स्कैन करेंगे या किसी ऐसे पेज पर जाएंगे जिसमें ठीक करने योग्य समस्या है, तो हम कुछ भी नया सामने लाएंगे।"
+    },
+    "showDismissed_one": "खारिज किए गए दिखाएं ({{count}})",
+    "showDismissed_other": "खारिज किए गए दिखाएं ({{count}})",
+    "hideDismissed_one": "खारिज किए गए छिपाएं ({{count}})",
+    "hideDismissed_other": "खारिज किए गए छिपाएं ({{count}})",
+    "openPage": "{{page}} खोलें",
+    "restore": "पुनर्स्थापित करें",
+    "dismiss": "खारिज करें"
+  },
+  "passwordStrength": {
+    "minLength": "कम से कम 12 वर्ण",
+    "uppercase": "बड़ा अक्षर (uppercase)",
+    "numberOrSymbol": "संख्या या प्रतीक"
+  },
+  "trialBanner": {
+    "endsToday": "आपका मुफ़्त ट्रायल आज समाप्त हो रहा है।",
+    "daysLeft_one": "आपके मुफ़्त ट्रायल में {{count}} दिन शेष है।",
+    "daysLeft_other": "आपके मुफ़्त ट्रायल में {{count}} दिन शेष हैं।",
+    "addPaymentMethod": "भुगतान विधि जोड़ें"
+  },
+  "pastDueBanner": {
+    "message": "आपका पिछला भुगतान अस्वीकृत हो गया था। Stripe पुनः प्रयास करता रहेगा, लेकिन यदि वे प्रयास भी विफल होते हैं तो आपकी साइट निलंबित कर दी जाएगी — कृपया अपना कार्ड अपडेट करें।",
+    "updatePaymentMethod": "भुगतान विधि अपडेट करें"
+  },
+  "suspensionBanner": {
+    "archivedTitle": "यह साइट आर्काइव की गई है",
+    "suspendedTitle": "यह साइट निलंबित है",
+    "body": "आप अभी भी साइन इन कर सकते हैं और कॉन्टेंट देख सकते हैं, लेकिन संपादन और प्रकाशन अक्षम हैं।",
+    "reasonSuffix": " कारण: {{reason}}",
+    "deletion_one": "{{date}} को स्थायी रूप से हटाने के लिए शेड्यूल किया गया ({{count}} दिन शेष)।",
+    "deletion_other": "{{date}} को स्थायी रूप से हटाने के लिए शेड्यूल किया गया ({{count}} दिन शेष)।",
+    "contactPrefix": "सवाल हैं? संपर्क करें"
+  },
+  "errorBoundary": {
+    "title": "कुछ गड़बड़ हो गई",
+    "body": "एडमिन ऐप में एक अप्रत्याशित त्रुटि आई। रीलोड करने से आमतौर पर यह ठीक हो जाता है।",
+    "reload": "रीलोड करें",
+    "tryAgain": "पुनः प्रयास करें"
+  }
+}

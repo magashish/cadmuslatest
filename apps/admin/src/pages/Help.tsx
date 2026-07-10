@@ -1,15 +1,19 @@
 import { useState, useEffect, type FormEvent } from "react";
+import { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
 import { support, type SupportTicket, type TicketComment } from "../lib/api";
 
 type Tab = "submit" | "my-tickets";
 type TicketType = "support" | "feature_request";
 
-const STATUS_LABELS: Record<string, string> = {
-  open: "Open",
-  in_progress: "In Progress",
-  resolved: "Resolved",
-  closed: "Closed",
-};
+function statusLabels(t: TFunction): Record<string, string> {
+  return {
+    open: t("help.status.open"),
+    in_progress: t("help.status.inProgress"),
+    resolved: t("help.status.resolved"),
+    closed: t("help.status.closed"),
+  };
+}
 
 const STATUS_COLORS: Record<string, string> = {
   open: "#2563eb",
@@ -19,6 +23,8 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 export function Help() {
+  const { t } = useTranslation();
+  const STATUS_LABELS = statusLabels(t);
   const [tab, setTab] = useState<Tab>("submit");
 
   // Submit form state
@@ -58,7 +64,7 @@ export function Help() {
       setBody("");
       setPriority("normal");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to submit ticket");
+      setError(err instanceof Error ? err.message : t("help.errors.submitFailed"));
     } finally {
       setSubmitting(false);
     }
@@ -87,13 +93,13 @@ export function Help() {
 
   return (
     <div className="page">
-      <h2>Help &amp; Support</h2>
+      <h2>{t("help.title")}</h2>
       <p style={{ color: "var(--color-text-muted)", marginTop: "0.25rem" }}>
-        Have a question, ran into something unexpected, or have an idea? We're here to help.
+        {t("help.intro")}
       </p>
 
       <div style={{ display: "flex", gap: "0.5rem", marginTop: "1.5rem", borderBottom: "1px solid var(--color-border)" }}>
-        {([["submit", "Submit a Request"], ["my-tickets", "My Requests"]] as const).map(([key, label]) => (
+        {([["submit", t("help.tabs.submit")], ["my-tickets", t("help.tabs.myTickets")]] as const).map(([key, label]) => (
           <button
             key={key}
             type="button"
@@ -119,12 +125,12 @@ export function Help() {
           {submitted ? (
             <div className="card" style={{ padding: "2rem", textAlign: "center" }}>
               <div style={{ fontSize: "2rem", marginBottom: "0.75rem" }}>✓</div>
-              <h3 style={{ margin: "0 0 0.5rem" }}>Request received</h3>
+              <h3 style={{ margin: "0 0 0.5rem" }}>{t("help.submitted.title")}</h3>
               <p style={{ color: "var(--color-text-muted)", margin: "0 0 1.5rem" }}>
-                We'll follow up by email. You can track the status under <strong>My Requests</strong>.
+                {t("help.submitted.body")} <strong>{t("help.tabs.myTickets")}</strong>.
               </p>
               <button type="button" className="btn btn-secondary" onClick={handleAnother}>
-                Submit another request
+                {t("help.submitted.another")}
               </button>
             </div>
           ) : (
@@ -132,9 +138,9 @@ export function Help() {
               {error && <div className="auth-error">{error}</div>}
 
               <div className="form-group">
-                <label>Request type</label>
+                <label>{t("help.form.typeLabel")}</label>
                 <div style={{ display: "flex", gap: "0.75rem" }}>
-                  {([["support", "Support ticket"], ["feature_request", "Feature request"]] as const).map(([val, label]) => (
+                  {([["support", t("help.form.typeSupport")], ["feature_request", t("help.form.typeFeature")]] as const).map(([val, label]) => (
                     <label
                       key={val}
                       style={{
@@ -163,26 +169,26 @@ export function Help() {
               </div>
 
               <div className="form-group">
-                <label>Subject</label>
+                <label>{t("help.form.subjectLabel")}</label>
                 <input
                   type="text"
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
-                  placeholder={type === "support" ? "Briefly describe the issue" : "Briefly describe your idea"}
+                  placeholder={type === "support" ? t("help.form.subjectPlaceholderSupport") : t("help.form.subjectPlaceholderFeature")}
                   required
                 />
               </div>
 
               <div className="form-group">
-                <label>{type === "support" ? "What's happening?" : "Tell us more"}</label>
+                <label>{type === "support" ? t("help.form.bodyLabelSupport") : t("help.form.bodyLabelFeature")}</label>
                 <textarea
                   value={body}
                   onChange={(e) => setBody(e.target.value)}
                   rows={6}
                   placeholder={
                     type === "support"
-                      ? "Describe what you did, what you expected to happen, and what happened instead."
-                      : "Describe the feature and how it would help you."
+                      ? t("help.form.bodyPlaceholderSupport")
+                      : t("help.form.bodyPlaceholderFeature")
                   }
                   required
                   style={{ resize: "vertical" }}
@@ -191,18 +197,18 @@ export function Help() {
 
               {type === "support" && (
                 <div className="form-group">
-                  <label>Priority</label>
+                  <label>{t("help.form.priorityLabel")}</label>
                   <select value={priority} onChange={(e) => setPriority(e.target.value)}>
-                    <option value="low">Low — minor inconvenience</option>
-                    <option value="normal">Normal — something isn't working right</option>
-                    <option value="high">High — my site is broken or unusable</option>
+                    <option value="low">{t("help.form.priorityLow")}</option>
+                    <option value="normal">{t("help.form.priorityNormal")}</option>
+                    <option value="high">{t("help.form.priorityHigh")}</option>
                   </select>
                 </div>
               )}
 
               <div>
                 <button type="submit" className="btn btn-primary" disabled={submitting}>
-                  {submitting ? "Submitting…" : "Submit request"}
+                  {submitting ? t("help.form.submitting") : t("help.form.submit")}
                 </button>
               </div>
             </form>
@@ -213,20 +219,20 @@ export function Help() {
       {tab === "my-tickets" && (
         <div style={{ marginTop: "1.5rem" }}>
           {loadingTickets ? (
-            <p style={{ color: "var(--color-text-muted)" }}>Loading…</p>
+            <p style={{ color: "var(--color-text-muted)" }}>{t("common.loading")}</p>
           ) : tickets.length === 0 ? (
             <div className="card" style={{ padding: "2rem", textAlign: "center", color: "var(--color-text-muted)" }}>
-              No requests yet. Submit one under <strong>Submit a Request</strong>.
+              {t("help.tickets.empty")} <strong>{t("help.tabs.submit")}</strong>.
             </div>
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-              {tickets.map((t) => {
-                const isExpanded = expandedTicketId === t.id;
+              {tickets.map((ticket) => {
+                const isExpanded = expandedTicketId === ticket.id;
                 return (
-                  <div key={t.id} className="card" style={{ padding: 0, overflow: "hidden" }}>
+                  <div key={ticket.id} className="card" style={{ padding: 0, overflow: "hidden" }}>
                     <button
                       type="button"
-                      onClick={() => handleExpandTicket(t.id)}
+                      onClick={() => handleExpandTicket(ticket.id)}
                       style={{
                         display: "grid",
                         gridTemplateColumns: "1fr auto auto auto",
@@ -241,13 +247,13 @@ export function Help() {
                       }}
                     >
                       <div>
-                        <div style={{ fontWeight: 600, marginBottom: "0.15rem", fontSize: "0.9rem" }}>{t.subject}</div>
+                        <div style={{ fontWeight: 600, marginBottom: "0.15rem", fontSize: "0.9rem" }}>{ticket.subject}</div>
                         <div style={{ fontSize: "0.8rem", color: "var(--color-text-muted)" }}>
-                          {t.type === "feature_request" ? "Feature request" : "Support ticket"} · {new Date(t.createdAt).toLocaleDateString()}
+                          {ticket.type === "feature_request" ? t("help.form.typeFeature") : t("help.form.typeSupport")} · {new Date(ticket.createdAt).toLocaleDateString()}
                         </div>
                       </div>
                       <span style={{ fontSize: "0.8rem", color: "var(--color-text-muted)", textTransform: "capitalize", whiteSpace: "nowrap" }}>
-                        {t.priority}
+                        {ticket.priority}
                       </span>
                       <span style={{
                         display: "inline-block",
@@ -255,11 +261,11 @@ export function Help() {
                         borderRadius: "4px",
                         fontSize: "0.75rem",
                         fontWeight: 600,
-                        background: `${STATUS_COLORS[t.status]}20`,
-                        color: STATUS_COLORS[t.status],
+                        background: `${STATUS_COLORS[ticket.status]}20`,
+                        color: STATUS_COLORS[ticket.status],
                         whiteSpace: "nowrap",
                       }}>
-                        {STATUS_LABELS[t.status] ?? t.status}
+                        {STATUS_LABELS[ticket.status] ?? ticket.status}
                       </span>
                       <span style={{ color: "var(--color-text-muted)", fontSize: "0.85rem" }}>{isExpanded ? "▲" : "▼"}</span>
                     </button>
@@ -276,16 +282,16 @@ export function Help() {
                           fontSize: "0.875rem",
                           lineHeight: 1.6,
                         }}>
-                          {t.body}
+                          {ticket.body}
                         </pre>
 
                         {/* Reply thread */}
-                        {commentsLoading === t.id ? (
-                          <p style={{ fontSize: "0.875rem", color: "var(--color-text-muted)", marginTop: "1rem" }}>Loading replies…</p>
-                        ) : (ticketComments[t.id] || []).length > 0 ? (
+                        {commentsLoading === ticket.id ? (
+                          <p style={{ fontSize: "0.875rem", color: "var(--color-text-muted)", marginTop: "1rem" }}>{t("help.tickets.loadingReplies")}</p>
+                        ) : (ticketComments[ticket.id] || []).length > 0 ? (
                           <div style={{ marginTop: "1rem", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-                            <div style={{ fontSize: "0.8rem", fontWeight: 600, color: "var(--color-text-muted)" }}>Replies from support</div>
-                            {(ticketComments[t.id] || []).map((c) => (
+                            <div style={{ fontSize: "0.8rem", fontWeight: 600, color: "var(--color-text-muted)" }}>{t("help.tickets.repliesHeading")}</div>
+                            {(ticketComments[ticket.id] || []).map((c) => (
                               <div
                                 key={c.id}
                                 style={{

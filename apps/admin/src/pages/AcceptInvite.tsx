@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { PasswordStrengthMeter, meetsPasswordRequirements } from "../components/PasswordStrengthMeter";
 
 const API = import.meta.env.VITE_API_URL || "";
 
 export function AcceptInvite() {
+  const { t } = useTranslation();
   const [params] = useSearchParams();
   const navigate = useNavigate();
   const token = params.get("token") || "";
@@ -21,7 +23,7 @@ export function AcceptInvite() {
   // Validate token on page load
   useEffect(() => {
     if (!token) {
-      setInvalidMessage("This invitation link is missing or invalid.");
+      setInvalidMessage(t("acceptInvite.invalidMissing"));
       setValidating(false);
       return;
     }
@@ -30,14 +32,14 @@ export function AcceptInvite() {
       .then((res) => res.json())
       .then((data) => {
         if (!data.valid) {
-          setInvalidMessage(data.error || "This invitation link is invalid or has expired.");
+          setInvalidMessage(data.error || t("acceptInvite.invalidExpired"));
         } else {
           setHasPassword(data.hasPassword);
           setEmail(data.email || "");
         }
       })
       .catch(() => {
-        setInvalidMessage("Something went wrong. Please try again later.");
+        setInvalidMessage(t("acceptInvite.error.loadFailed"));
       })
       .finally(() => setValidating(false));
   }, [token]);
@@ -45,11 +47,11 @@ export function AcceptInvite() {
   const handleAccept = async (skipPassword: boolean) => {
     if (!skipPassword) {
       if (!meetsPasswordRequirements(password)) {
-        setError("Please meet all password requirements.");
+        setError(t("acceptInvite.error.requirements"));
         return;
       }
       if (password !== confirmPassword) {
-        setError("Passwords do not match.");
+        setError(t("acceptInvite.error.mismatch"));
         return;
       }
     }
@@ -67,13 +69,13 @@ export function AcceptInvite() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error || "Failed to accept invitation.");
+        setError(data.error || t("acceptInvite.error.acceptFailed"));
         return;
       }
 
-      navigate("/login", { state: { message: "Invitation accepted! Please log in." } });
+      navigate("/login", { state: { message: t("acceptInvite.acceptedRedirectMessage") } });
     } catch {
-      setError("Something went wrong. Please try again.");
+      setError(t("acceptInvite.error.generic"));
     } finally {
       setLoading(false);
     }
@@ -83,7 +85,7 @@ export function AcceptInvite() {
     return (
       <div className="auth-page">
         <div className="auth-card">
-          <h2>Checking invitation...</h2>
+          <h2>{t("acceptInvite.checkingTitle")}</h2>
         </div>
       </div>
     );
@@ -93,14 +95,14 @@ export function AcceptInvite() {
     return (
       <div className="auth-page">
         <div className="auth-card">
-          <h2>Invitation Unavailable</h2>
+          <h2>{t("acceptInvite.unavailableTitle")}</h2>
           <p style={{ color: "#666", marginBottom: "1.5rem" }}>{invalidMessage}</p>
           <button
             className="btn btn-primary"
             onClick={() => navigate("/login")}
             style={{ width: "100%" }}
           >
-            Go to Login
+            {t("acceptInvite.goToLogin")}
           </button>
         </div>
       </div>
@@ -112,9 +114,9 @@ export function AcceptInvite() {
     return (
       <div className="auth-page">
         <div className="auth-card">
-          <h2>Accept Invitation</h2>
+          <h2>{t("acceptInvite.title")}</h2>
           <p style={{ color: "#666", marginBottom: "1.5rem" }}>
-            You're joining as <strong>{email}</strong>. Since you already have an account, just click below to accept.
+            {t("acceptInvite.joiningAsPrefix")} <strong>{email}</strong>{t("acceptInvite.joiningAsSuffix")}
           </p>
 
           {error && <p className="auth-error">{error}</p>}
@@ -125,7 +127,7 @@ export function AcceptInvite() {
             disabled={loading}
             style={{ width: "100%", marginTop: "0.5rem" }}
           >
-            {loading ? "Accepting..." : "Accept Invitation"}
+            {loading ? t("acceptInvite.accepting") : t("acceptInvite.acceptInvitation")}
           </button>
         </div>
       </div>
@@ -136,32 +138,32 @@ export function AcceptInvite() {
   return (
     <div className="auth-page">
       <div className="auth-card">
-        <h2>Accept Invitation</h2>
+        <h2>{t("acceptInvite.title")}</h2>
         <p style={{ color: "#666", marginBottom: "1.5rem" }}>
-          Set a password to complete your account setup{email ? ` for ${email}` : ""}.
+          {t("acceptInvite.setPasswordBody", { suffix: email ? ` for ${email}` : "" })}
         </p>
 
         {error && <p className="auth-error">{error}</p>}
 
         <div className="form-group">
-          <label>Password</label>
+          <label>{t("common.passwordLabel")}</label>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="At least 12 characters"
+            placeholder={t("acceptInvite.passwordPlaceholder")}
             onKeyDown={(e) => e.key === "Enter" && handleAccept(false)}
           />
           <PasswordStrengthMeter password={password} />
         </div>
 
         <div className="form-group">
-          <label>Confirm Password</label>
+          <label>{t("acceptInvite.confirmPasswordLabel")}</label>
           <input
             type="password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            placeholder="Confirm your password"
+            placeholder={t("acceptInvite.confirmPasswordPlaceholder")}
             onKeyDown={(e) => e.key === "Enter" && handleAccept(false)}
           />
         </div>
@@ -172,7 +174,7 @@ export function AcceptInvite() {
           disabled={loading}
           style={{ width: "100%", marginTop: "0.5rem" }}
         >
-          {loading ? "Accepting..." : "Accept & Set Password"}
+          {loading ? t("acceptInvite.accepting") : t("acceptInvite.acceptAndSetPassword")}
         </button>
       </div>
     </div>

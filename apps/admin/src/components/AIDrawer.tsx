@@ -1,41 +1,43 @@
 import { useState, useEffect, useRef, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 import { ai, type Insight, type ChatStreamEvent } from "../lib/api";
 
-const TOOL_LABELS: Record<string, string> = {
-  read_content: "Reading page content…",
-  list_content: "Listing pages…",
-  search_content: "Searching content…",
-  create_content: "Creating page…",
-  update_content: "Updating page…",
-  get_html_block: "Fetching HTML…",
-  update_html_block: "Updating section…",
-  delete_content: "Deleting page…",
-  set_metadata: "Updating metadata…",
-  list_media: "Listing media…",
-  update_media: "Updating media…",
-  delete_media: "Deleting media…",
-  generate_image: "Generating image…",
-  update_header: "Updating header…",
-  update_footer: "Updating footer…",
-  read_header_footer: "Reading header & footer…",
-  list_navigation: "Reading navigation…",
-  update_navigation: "Updating navigation…",
-  create_collection: "Creating collection…",
-  update_collection: "Updating collection…",
-  delete_collection: "Deleting collection…",
-  add_to_collection: "Adding to collection…",
-  remove_from_collection: "Removing from collection…",
-  list_collections: "Listing collections…",
-  get_page_context: "Reading page context…",
-  design_page: "Designing page…",
-  create_redirect: "Creating redirect…",
-  delete_redirect: "Deleting redirect…",
-  list_redirects: "Listing redirects…",
-  list_team: "Reading team…",
-  invite_team_member: "Sending invitation…",
-  change_team_role: "Updating team member…",
+// Maps tool names to i18n keys (translated at render time via t()).
+const TOOL_LABEL_KEYS: Record<string, string> = {
+  read_content: "aiDrawer.toolLabels.readContent",
+  list_content: "aiDrawer.toolLabels.listContent",
+  search_content: "aiDrawer.toolLabels.searchContent",
+  create_content: "aiDrawer.toolLabels.createContent",
+  update_content: "aiDrawer.toolLabels.updateContent",
+  get_html_block: "aiDrawer.toolLabels.getHtmlBlock",
+  update_html_block: "aiDrawer.toolLabels.updateHtmlBlock",
+  delete_content: "aiDrawer.toolLabels.deleteContent",
+  set_metadata: "aiDrawer.toolLabels.setMetadata",
+  list_media: "aiDrawer.toolLabels.listMedia",
+  update_media: "aiDrawer.toolLabels.updateMedia",
+  delete_media: "aiDrawer.toolLabels.deleteMedia",
+  generate_image: "aiDrawer.toolLabels.generateImage",
+  update_header: "aiDrawer.toolLabels.updateHeader",
+  update_footer: "aiDrawer.toolLabels.updateFooter",
+  read_header_footer: "aiDrawer.toolLabels.readHeaderFooter",
+  list_navigation: "aiDrawer.toolLabels.listNavigation",
+  update_navigation: "aiDrawer.toolLabels.updateNavigation",
+  create_collection: "aiDrawer.toolLabels.createCollection",
+  update_collection: "aiDrawer.toolLabels.updateCollection",
+  delete_collection: "aiDrawer.toolLabels.deleteCollection",
+  add_to_collection: "aiDrawer.toolLabels.addToCollection",
+  remove_from_collection: "aiDrawer.toolLabels.removeFromCollection",
+  list_collections: "aiDrawer.toolLabels.listCollections",
+  get_page_context: "aiDrawer.toolLabels.getPageContext",
+  design_page: "aiDrawer.toolLabels.designPage",
+  create_redirect: "aiDrawer.toolLabels.createRedirect",
+  delete_redirect: "aiDrawer.toolLabels.deleteRedirect",
+  list_redirects: "aiDrawer.toolLabels.listRedirects",
+  list_team: "aiDrawer.toolLabels.listTeam",
+  invite_team_member: "aiDrawer.toolLabels.inviteTeamMember",
+  change_team_role: "aiDrawer.toolLabels.changeTeamRole",
 };
 
 interface ActionResult {
@@ -100,6 +102,7 @@ interface AIDrawerProps {
 }
 
 export function AIDrawer({ open, onClose, messages, setMessages, currentPath, insights = [], onDismissInsight }: AIDrawerProps) {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [input, setInput] = useState("");
@@ -233,7 +236,7 @@ export function AIDrawer({ open, onClose, messages, setMessages, currentPath, in
         pendingTool: undefined,
       });
     } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : "Something went wrong. Please try again.";
+      const errorMsg = err instanceof Error ? err.message : t("aiDrawer.errorGeneric");
       const current = working[assistantIdx];
       updateAssistant({
         content: current.content || errorMsg,
@@ -258,7 +261,7 @@ export function AIDrawer({ open, onClose, messages, setMessages, currentPath, in
         window.dispatchEvent(new CustomEvent("cadmus:content-updated"));
       }
     } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : "Decision failed";
+      const errorMsg = err instanceof Error ? err.message : t("aiDrawer.decisionFailed");
       const nextMessages = messages.map((m, i) =>
         i === msgIdx ? { ...m, turnDecisionError: errorMsg } : m,
       );
@@ -272,15 +275,15 @@ export function AIDrawer({ open, onClose, messages, setMessages, currentPath, in
     const hasUndoable = msg.actions?.some((a) => a.historyId && a.status === "success");
     if (!msg.turnId || !hasUndoable) return null;
     if (msg.turnDecision === "accepted") {
-      return <div className="action-card__decision action-card__decision--kept">Kept</div>;
+      return <div className="action-card__decision action-card__decision--kept">{t("aiDrawer.kept")}</div>;
     }
     if (msg.turnDecision === "rejected") {
-      return <div className="action-card__decision action-card__decision--undone">Undone</div>;
+      return <div className="action-card__decision action-card__decision--undone">{t("aiDrawer.undone")}</div>;
     }
     return (
       <div className="action-card__decision" style={{ marginTop: "0.5rem" }}>
-        <button type="button" className="btn btn-small" onClick={() => decideTurn(msgIdx, "accepted")}>Keep</button>
-        <button type="button" className="btn btn-small btn-ghost" onClick={() => decideTurn(msgIdx, "rejected")}>Undo</button>
+        <button type="button" className="btn btn-small" onClick={() => decideTurn(msgIdx, "accepted")}>{t("aiDrawer.keep")}</button>
+        <button type="button" className="btn btn-small btn-ghost" onClick={() => decideTurn(msgIdx, "rejected")}>{t("aiDrawer.undo")}</button>
         {msg.turnDecisionError && <span className="action-card__decision-error">{msg.turnDecisionError}</span>}
       </div>
     );
@@ -295,7 +298,7 @@ export function AIDrawer({ open, onClose, messages, setMessages, currentPath, in
           <span>
             {action.error}
             {needsInterview && (
-              <> <button type="button" className="action-card__link" onClick={() => { window.location.href = "/admin/onboarding"; onClose(); }}>Start interview →</button></>
+              <> <button type="button" className="action-card__link" onClick={() => { window.location.href = "/admin/onboarding"; onClose(); }}>{t("aiDrawer.actionCard.startInterview")}</button></>
             )}
           </span>
         </div>
@@ -309,8 +312,8 @@ export function AIDrawer({ open, onClose, messages, setMessages, currentPath, in
         <div className="action-card action-card--success">
           <span className="action-card__icon">&#10003;</span>
           <div className="action-card__body">
-            <strong>Designed {r.status === "draft" ? "draft " : ""}page:</strong> {String(r.title)}
-            {r.blockCount ? <span> — {String(r.blockCount)} sections</span> : null}
+            <strong>{t(r.status === "draft" ? "aiDrawer.actionCard.designedDraftPage" : "aiDrawer.actionCard.designedPage")}</strong> {String(r.title)}
+            {r.blockCount ? <span> {t("aiDrawer.actionCard.sectionsCount", { count: Number(r.blockCount) })}</span> : null}
             <button
               type="button"
               className="action-card__link"
@@ -319,7 +322,7 @@ export function AIDrawer({ open, onClose, messages, setMessages, currentPath, in
                 onClose();
               }}
             >
-              Edit &rarr;
+              {t("aiDrawer.actionCard.edit")}
             </button>
           </div>
         </div>
@@ -327,13 +330,14 @@ export function AIDrawer({ open, onClose, messages, setMessages, currentPath, in
     }
 
     if (action.type === "CREATE_CONTENT" || action.type === "UPDATE_CONTENT") {
-      const verb = action.type === "CREATE_CONTENT" ? "Created" : "Updated";
-      const typeLabel = r.type === "post" ? "post" : "page";
+      const verb = t(action.type === "CREATE_CONTENT" ? "aiDrawer.actionCard.created" : "aiDrawer.actionCard.updated");
+      const typeLabel = t(r.type === "post" ? "aiDrawer.actionCard.post" : "aiDrawer.actionCard.page");
+      const draft = r.status === "draft" ? t("aiDrawer.actionCard.draftPrefix") : "";
       return (
         <div className="action-card action-card--success">
           <span className="action-card__icon">&#10003;</span>
           <div className="action-card__body">
-            <strong>{verb} {r.status === "draft" ? "draft " : ""}{typeLabel}:</strong> {String(r.title)}
+            <strong>{t("aiDrawer.actionCard.contentAction", { verb, draft, typeLabel })}</strong> {String(r.title)}
             {r.metaDescription ? <div className="action-card__meta">{String(r.metaDescription)}</div> : null}
             {r.featuredImage ? <img src={String(r.featuredImage)} alt="" className="action-card__img" /> : null}
             <button
@@ -344,7 +348,7 @@ export function AIDrawer({ open, onClose, messages, setMessages, currentPath, in
                 onClose();
               }}
             >
-              Edit &rarr;
+              {t("aiDrawer.actionCard.edit")}
             </button>
           </div>
         </div>
@@ -356,9 +360,9 @@ export function AIDrawer({ open, onClose, messages, setMessages, currentPath, in
         <div className="action-card action-card--success">
           <span className="action-card__icon">&#10003;</span>
           <div className="action-card__body">
-            <strong>Updated metadata</strong>
-            {r.metaDescription ? <span> — meta description set</span> : null}
-            {r.featuredImage ? <span> — featured image set</span> : null}
+            <strong>{t("aiDrawer.actionCard.updatedMetadata")}</strong>
+            {r.metaDescription ? <span> {t("aiDrawer.actionCard.metaDescriptionSet")}</span> : null}
+            {r.featuredImage ? <span> {t("aiDrawer.actionCard.featuredImageSet")}</span> : null}
           </div>
         </div>
       );
@@ -369,10 +373,10 @@ export function AIDrawer({ open, onClose, messages, setMessages, currentPath, in
         <div className="action-card action-card--success">
           <span className="action-card__icon">&#10003;</span>
           <div className="action-card__body">
-            <strong>Generated image</strong>
-            {r.contentId ? <span> — set as featured image</span> : null}
+            <strong>{t("aiDrawer.actionCard.generatedImage")}</strong>
+            {r.contentId ? <span> {t("aiDrawer.actionCard.setAsFeaturedImage")}</span> : null}
             {r.url ? (
-              <img src={String(r.url)} alt="AI generated" style={{ maxWidth: "200px", borderRadius: "4px", marginTop: "0.5rem", display: "block" }} />
+              <img src={String(r.url)} alt={t("aiDrawer.actionCard.generatedImageAlt")} style={{ maxWidth: "200px", borderRadius: "4px", marginTop: "0.5rem", display: "block" }} />
             ) : null}
           </div>
         </div>
@@ -385,8 +389,8 @@ export function AIDrawer({ open, onClose, messages, setMessages, currentPath, in
         <div className="action-card action-card--success">
           <span className="action-card__icon">&#10003;</span>
           <div className="action-card__body">
-            <strong>Updated {String(r.location)} menu</strong>
-            {items ? <span> — {items.length} item{items.length !== 1 ? "s" : ""}</span> : null}
+            <strong>{t("aiDrawer.actionCard.updatedMenu", { location: String(r.location) })}</strong>
+            {items ? <span> {t("aiDrawer.actionCard.itemsCount", { count: items.length })}</span> : null}
           </div>
         </div>
       );
@@ -397,7 +401,7 @@ export function AIDrawer({ open, onClose, messages, setMessages, currentPath, in
         <div className="action-card action-card--success">
           <span className="action-card__icon">&#10003;</span>
           <div className="action-card__body">
-            <strong>Created {String(r.type)}:</strong> {String(r.name)}
+            <strong>{t("aiDrawer.actionCard.createdCollection", { type: String(r.type) })}</strong> {String(r.name)}
           </div>
         </div>
       );
@@ -407,7 +411,7 @@ export function AIDrawer({ open, onClose, messages, setMessages, currentPath, in
       return (
         <div className="action-card action-card--success">
           <span className="action-card__icon">&#10003;</span>
-          <span>Added to collection</span>
+          <span>{t("aiDrawer.actionCard.addedToCollection")}</span>
         </div>
       );
     }
@@ -416,7 +420,7 @@ export function AIDrawer({ open, onClose, messages, setMessages, currentPath, in
       return (
         <div className="action-card action-card--success">
           <span className="action-card__icon">&#10003;</span>
-          <span>Removed from collection</span>
+          <span>{t("aiDrawer.actionCard.removedFromCollection")}</span>
         </div>
       );
     }
@@ -426,7 +430,7 @@ export function AIDrawer({ open, onClose, messages, setMessages, currentPath, in
         <div className="action-card action-card--success">
           <span className="action-card__icon">&#10003;</span>
           <div className="action-card__body">
-            <strong>Deleted collection:</strong> {String(r.name)}
+            <strong>{t("aiDrawer.actionCard.deletedCollection")}</strong> {String(r.name)}
           </div>
         </div>
       );
@@ -437,7 +441,7 @@ export function AIDrawer({ open, onClose, messages, setMessages, currentPath, in
         <div className="action-card action-card--success">
           <span className="action-card__icon">&#10003;</span>
           <div className="action-card__body">
-            <strong>Deleted {String(r.type)}:</strong> {String(r.title ?? r.slug)}
+            <strong>{t("aiDrawer.actionCard.deletedContent", { type: String(r.type) })}</strong> {String(r.title ?? r.slug)}
           </div>
         </div>
       );
@@ -448,7 +452,7 @@ export function AIDrawer({ open, onClose, messages, setMessages, currentPath, in
         <div className="action-card action-card--success">
           <span className="action-card__icon">&#10003;</span>
           <div className="action-card__body">
-            <strong>Created redirect:</strong> {String(r.fromPath)} &rarr; {String(r.toUrl)}
+            <strong>{t("aiDrawer.actionCard.createdRedirect")}</strong> {String(r.fromPath)} &rarr; {String(r.toUrl)}
             <span style={{ marginLeft: "0.5rem", color: "var(--color-text-secondary)", fontSize: "0.8rem" }}>[{String(r.statusCode)}]</span>
           </div>
         </div>
@@ -460,7 +464,7 @@ export function AIDrawer({ open, onClose, messages, setMessages, currentPath, in
         <div className="action-card action-card--success">
           <span className="action-card__icon">&#10003;</span>
           <div className="action-card__body">
-            <strong>Deleted redirect:</strong> {String(r.fromPath)} &rarr; {String(r.toUrl)}
+            <strong>{t("aiDrawer.actionCard.deletedRedirect")}</strong> {String(r.fromPath)} &rarr; {String(r.toUrl)}
           </div>
         </div>
       );
@@ -471,7 +475,7 @@ export function AIDrawer({ open, onClose, messages, setMessages, currentPath, in
         <div className="action-card action-card--success">
           <span className="action-card__icon">&#10003;</span>
           <div className="action-card__body">
-            <strong>Invited team member:</strong> {String(r.email)} as <em>{String(r.role)}</em>
+            <strong>{t("aiDrawer.actionCard.invitedTeamMember")}</strong> {String(r.email)} {t("aiDrawer.actionCard.asRole")} <em>{String(r.role)}</em>
           </div>
         </div>
       );
@@ -482,8 +486,8 @@ export function AIDrawer({ open, onClose, messages, setMessages, currentPath, in
         <div className="action-card action-card--success">
           <span className="action-card__icon">&#10003;</span>
           <div className="action-card__body">
-            <strong>Changed role:</strong> {String(r.email)} &rarr; <em>{String(r.newRole)}</em>
-            <span style={{ marginLeft: "0.5rem", color: "var(--color-text-secondary)", fontSize: "0.8rem" }}>(was {String(r.oldRole)})</span>
+            <strong>{t("aiDrawer.actionCard.changedRole")}</strong> {String(r.email)} &rarr; <em>{String(r.newRole)}</em>
+            <span style={{ marginLeft: "0.5rem", color: "var(--color-text-secondary)", fontSize: "0.8rem" }}>{t("aiDrawer.actionCard.wasRole", { role: String(r.oldRole) })}</span>
           </div>
         </div>
       );
@@ -494,7 +498,7 @@ export function AIDrawer({ open, onClose, messages, setMessages, currentPath, in
         <div className="action-card action-card--success">
           <span className="action-card__icon">&#10003;</span>
           <div className="action-card__body">
-            <strong>Deleted media:</strong> {String(r.filename)}
+            <strong>{t("aiDrawer.actionCard.deletedMedia")}</strong> {String(r.filename)}
           </div>
         </div>
       );
@@ -505,9 +509,9 @@ export function AIDrawer({ open, onClose, messages, setMessages, currentPath, in
         <div className="action-card action-card--success">
           <span className="action-card__icon">&#10003;</span>
           <div className="action-card__body">
-            <strong>Updated the site's design direction</strong>
-            {r.version ? <span> — now v{String(r.version)}</span> : null}
-            <div className="action-card__meta">Future pages and edits will follow this direction. You can review or fine-tune it in Settings → Design Direction.</div>
+            <strong>{t("aiDrawer.actionCard.updatedDesignDirection")}</strong>
+            {r.version ? <span> {t("aiDrawer.actionCard.nowVersion", { version: String(r.version) })}</span> : null}
+            <div className="action-card__meta">{t("aiDrawer.actionCard.designDirectionHint")}</div>
           </div>
         </div>
       );
@@ -516,7 +520,7 @@ export function AIDrawer({ open, onClose, messages, setMessages, currentPath, in
     return (
       <div className="action-card action-card--success">
         <span className="action-card__icon">&#10003;</span>
-        <span>Action completed: {action.type}</span>
+        <span>{t("aiDrawer.actionCard.actionCompleted", { type: action.type })}</span>
       </div>
     );
   }
@@ -553,7 +557,7 @@ export function AIDrawer({ open, onClose, messages, setMessages, currentPath, in
       {open && <div className="ai-drawer-backdrop" onClick={onClose} />}
       <div className={`ai-drawer ${open ? "open" : ""}`}>
         <div className="ai-drawer-header">
-          <h3>AI Assistant</h3>
+          <h3>{t("aiDrawer.title")}</h3>
           <button type="button" className="ai-drawer-close" onClick={onClose}>
             &times;
           </button>
@@ -561,7 +565,7 @@ export function AIDrawer({ open, onClose, messages, setMessages, currentPath, in
         {insights.length > 0 && (
           <div className="ai-suggestions">
             <div className="ai-suggestions__header">
-              Suggestion{insights.length === 1 ? "" : "s"} for this page
+              {t("aiDrawer.suggestionsTitle", { count: insights.length })}
             </div>
             {insights.map((insight) => (
               <div key={insight.id} className="ai-suggestion-card">
@@ -578,7 +582,7 @@ export function AIDrawer({ open, onClose, messages, setMessages, currentPath, in
                         onDismissInsight?.(insight.id);
                       }}
                     >
-                      Ask AI to fix
+                      {t("aiDrawer.askAiToFix")}
                     </button>
                   )}
                   <button
@@ -586,7 +590,7 @@ export function AIDrawer({ open, onClose, messages, setMessages, currentPath, in
                     className="btn btn-small btn-ghost"
                     onClick={() => onDismissInsight?.(insight.id)}
                   >
-                    Dismiss
+                    {t("aiDrawer.dismiss")}
                   </button>
                 </div>
               </div>
@@ -608,7 +612,11 @@ export function AIDrawer({ open, onClose, messages, setMessages, currentPath, in
                   ))}
                   {msg.pending && (
                     <p style={{ margin: "0.25rem 0", opacity: 0.7 }}>
-                      {TOOL_LABELS[msg.pendingTool ?? ""] ?? (msg.pendingTool ? `Running ${msg.pendingTool}` : "Working")}
+                      {msg.pendingTool && TOOL_LABEL_KEYS[msg.pendingTool]
+                        ? t(TOOL_LABEL_KEYS[msg.pendingTool])
+                        : msg.pendingTool
+                          ? t("aiDrawer.runningTool", { tool: msg.pendingTool })
+                          : t("aiDrawer.working")}
                       <span className="thinking-dots" />
                     </p>
                   )}
@@ -625,11 +633,11 @@ export function AIDrawer({ open, onClose, messages, setMessages, currentPath, in
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask the AI anything about your site..."
+            placeholder={t("aiDrawer.inputPlaceholder")}
             disabled={sending}
           />
           <button type="submit" className="btn btn-primary" disabled={sending}>
-            Send
+            {t("aiDrawer.send")}
           </button>
         </form>
       </div>

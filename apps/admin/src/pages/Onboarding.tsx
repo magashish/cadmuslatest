@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, type FormEvent, type ChangeEvent } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 import { ai, site, content, media, navigation } from "../lib/api";
 import type { SiteBrief, SiteBriefPage } from "@cadmus/shared";
@@ -18,13 +19,14 @@ const BRIEF_MARKER = "[BRIEF_COMPLETE]";
 // ---------------------------------------------------------------------------
 
 const STEP_ORDER: OnboardingStep[] = ["interview", "review", "launch"];
-const STEP_LABELS: Record<string, string> = {
-  interview: "Interview",
-  review: "Review",
-  launch: "Launch",
+const STEP_LABEL_KEYS: Record<string, string> = {
+  interview: "onboarding.steps.interview",
+  review: "onboarding.steps.review",
+  launch: "onboarding.steps.launch",
 };
 
 function StepIndicator({ step }: { step: OnboardingStep }) {
+  const { t } = useTranslation();
   if (step === "choose" || step === "brief-paste") return null;
 
   const steps = STEP_ORDER;
@@ -46,7 +48,7 @@ function StepIndicator({ step }: { step: OnboardingStep }) {
               <span className="wizard-step-number">
                 {i < currentIdx ? "\u2713" : i + 1}
               </span>
-              <span>{STEP_LABELS[s]}</span>
+              <span>{t(STEP_LABEL_KEYS[s])}</span>
             </div>
           </div>
         );
@@ -74,6 +76,7 @@ function InterviewStep({
   onLogoChange: (url: string | undefined) => void;
   briefPromiseRef: React.MutableRefObject<Promise<any> | null>;
 }) {
+  const { t } = useTranslation();
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -115,8 +118,7 @@ function InterviewStep({
         setMessages([
           {
             role: "assistant",
-            content:
-              "Welcome! Let's set up your website. Tell me about your business.",
+            content: t("onboarding.interview.fallbackGreeting"),
           },
         ]);
       } finally {
@@ -173,7 +175,7 @@ function InterviewStep({
         ...history,
         {
           role: "assistant",
-          content: "Something went wrong. Please try again.",
+          content: t("onboarding.interview.errorFallback"),
         },
       ]);
     } finally {
@@ -209,13 +211,13 @@ function InterviewStep({
         ))}
         {sending && (
           <div className="message ai">
-            <p>Thinking<span className="thinking-dots" /></p>
+            <p>{t("onboarding.interview.thinking")}<span className="thinking-dots" /></p>
           </div>
         )}
         {countdown !== null && (
           <div className="message ai">
             <p style={{ fontWeight: 600 }}>
-              Interview complete! Reviewing in {countdown}...
+              {t("onboarding.interview.completeCountdown", { count: countdown })}
             </p>
           </div>
         )}
@@ -232,12 +234,12 @@ function InterviewStep({
         />
         {logoUrl ? (
           <div className="chat-logo-preview">
-            <img src={logoUrl} alt="Logo" />
+            <img src={logoUrl} alt={t("onboarding.interview.logoAlt")} />
             <button
               type="button"
               className="chat-logo-remove"
               onClick={() => onLogoChange(undefined)}
-              title="Remove logo"
+              title={t("onboarding.interview.removeLogo")}
             >
               &#x2715;
             </button>
@@ -249,7 +251,7 @@ function InterviewStep({
             onClick={() => fileInputRef.current?.click()}
             disabled={uploading}
           >
-            {uploading ? "Uploading..." : "Upload Logo (optional)"}
+            {uploading ? t("common.uploading") : t("onboarding.interview.uploadLogo")}
           </button>
         )}
       </div>
@@ -259,11 +261,11 @@ function InterviewStep({
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Type your answer..."
+          placeholder={t("onboarding.interview.answerPlaceholder")}
           disabled={sending || countdown !== null}
         />
         <button type="submit" className="btn btn-primary" disabled={sending || countdown !== null}>
-          Send
+          {t("common.send")}
         </button>
       </form>
     </div>
@@ -278,6 +280,7 @@ function ChooseStep({ onChooseInterview, onChooseBrief }: {
   onChooseInterview: () => void;
   onChooseBrief: () => void;
 }) {
+  const { t } = useTranslation();
   return (
     <div className="choose-step">
       <div className="choose-cards">
@@ -287,16 +290,16 @@ function ChooseStep({ onChooseInterview, onChooseBrief }: {
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
             </svg>
           </div>
-          <h3 className="choose-card-title">Build my voice</h3>
+          <h3 className="choose-card-title">{t("onboarding.choose.voiceTitle")}</h3>
           <p className="choose-card-desc">
-            Answer a few questions and we'll craft your site's voice and design
+            {t("onboarding.choose.voiceDesc")}
           </p>
           <button
             type="button"
             className="btn btn-primary btn-full"
             onClick={onChooseInterview}
           >
-            Start interview
+            {t("onboarding.choose.startInterview")}
           </button>
         </div>
 
@@ -310,16 +313,16 @@ function ChooseStep({ onChooseInterview, onChooseBrief }: {
               <polyline points="10 9 9 9 8 9" />
             </svg>
           </div>
-          <h3 className="choose-card-title">I have a brief</h3>
+          <h3 className="choose-card-title">{t("onboarding.choose.briefTitle")}</h3>
           <p className="choose-card-desc">
-            Paste your copy, brand guidelines, or notes and we'll set everything up
+            {t("onboarding.choose.briefDesc")}
           </p>
           <button
             type="button"
             className="btn btn-primary btn-full"
             onClick={onChooseBrief}
           >
-            Paste my brief
+            {t("onboarding.choose.pasteMyBrief")}
           </button>
         </div>
       </div>
@@ -337,6 +340,7 @@ function BriefPasteStep({ onComplete, onBack, text, onTextChange }: {
   text: string;
   onTextChange: (text: string) => void;
 }) {
+  const { t } = useTranslation();
   const [parsing, setParsing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -355,7 +359,7 @@ function BriefPasteStep({ onComplete, onBack, text, onTextChange }: {
 
     if (file.type === "application/pdf") {
       // PDFs can't be read as text client-side — inform the user
-      setError("PDF files can't be read directly. Please copy and paste the text content instead.");
+      setError(t("onboarding.briefPaste.pdfNotSupported"));
       if (fileInputRef.current) fileInputRef.current.value = "";
       return;
     }
@@ -390,7 +394,7 @@ function BriefPasteStep({ onComplete, onBack, text, onTextChange }: {
         pages: extractedPages,
       });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to parse brief. Please try again.");
+      setError(err instanceof Error ? err.message : t("onboarding.briefPaste.parseFailed"));
     } finally {
       setParsing(false);
     }
@@ -399,7 +403,7 @@ function BriefPasteStep({ onComplete, onBack, text, onTextChange }: {
   return (
     <div className="brief-paste-step">
       <p style={{ color: "var(--color-text-muted)", marginBottom: "1.25rem" }}>
-        Paste any copy, brand guidelines, or notes about your site below. We'll extract the key details automatically.
+        {t("onboarding.briefPaste.intro")}
       </p>
 
       <div className="form-group">
@@ -407,7 +411,7 @@ function BriefPasteStep({ onComplete, onBack, text, onTextChange }: {
           rows={10}
           value={text}
           onChange={(e) => onTextChange(e.target.value)}
-          placeholder="Paste your brief, copy, or brand notes here…"
+          placeholder={t("onboarding.briefPaste.textareaPlaceholder")}
           style={{ width: "100%", resize: "vertical" }}
           disabled={parsing}
         />
@@ -428,10 +432,10 @@ function BriefPasteStep({ onComplete, onBack, text, onTextChange }: {
           onClick={() => fileInputRef.current?.click()}
           disabled={parsing}
         >
-          Upload .txt or .md file
+          {t("onboarding.briefPaste.uploadFile")}
         </button>
         <span style={{ fontSize: "0.8rem", color: "var(--color-text-muted)", marginLeft: "0.5rem" }}>
-          File contents will be appended to the text above
+          {t("onboarding.briefPaste.uploadHint")}
         </span>
       </div>
 
@@ -446,7 +450,7 @@ function BriefPasteStep({ onComplete, onBack, text, onTextChange }: {
           onClick={onBack}
           disabled={parsing}
         >
-          Back
+          {t("common.back")}
         </button>
         <button
           type="button"
@@ -454,7 +458,7 @@ function BriefPasteStep({ onComplete, onBack, text, onTextChange }: {
           onClick={handleContinue}
           disabled={parsing || !text.trim()}
         >
-          {parsing ? "Analyzing…" : "Continue"}
+          {parsing ? t("onboarding.briefPaste.analyzing") : t("common.continue")}
         </button>
       </div>
     </div>
@@ -481,6 +485,7 @@ const PAGE_TYPE_OPTIONS = [
 ];
 
 function AddPageRow({ onAdd }: { onAdd: (page: SiteBriefPage) => void }) {
+  const { t } = useTranslation();
   const [selectedType, setSelectedType] = useState("");
   const [customSlug, setCustomSlug] = useState("");
   const [purpose, setPurpose] = useState("");
@@ -499,15 +504,15 @@ function AddPageRow({ onAdd }: { onAdd: (page: SiteBriefPage) => void }) {
   return (
     <div className="add-page-row">
       <select value={selectedType} onChange={(e) => setSelectedType(e.target.value)}>
-        <option value="">Add a page...</option>
+        <option value="">{t("onboarding.pageTypes.selectPlaceholder")}</option>
         {PAGE_TYPE_OPTIONS.map((o) => (
-          <option key={o.value} value={o.value}>{o.label}</option>
+          <option key={o.value} value={o.value}>{t(`onboarding.pageTypes.${o.value}`)}</option>
         ))}
       </select>
       {selectedType === "custom" && (
         <input
           type="text"
-          placeholder="Page name (e.g. careers)"
+          placeholder={t("onboarding.addPage.customNamePlaceholder")}
           value={customSlug}
           onChange={(e) => setCustomSlug(e.target.value)}
         />
@@ -516,7 +521,7 @@ function AddPageRow({ onAdd }: { onAdd: (page: SiteBriefPage) => void }) {
         <>
           <input
             type="text"
-            placeholder="Purpose (optional)"
+            placeholder={t("onboarding.addPage.purposePlaceholder")}
             value={purpose}
             onChange={(e) => setPurpose(e.target.value)}
           />
@@ -526,7 +531,7 @@ function AddPageRow({ onAdd }: { onAdd: (page: SiteBriefPage) => void }) {
             onClick={handleAdd}
             disabled={selectedType === "custom" && !customSlug.trim()}
           >
-            Add
+            {t("onboarding.addPage.add")}
           </button>
         </>
       )}
@@ -559,6 +564,7 @@ function ReviewStep({
   inspirationImages: string[];
   onInspirationChange: (urls: string[]) => void;
 }) {
+  const { t } = useTranslation();
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [generatingLogo, setGeneratingLogo] = useState(false);
@@ -598,7 +604,7 @@ function ReviewStep({
       const res = await ai.generateLogo();
       onLogoChange(res.url);
     } catch (e) {
-      setLogoError(e instanceof Error ? e.message : "Generation failed");
+      setLogoError(e instanceof Error ? e.message : t("onboarding.review.logoGenerationFailed"));
     } finally {
       setGeneratingLogo(false);
     }
@@ -663,11 +669,11 @@ function ReviewStep({
   return (
     <div>
       <p style={{ color: "var(--color-text-muted)", marginBottom: "1rem" }}>
-        Review and edit your site brief before we generate your starter content.
+        {t("onboarding.review.intro")}
       </p>
       <div className="brief-form">
         <div className="form-group">
-          <label>Logo</label>
+          <label>{t("onboarding.review.logoLabel")}</label>
           <input
             ref={fileInputRef}
             type="file"
@@ -677,7 +683,7 @@ function ReviewStep({
           />
           {logoUrl ? (
             <div className="review-logo-preview">
-              <img src={logoUrl} alt="Logo" />
+              <img src={logoUrl} alt={t("onboarding.review.logoAlt")} />
               <div className="review-logo-actions">
                 <button
                   type="button"
@@ -685,7 +691,7 @@ function ReviewStep({
                   onClick={() => fileInputRef.current?.click()}
                   disabled={uploading || generatingLogo}
                 >
-                  Change
+                  {t("common.change")}
                 </button>
                 <button
                   type="button"
@@ -693,7 +699,7 @@ function ReviewStep({
                   onClick={handleLogoGenerate}
                   disabled={uploading || generatingLogo}
                 >
-                  {generatingLogo ? "Generating…" : "Re-roll with AI"}
+                  {generatingLogo ? t("common.generating") : t("onboarding.review.rerollWithAi")}
                 </button>
                 <button
                   type="button"
@@ -701,7 +707,7 @@ function ReviewStep({
                   onClick={() => onLogoChange(undefined)}
                   disabled={generatingLogo}
                 >
-                  Remove
+                  {t("common.remove")}
                 </button>
               </div>
             </div>
@@ -713,7 +719,7 @@ function ReviewStep({
                 onClick={() => fileInputRef.current?.click()}
                 disabled={uploading || generatingLogo}
               >
-                {uploading ? "Uploading..." : "Upload Logo"}
+                {uploading ? t("common.uploading") : t("onboarding.review.uploadLogo")}
               </button>
               <button
                 type="button"
@@ -721,7 +727,7 @@ function ReviewStep({
                 onClick={handleLogoGenerate}
                 disabled={uploading || generatingLogo}
               >
-                {generatingLogo ? "Generating…" : "Generate with AI"}
+                {generatingLogo ? t("common.generating") : t("onboarding.review.generateWithAi")}
               </button>
             </div>
           )}
@@ -729,13 +735,13 @@ function ReviewStep({
             <p style={{ fontSize: "0.8rem", color: "#dc2626", margin: "0.4rem 0 0" }}>{logoError}</p>
           )}
           <p style={{ fontSize: "0.8rem", color: "var(--color-text-muted)", margin: "0.4rem 0 0" }}>
-            AI generates a simple brand icon (no lettering). You can always upload your own.
+            {t("onboarding.review.logoHint")}
           </p>
         </div>
         <div className="form-group">
-          <label>Design Inspiration (optional)</label>
+          <label>{t("onboarding.review.inspirationLabel")}</label>
           <p style={{ fontSize: "0.8rem", color: "var(--color-text-muted)", margin: "0 0 0.5rem" }}>
-            Upload screenshots of websites or designs you like. We'll analyze them to match your site's style. The images will not be included in your new site directly.
+            {t("onboarding.review.inspirationHint")}
           </p>
           <input
             ref={inspirationInputRef}
@@ -751,7 +757,7 @@ function ReviewStep({
                 <div key={i} style={{ position: "relative" }}>
                   <img
                     src={url}
-                    alt={`Inspiration ${i + 1}`}
+                    alt={t("onboarding.review.inspirationAlt", { index: i + 1 })}
                     style={{ width: "80px", height: "80px", objectFit: "cover", borderRadius: "6px", border: "1px solid var(--color-border)" }}
                   />
                   <button
@@ -787,15 +793,19 @@ function ReviewStep({
               onClick={() => inspirationInputRef.current?.click()}
               disabled={uploadingInspiration}
             >
-              {uploadingInspiration ? "Uploading..." : `Add Image${inspirationImages.length > 0 ? "" : "s"}`}
+              {uploadingInspiration
+                ? t("common.uploading")
+                : inspirationImages.length > 0
+                  ? t("onboarding.review.addImage")
+                  : t("onboarding.review.addImages")}
             </button>
           )}
           {inspirationImages.length >= 5 && (
-            <p style={{ fontSize: "0.8rem", color: "var(--color-text-muted)" }}>Maximum 5 images reached.</p>
+            <p style={{ fontSize: "0.8rem", color: "var(--color-text-muted)" }}>{t("onboarding.review.maxImagesReached")}</p>
           )}
         </div>
         <div className="form-group">
-          <label>Business Name *</label>
+          <label>{t("onboarding.review.businessNameLabel")}</label>
           <input
             type="text"
             value={brief.businessName}
@@ -803,7 +813,7 @@ function ReviewStep({
           />
         </div>
         <div className="form-group">
-          <label>Business Description *</label>
+          <label>{t("onboarding.review.businessDescriptionLabel")}</label>
           <textarea
             rows={3}
             value={brief.businessDescription}
@@ -811,7 +821,7 @@ function ReviewStep({
           />
         </div>
         <div className="form-group">
-          <label>Location</label>
+          <label>{t("onboarding.review.locationLabel")}</label>
           <input
             type="text"
             value={brief.location ?? ""}
@@ -819,7 +829,7 @@ function ReviewStep({
           />
         </div>
         <div className="form-group">
-          <label>Target Audience</label>
+          <label>{t("onboarding.review.targetAudienceLabel")}</label>
           <input
             type="text"
             value={brief.targetAudience ?? ""}
@@ -827,7 +837,7 @@ function ReviewStep({
           />
         </div>
         <div className="form-group">
-          <label>Differentiators</label>
+          <label>{t("onboarding.review.differentiatorsLabel")}</label>
           <textarea
             rows={2}
             value={brief.differentiators ?? ""}
@@ -835,34 +845,34 @@ function ReviewStep({
           />
         </div>
         <div className="form-group">
-          <label>Tone</label>
+          <label>{t("onboarding.review.toneLabel")}</label>
           <input
             type="text"
             value={brief.tone ?? ""}
             onChange={(e) => update("tone", e.target.value)}
-            placeholder="e.g. Professional, Friendly, Bold"
+            placeholder={t("onboarding.review.tonePlaceholder")}
           />
         </div>
         <div className="form-group">
-          <label>Brand Colors</label>
+          <label>{t("onboarding.review.brandColorsLabel")}</label>
           <input
             type="text"
             value={brief.brandColors ?? ""}
             onChange={(e) => update("brandColors", e.target.value)}
-            placeholder="e.g. Navy blue and orange, #1a365d, forest green"
+            placeholder={t("onboarding.review.brandColorsPlaceholder")}
           />
         </div>
         <div className="form-group">
-          <label>Primary Goal</label>
+          <label>{t("onboarding.review.primaryGoalLabel")}</label>
           <input
             type="text"
             value={brief.primaryGoal ?? ""}
             onChange={(e) => update("primaryGoal", e.target.value)}
-            placeholder="e.g. Generate leads, Sell products, Bookings"
+            placeholder={t("onboarding.review.primaryGoalPlaceholder")}
           />
         </div>
         <div className="form-group">
-          <label>Must / Must-not (one per line)</label>
+          <label>{t("onboarding.review.constraintsLabel")}</label>
           <textarea
             value={constraintsText}
             onChange={(e) => setConstraintsText(e.target.value)}
@@ -875,15 +885,15 @@ function ReviewStep({
                   .filter(Boolean),
               })
             }
-            placeholder={"e.g. Do not use stock photos\nNever add a testimonials section\nAlways show the phone number in the header"}
+            placeholder={t("onboarding.review.constraintsPlaceholder")}
             rows={3}
           />
           <p style={{ fontSize: "0.85rem", color: "var(--color-text-muted)", margin: "0.25rem 0 0" }}>
-            Hard rules the design must follow. We pull these from your brief — edit or add any we missed.
+            {t("onboarding.review.constraintsHint")}
           </p>
         </div>
         <div className="form-group">
-          <label>Planned Pages ({brief.pages?.length ?? 0})</label>
+          <label>{t("onboarding.review.plannedPagesLabel", { count: brief.pages?.length ?? 0 })}</label>
           {brief.pages && brief.pages.length > 0 ? (
             <ul className="planned-pages-list">
               {brief.pages.map((p, i) => (
@@ -899,7 +909,7 @@ function ReviewStep({
                       const updated = brief.pages!.filter((_, j) => j !== i);
                       setBrief({ ...brief, pages: updated });
                     }}
-                    title="Remove page"
+                    title={t("onboarding.review.removePage")}
                   >
                     &times;
                   </button>
@@ -908,7 +918,7 @@ function ReviewStep({
             </ul>
           ) : (
             <p style={{ fontSize: "0.85rem", color: "var(--color-text-muted)" }}>
-              No pages planned. Add at least one page below, or defaults will be used (Home + About).
+              {t("onboarding.review.noPagesPlanned")}
             </p>
           )}
           <AddPageRow
@@ -923,14 +933,14 @@ function ReviewStep({
             onClick={onBack}
             disabled={saving}
           >
-            Back
+            {t("common.back")}
           </button>
           <button
             className="btn btn-primary btn-full"
             onClick={handleContinue}
             disabled={saving || !brief.businessName || !brief.businessDescription}
           >
-            {saving ? "Saving..." : "Continue"}
+            {saving ? t("common.saving") : t("common.continue")}
           </button>
         </div>
       </div>
@@ -942,14 +952,14 @@ function ReviewStep({
 // Step 3: Generate & Launch
 // ---------------------------------------------------------------------------
 
-const PATIENCE_MESSAGES = [
-  "Your homepage generation will take longer than additional pages, since we have to create the theme styles first. Other pages will reuse the same styling to make sure the whole site is consistent.",
-  "Most agency websites take 6 \u2013 12 weeks to complete, but yours only will be done in a matter of minutes!",
-  "For each page, we create a design mockup, then convert it to reusable blocks that are easy to edit later on.",
-  "We\u2019re crafting unique content tailored to your business \u2014 no cookie-cutter templates here.",
-  "Your site is being optimized for search engines right out of the gate.",
-  "Every section is built with conversion in mind \u2014 headlines, CTAs, and layout all working together.",
-  "Fun fact: the average small business spends $5,000\u2013$10,000 on a new website. You can redesign yours anytime!",
+const PATIENCE_MESSAGE_KEYS = [
+  "onboarding.generate.patience.0",
+  "onboarding.generate.patience.1",
+  "onboarding.generate.patience.2",
+  "onboarding.generate.patience.3",
+  "onboarding.generate.patience.4",
+  "onboarding.generate.patience.5",
+  "onboarding.generate.patience.6",
 ];
 
 const DEFAULT_PAGES: SiteBriefPage[] = [
@@ -968,6 +978,7 @@ function GenerateStep({
   onLaunch: () => void;
   debugMode: boolean;
 }) {
+  const { t } = useTranslation();
   const pagesToGenerate = brief.pages?.length ? brief.pages : DEFAULT_PAGES;
   const totalPages = pagesToGenerate.length;
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -1009,7 +1020,7 @@ function GenerateStep({
   useEffect(() => {
     if (done) return;
     const interval = setInterval(() => {
-      setPatienceIndex((prev) => (prev + 1) % PATIENCE_MESSAGES.length);
+      setPatienceIndex((prev) => (prev + 1) % PATIENCE_MESSAGE_KEYS.length);
     }, 45000);
     return () => clearInterval(interval);
   }, [done]);
@@ -1225,7 +1236,7 @@ Return ONLY valid JSON (no markdown fences):
     let completed = 0;
 
     setCurrentIndex(0);
-    setStatus(`Generating ${home.type.charAt(0).toUpperCase() + home.type.slice(1)} page...`);
+    setStatus(t("onboarding.generate.statusGeneratingPage", { label: home.type.charAt(0).toUpperCase() + home.type.slice(1) }));
     const homeLabel = await generateOnePage(home, { skipThemeWrite: false });
     completed += 1;
     setCurrentIndex(completed);
@@ -1235,7 +1246,7 @@ Return ONLY valid JSON (no markdown fences):
     }
 
     if (rest.length > 0) {
-      setStatus(`Generating ${rest.length} page${rest.length === 1 ? "" : "s"} in parallel...`);
+      setStatus(t("onboarding.generate.statusGeneratingParallel", { count: rest.length }));
       await Promise.all(
         rest.map(async (page) => {
           const label = await generateOnePage(page, { skipThemeWrite: true });
@@ -1251,7 +1262,7 @@ Return ONLY valid JSON (no markdown fences):
 
     // One final theme compile that covers every block from every page.
     if (created.length > 0) {
-      setStatus("Finalizing site styles...");
+      setStatus(t("onboarding.generate.statusFinalizing"));
       try {
         await site.recompileCss(siteId);
       } catch {
@@ -1278,7 +1289,7 @@ Return ONLY valid JSON (no markdown fences):
     }
 
     setDone(true);
-    setStatus(created.length > 0 ? "Your site is ready!" : "Ready to launch!");
+    setStatus(created.length > 0 ? t("onboarding.generate.statusReady") : t("onboarding.generate.statusReadyToLaunch"));
   }
 
   const baseDomain = import.meta.env.VITE_BASE_DOMAIN || "cadmus.digital";
@@ -1306,8 +1317,8 @@ Return ONLY valid JSON (no markdown fences):
               style={{ width: `${progress}%` }}
             />
           </div>
-          <p className="generate-progress-label">{progress}% — {currentIndex} of {totalPages} pages</p>
-          <p className="generate-patience">{PATIENCE_MESSAGES[patienceIndex]}</p>
+          <p className="generate-progress-label">{t("onboarding.generate.progressLabel", { progress, currentIndex, totalPages })}</p>
+          <p className="generate-patience">{t(PATIENCE_MESSAGE_KEYS[patienceIndex])}</p>
           {createdPages.length > 0 && (
             <div className="generated-summary">
               <ul>
@@ -1324,7 +1335,7 @@ Return ONLY valid JSON (no markdown fences):
 
       {done && createdPages.length > 0 && (
         <div className="generated-summary">
-          <h4>Created {createdPages.length} pages:</h4>
+          <h4>{t("onboarding.generate.createdPagesHeading", { count: createdPages.length })}</h4>
           <ul>
             {createdPages.map((p) => (
               <li key={p}>
@@ -1340,7 +1351,7 @@ Return ONLY valid JSON (no markdown fences):
           <iframe
             className="site-preview-frame"
             src={siteUrl}
-            title="Site preview"
+            title={t("onboarding.generate.sitePreviewTitle")}
           />
         </div>
       )}
@@ -1354,7 +1365,7 @@ Return ONLY valid JSON (no markdown fences):
               rel="noopener noreferrer"
               className="btn btn-primary"
             >
-              View Your Site
+              {t("onboarding.generate.viewYourSite")}
             </a>
           )}
           <button
@@ -1362,7 +1373,7 @@ Return ONLY valid JSON (no markdown fences):
             onClick={handleLaunch}
             disabled={launching}
           >
-            {launching ? "Launching..." : "Go to Dashboard"}
+            {launching ? t("onboarding.generate.launching") : t("onboarding.generate.goToDashboard")}
           </button>
         </div>
       )}
@@ -1375,6 +1386,7 @@ Return ONLY valid JSON (no markdown fences):
 // ---------------------------------------------------------------------------
 
 export function Onboarding() {
+  const { t } = useTranslation();
   const { user, siteStatus, refreshSiteStatus } = useAuth();
   const navigate = useNavigate();
   const debugMode = new URLSearchParams(window.location.search).get('debug') === 'true';
@@ -1478,18 +1490,18 @@ export function Onboarding() {
   };
 
   const subtitleText = () => {
-    if (step === "choose") return "How would you like to set up your site?";
-    if (step === "brief-paste") return "Paste your brief or copy below.";
-    if (step === "interview") return "Answer a few questions so we can build your website. The more detailed your answers, the better your site will be!";
-    if (step === "review") return "Review your site brief.";
-    if (step === "launch") return "Generating your starter content.";
+    if (step === "choose") return t("onboarding.subtitle.choose");
+    if (step === "brief-paste") return t("onboarding.subtitle.briefPaste");
+    if (step === "interview") return t("onboarding.subtitle.interview");
+    if (step === "review") return t("onboarding.subtitle.review");
+    if (step === "launch") return t("onboarding.subtitle.launch");
     return "";
   };
 
   return (
     <div className="auth-page">
       <div className="onboarding-card">
-        <h2>Set up your site</h2>
+        <h2>{t("onboarding.title")}</h2>
         <p className="subtitle">{subtitleText()}</p>
 
         <StepIndicator step={step} />
@@ -1514,7 +1526,7 @@ export function Onboarding() {
                   padding: "0.5rem",
                 }}
               >
-                Skip for now — I'll set things up later
+                {t("onboarding.choose.skipForNow")}
               </button>
             </div>
           </>
@@ -1553,7 +1565,7 @@ export function Onboarding() {
                   padding: "0.5rem",
                 }}
               >
-                ← Back to options
+                {t("onboarding.interview.backToOptions")}
               </button>
             </div>
           </>

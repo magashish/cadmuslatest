@@ -1,15 +1,19 @@
 import { useState, useEffect, useCallback } from "react";
+import { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
 import { team, billing, type TeamMember } from "../lib/api";
 import { useAuth } from "../context/AuthContext";
 import { useFeatureGates } from "../lib/feature-gates";
 import { UpgradePrompt } from "../components/UpgradePrompt";
 
-const ROLE_LABELS: Record<string, string> = {
-  owner: "Owner",
-  admin: "Admin",
-  editor: "Editor",
-  viewer: "Viewer",
-};
+function roleLabels(t: TFunction): Record<string, string> {
+  return {
+    owner: t("team.roles.owner"),
+    admin: t("team.roles.admin"),
+    editor: t("team.roles.editor"),
+    viewer: t("team.roles.viewer"),
+  };
+}
 
 const ROLE_COLORS: Record<string, string> = {
   owner: "#1a1a1a",
@@ -19,7 +23,9 @@ const ROLE_COLORS: Record<string, string> = {
 };
 
 export function Team() {
+  const { t } = useTranslation();
   const { user, switchSite, logout } = useAuth();
+  const ROLE_LABELS = roleLabels(t);
   const [members, setMembers] = useState<TeamMember[]>([]);
   const [loading, setLoading] = useState(true);
   const [inviteEmail, setInviteEmail] = useState("");
@@ -59,12 +65,12 @@ export function Team() {
     setInviting(true);
     try {
       await team.invite(inviteEmail.trim(), inviteRole);
-      setSuccess(`Invitation sent to ${inviteEmail}`);
+      setSuccess(t("team.inviteMember.success", { email: inviteEmail }));
       setInviteEmail("");
       setTimeout(() => setSuccess(""), 3000);
       load();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to send invitation");
+      setError(e instanceof Error ? e.message : t("team.errors.inviteFailed"));
     } finally {
       setInviting(false);
     }
@@ -75,7 +81,7 @@ export function Team() {
       await team.changeRole(memberId, newRole);
       load();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to change role");
+      setError(e instanceof Error ? e.message : t("team.errors.roleChangeFailed"));
     }
   };
 
@@ -83,8 +89,8 @@ export function Team() {
     const name = [member.firstName, member.lastName].filter(Boolean).join(" ") || member.email;
     const isSelf = member.userId === user?.id;
     const message = isSelf
-      ? "Leave this site? You will lose access."
-      : `Remove ${name} from this site?`;
+      ? t("team.confirmLeave")
+      : t("team.confirmRemove", { name });
     if (!confirm(message)) return;
     try {
       await team.remove(member.id);
@@ -102,15 +108,15 @@ export function Team() {
         load();
       }
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to remove member");
+      setError(e instanceof Error ? e.message : t("team.errors.removeFailed"));
     }
   };
 
   if (loading) {
     return (
       <div className="page">
-        <div className="page-header"><h2>Team</h2></div>
-        <p>Loading...</p>
+        <div className="page-header"><h2>{t("nav.team")}</h2></div>
+        <p>{t("common.loading")}</p>
       </div>
     );
   }
@@ -118,32 +124,32 @@ export function Team() {
   return (
     <div className="page">
       <div className="page-header">
-        <h2>Team</h2>
+        <h2>{t("nav.team")}</h2>
       </div>
 
       {canManage && (
         <section className="settings-section">
-          <h3>Invite Member</h3>
+          <h3>{t("team.inviteMember.title")}</h3>
           {teamGate && !teamGate.allowed ? (
             <UpgradePrompt feature="team_members" gate={teamGate} inline />
           ) : (
             <div className="settings-form" style={{ display: "flex", gap: "0.75rem", alignItems: "flex-end", flexWrap: "wrap" }}>
               <label style={{ flex: 1, minWidth: "200px" }}>
-                Email
+                {t("team.inviteMember.emailLabel")}
                 <input
                   type="email"
                   value={inviteEmail}
                   onChange={(e) => setInviteEmail(e.target.value)}
-                  placeholder="colleague@example.com"
+                  placeholder={t("team.inviteMember.emailPlaceholder")}
                   onKeyDown={(e) => e.key === "Enter" && handleInvite()}
                 />
               </label>
               <label style={{ width: "140px" }}>
-                Role
+                {t("team.inviteMember.roleLabel")}
                 <select value={inviteRole} onChange={(e) => setInviteRole(e.target.value)}>
-                  {user?.role === "owner" && <option value="admin">Admin</option>}
-                  <option value="editor">Editor</option>
-                  <option value="viewer">Viewer</option>
+                  {user?.role === "owner" && <option value="admin">{t("team.roles.admin")}</option>}
+                  <option value="editor">{t("team.roles.editor")}</option>
+                  <option value="viewer">{t("team.roles.viewer")}</option>
                 </select>
               </label>
               <button
@@ -152,7 +158,7 @@ export function Team() {
                 disabled={inviting || !inviteEmail.trim()}
                 style={{ marginBottom: "0.75rem" }}
               >
-                {inviting ? "Sending..." : "Send Invite"}
+                {inviting ? t("team.inviteMember.sending") : t("team.inviteMember.send")}
               </button>
             </div>
           )}
@@ -162,15 +168,15 @@ export function Team() {
       )}
 
       <section className="settings-section">
-        <h3>Members ({members.filter((m) => m.status === "active").length})</h3>
+        <h3>{t("team.members.title", { count: members.filter((m) => m.status === "active").length })}</h3>
         <div style={{ overflowX: "auto" }}>
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ borderBottom: "2px solid #e5e7eb", textAlign: "left" }}>
-              <th style={{ padding: "0.5rem 0.75rem" }}>Name</th>
-              <th style={{ padding: "0.5rem 0.75rem" }}>Email</th>
-              <th style={{ padding: "0.5rem 0.75rem" }}>Role</th>
-              <th style={{ padding: "0.5rem 0.75rem" }}>Joined</th>
+              <th style={{ padding: "0.5rem 0.75rem" }}>{t("team.members.columns.name")}</th>
+              <th style={{ padding: "0.5rem 0.75rem" }}>{t("team.members.columns.email")}</th>
+              <th style={{ padding: "0.5rem 0.75rem" }}>{t("team.members.columns.role")}</th>
+              <th style={{ padding: "0.5rem 0.75rem" }}>{t("team.members.columns.joined")}</th>
               <th style={{ padding: "0.5rem 0.75rem", width: "80px" }}></th>
             </tr>
           </thead>
@@ -187,7 +193,7 @@ export function Team() {
                 <tr key={m.id} style={{ borderBottom: "1px solid #f3f4f6" }}>
                   <td style={{ padding: "0.75rem" }}>
                     {name || <span style={{ color: "#9ca3af" }}>—</span>}
-                    {isCurrentUser && <span style={{ color: "#6b7280", fontSize: "0.8em", marginLeft: "0.5rem" }}>(you)</span>}
+                    {isCurrentUser && <span style={{ color: "#6b7280", fontSize: "0.8em", marginLeft: "0.5rem" }}>{t("team.members.you")}</span>}
                   </td>
                   <td style={{ padding: "0.75rem" }}>{m.email}</td>
                   <td style={{ padding: "0.75rem" }}>
@@ -197,9 +203,9 @@ export function Team() {
                         onChange={(e) => handleRoleChange(m.id, e.target.value)}
                         style={{ padding: "0.25rem 0.5rem", fontSize: "0.85rem", borderRadius: "4px" }}
                       >
-                        {user?.role === "owner" && <option value="admin">Admin</option>}
-                        <option value="editor">Editor</option>
-                        <option value="viewer">Viewer</option>
+                        {user?.role === "owner" && <option value="admin">{t("team.roles.admin")}</option>}
+                        <option value="editor">{t("team.roles.editor")}</option>
+                        <option value="viewer">{t("team.roles.viewer")}</option>
                       </select>
                     ) : (
                       <span
@@ -217,11 +223,11 @@ export function Team() {
                       </span>
                     )}
                     {m.status === "invited" && (
-                      <span style={{ marginLeft: "0.5rem", fontSize: "0.8em", color: "#d97706" }}>Pending</span>
+                      <span style={{ marginLeft: "0.5rem", fontSize: "0.8em", color: "#d97706" }}>{t("team.members.pending")}</span>
                     )}
                     {billingUserId && m.userId === billingUserId && (
                       <span
-                        title="This member is the billing contact"
+                        title={t("team.members.billingTooltip")}
                         style={{
                           marginLeft: "0.5rem",
                           display: "inline-block",
@@ -233,7 +239,7 @@ export function Team() {
                           color: "#6d28d9",
                         }}
                       >
-                        Billing
+                        {t("team.members.billingBadge")}
                       </span>
                     )}
                   </td>
@@ -247,7 +253,7 @@ export function Team() {
                         style={{ fontSize: "0.8rem", padding: "0.25rem 0.5rem", color: "#dc2626" }}
                         onClick={() => handleRemove(m)}
                       >
-                        Remove
+                        {t("team.members.remove")}
                       </button>
                     )}
                     {canLeave && (
@@ -256,7 +262,7 @@ export function Team() {
                         style={{ fontSize: "0.8rem", padding: "0.25rem 0.5rem", color: "#dc2626" }}
                         onClick={() => handleRemove(m)}
                       >
-                        Leave
+                        {t("team.members.leave")}
                       </button>
                     )}
                   </td>

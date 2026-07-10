@@ -1,24 +1,29 @@
 import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
 import { ai, type Insight } from "../lib/api";
 import { useAuth } from "../context/AuthContext";
 
-const PAGE_LABELS: Record<string, string> = {
-  "/": "Dashboard",
-  "/content": "Content",
-  "/collections": "Collections",
-  "/theme": "Style",
-  "/seo": "SEO",
-  "/addons": "Add-ons",
-  "/media": "Media",
-  "/forms": "Forms",
-  "/settings": "Settings",
-  "/team": "Team",
-  "/account": "Account",
-};
+function pageLabels(t: TFunction): Record<string, string> {
+  return {
+    "/": t("nav.dashboard"),
+    "/content": t("nav.content"),
+    "/collections": t("nav.collections"),
+    "/theme": t("nav.style"),
+    "/seo": t("nav.seo"),
+    "/addons": t("nav.addons"),
+    "/media": t("nav.media"),
+    "/forms": t("nav.forms"),
+    "/settings": t("nav.settings"),
+    "/team": t("nav.team"),
+    "/account": t("nav.account"),
+  };
+}
 
-function pageLabel(path: string | null): string | null {
+function pageLabel(path: string | null, t: TFunction): string | null {
   if (!path) return null;
+  const PAGE_LABELS = pageLabels(t);
   if (PAGE_LABELS[path]) return PAGE_LABELS[path];
   // Fall back to a humanized last segment, e.g. "/content/abc" -> "Content"
   const head = "/" + path.split("/").filter(Boolean)[0];
@@ -48,6 +53,7 @@ function saveDismissed(siteId: string, ids: Set<string>) {
 }
 
 export function Insights() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [insights, setInsights] = useState<Insight[]>([]);
   const [loading, setLoading] = useState(true);
@@ -66,12 +72,12 @@ export function Insights() {
       const res = await ai.insights();
       setInsights(res.insights);
     } catch {
-      setError("Couldn't load insights. Try again in a moment.");
+      setError(t("insights.errors.loadFailed"));
       setInsights([]);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     if (siteId) setDismissed(loadDismissed(siteId));
@@ -107,20 +113,20 @@ export function Insights() {
   return (
     <div className="page">
       <div className="page-header">
-        <h2>Insights</h2>
+        <h2>{t("nav.insights")}</h2>
         <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
           <span style={{ color: "var(--color-text-muted)", fontSize: "0.9rem" }}>
-            {active.length} open{hidden.length > 0 ? ` · ${hidden.length} dismissed` : ""}
+            {t("insights.openCount", { count: active.length })}
+            {hidden.length > 0 ? t("insights.dismissedSuffix", { count: hidden.length }) : ""}
           </span>
           <button type="button" className="btn btn-small" onClick={load} disabled={loading}>
-            {loading ? "Scanning…" : "Re-scan"}
+            {loading ? t("insights.scanning") : t("insights.rescan")}
           </button>
         </div>
       </div>
 
       <p style={{ color: "var(--color-text-muted)", marginBottom: "1.5rem", maxWidth: "60ch" }}>
-        Things on your site that look incomplete, broken, or worth a second look. Open the page
-        to fix it directly, or use the AI assistant there to help.
+        {t("insights.intro")}
       </p>
 
       {error && (
@@ -131,10 +137,9 @@ export function Insights() {
 
       {!loading && active.length === 0 && !error && (
         <div className="card">
-          <h3>Nothing to address right now</h3>
+          <h3>{t("insights.empty.title")}</h3>
           <p>
-            No open insights. We&apos;ll surface anything new the next time you re-scan or visit
-            a page that has a fixable issue.
+            {t("insights.empty.body")}
           </p>
         </div>
       )}
@@ -158,7 +163,9 @@ export function Insights() {
             className="btn btn-small btn-ghost"
             onClick={() => setShowDismissed((v) => !v)}
           >
-            {showDismissed ? "Hide" : "Show"} dismissed ({hidden.length})
+            {showDismissed
+              ? t("insights.hideDismissed", { count: hidden.length })
+              : t("insights.showDismissed", { count: hidden.length })}
           </button>
           {showDismissed && (
             <div style={{ marginTop: "0.75rem", opacity: 0.7 }}>
@@ -186,7 +193,8 @@ interface InsightCardProps {
 }
 
 function InsightCard({ insight, dismissed, onDismiss, onRestore }: InsightCardProps) {
-  const label = pageLabel(insight.page);
+  const { t } = useTranslation();
+  const label = pageLabel(insight.page, t);
   return (
     <div className="ai-suggestion-card" style={{ marginBottom: "0.75rem" }}>
       <div className="ai-suggestion-card__title">{insight.title}</div>
@@ -194,16 +202,16 @@ function InsightCard({ insight, dismissed, onDismiss, onRestore }: InsightCardPr
       <div className="ai-suggestion-card__actions">
         {insight.page && label && (
           <Link to={insight.page} className="btn btn-small btn-primary">
-            {insight.actionLabel ?? `Open ${label}`}
+            {insight.actionLabel ?? t("insights.openPage", { page: label })}
           </Link>
         )}
         {dismissed ? (
           <button type="button" className="btn btn-small btn-ghost" onClick={onRestore}>
-            Restore
+            {t("insights.restore")}
           </button>
         ) : (
           <button type="button" className="btn btn-small btn-ghost" onClick={onDismiss}>
-            Dismiss
+            {t("insights.dismiss")}
           </button>
         )}
       </div>

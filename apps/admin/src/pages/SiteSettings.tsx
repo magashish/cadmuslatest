@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
 import { useAuth } from "../context/AuthContext";
 import { site, ai, content as contentApi, apiRawFetch, platformAdmin, billing, importWP, team, collections as collectionsApi, auth as authApi, submissions } from "../lib/api";
 import type { WpAnalyzeResult, WpImportOptions, WpImportResult, TeamMember, BillingStatus } from "../lib/api";
@@ -13,7 +15,7 @@ interface SiteData {
   settings?: Record<string, unknown>;
 }
 
-function buildDnsInstructions(domain: string): {
+function buildDnsInstructions(domain: string, t: TFunction): {
   instructions: { type: string; name: string; value: string }[];
   message: string;
 } {
@@ -22,18 +24,19 @@ function buildDnsInstructions(domain: string): {
     ? [{ type: "CNAME", name: "www", value: "origin.cadmus.digital" }]
     : [{ type: "CNAME", name: domain, value: "origin.cadmus.digital" }];
   const message = isRootDomain
-    ? "Add a CNAME for www pointing to origin.cadmus.digital. If your DNS provider supports CNAME flattening (like Cloudflare), you can also add a CNAME for the root domain. Otherwise, set up a redirect from your root domain to www. DNS changes usually take 5 minutes to a few hours to propagate."
-    : "Add a CNAME record pointing to origin.cadmus.digital. SSL is provisioned automatically. DNS changes usually take 5 minutes to a few hours to propagate.";
+    ? t("siteSettings.domain.dnsMessageRoot")
+    : t("siteSettings.domain.dnsMessageSubdomain");
   return { instructions, message };
 }
 
 function CopyButton({ text }: { text: string }) {
+  const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
   return (
     <button
       type="button"
       className="btn-copy"
-      title="Copy to clipboard"
+      title={t("siteSettings.domain.copyToClipboard")}
       onClick={async () => {
         try {
           await navigator.clipboard.writeText(text);
@@ -44,12 +47,13 @@ function CopyButton({ text }: { text: string }) {
         }
       }}
     >
-      {copied ? "Copied" : "Copy"}
+      {copied ? t("common.copied") : t("common.copy")}
     </button>
   );
 }
 
 export function SiteSettings() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -215,7 +219,7 @@ export function SiteSettings() {
           setSiteLanguage(data.brief.language ?? "en");
         }
         if (data.domain) {
-          const dns = buildDnsInstructions(data.domain);
+          const dns = buildDnsInstructions(data.domain, t);
           setDnsInstructions(dns.instructions);
           setDnsMessage(dns.message);
         }
@@ -255,7 +259,7 @@ export function SiteSettings() {
       setGeneralSaved(true);
       setTimeout(() => setGeneralSaved(false), 3000);
     } catch (e) {
-      setGeneralError(e instanceof Error ? e.message : "Failed to save");
+      setGeneralError(e instanceof Error ? e.message : t("common.failedToSave"));
     }
   };
 
@@ -270,7 +274,7 @@ export function SiteSettings() {
       setBriefSaved(true);
       setTimeout(() => setBriefSaved(false), 3000);
     } catch (e) {
-      setBriefError(e instanceof Error ? e.message : "Failed to save");
+      setBriefError(e instanceof Error ? e.message : t("common.failedToSave"));
     }
   };
 
@@ -281,13 +285,13 @@ export function SiteSettings() {
     try {
       const res = await site.connectDomain(siteData.id, customDomain.trim());
       const domain = customDomain.trim();
-      const fallback = buildDnsInstructions(domain);
+      const fallback = buildDnsInstructions(domain, t);
       setDnsInstructions(res.dns?.instructions ?? fallback.instructions);
       setDnsMessage(res.dns?.message ?? fallback.message);
       setDomainStatus(res.domainStatus);
       setSiteData({ ...siteData, domain });
     } catch (e) {
-      setDomainError(e instanceof Error ? e.message : "Failed to connect domain");
+      setDomainError(e instanceof Error ? e.message : t("siteSettings.domain.failedToConnect"));
     }
   };
 
@@ -334,7 +338,7 @@ export function SiteSettings() {
         setDomainError(res.errors.join(", "));
       }
     } catch (e) {
-      setDomainError(e instanceof Error ? e.message : "Failed to check status");
+      setDomainError(e instanceof Error ? e.message : t("siteSettings.domain.failedToCheckStatus"));
     } finally {
       setDomainChecking(false);
     }
@@ -343,7 +347,7 @@ export function SiteSettings() {
   const disconnectDomain = async () => {
     if (!siteData?.domain) return;
     const confirmed = window.confirm(
-      `Disconnect ${siteData.domain}?\n\nVisitors using this domain will immediately stop reaching your site until you reconnect it or update DNS elsewhere. Your subdomain URL keeps working.`
+      t("siteSettings.domain.disconnectConfirm", { domain: siteData.domain })
     );
     if (!confirmed) return;
     setDisconnecting(true);
@@ -357,7 +361,7 @@ export function SiteSettings() {
       setDnsMessage("");
       setCustomDomain("");
     } catch (e) {
-      setDomainError(e instanceof Error ? e.message : "Failed to disconnect domain");
+      setDomainError(e instanceof Error ? e.message : t("siteSettings.domain.failedToDisconnect"));
     } finally {
       setDisconnecting(false);
     }
@@ -397,7 +401,7 @@ export function SiteSettings() {
       setSubdomainSaved(true);
       setTimeout(() => setSubdomainSaved(false), 4000);
     } catch (e) {
-      setSubdomainError(e instanceof Error ? e.message : "Failed to change subdomain");
+      setSubdomainError(e instanceof Error ? e.message : t("siteSettings.domain.failedToChangeSubdomain"));
     } finally {
       setSubdomainSaving(false);
     }
@@ -406,22 +410,22 @@ export function SiteSettings() {
   if (loading) {
     return (
       <div className="page">
-        <h2>Settings</h2>
-        <p>Loading...</p>
+        <h2>{t("siteSettings.title")}</h2>
+        <p>{t("common.loading")}</p>
       </div>
     );
   }
 
   return (
     <div className="page">
-      <h2>Settings</h2>
+      <h2>{t("siteSettings.title")}</h2>
 
       {/* General */}
       <section className="settings-section">
-        <h3>General</h3>
+        <h3>{t("siteSettings.general.heading")}</h3>
         <div className="settings-form">
           <label>
-            Site Name
+            {t("siteSettings.general.siteName")}
             <input
               type="text"
               value={siteName}
@@ -429,15 +433,15 @@ export function SiteSettings() {
             />
           </label>
           <label>
-            Site Language
+            {t("siteSettings.general.siteLanguage")}
             <select value={siteLanguage} onChange={(e) => setSiteLanguage(e.target.value)}>
               <option value="en">English</option>
               <option value="es">Español (Spanish)</option>
             </select>
           </label>
           <div className="settings-actions">
-            <button className="btn btn-primary" onClick={saveGeneral}>Save</button>
-            {generalSaved && <span className="settings-success">Saved!</span>}
+            <button className="btn btn-primary" onClick={saveGeneral}>{t("common.save")}</button>
+            {generalSaved && <span className="settings-success">{t("common.saved")}</span>}
             {generalError && <span className="auth-error">{generalError}</span>}
           </div>
         </div>
@@ -445,13 +449,13 @@ export function SiteSettings() {
 
       {/* Domain */}
       <section className="settings-section">
-        <h3>Domain</h3>
+        <h3>{t("siteSettings.domain.heading")}</h3>
 
         {/* Subdomain */}
         <div style={{ marginBottom: "1.25rem" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", flexWrap: "wrap" }}>
             <p style={{ margin: 0 }}>
-              Subdomain:{" "}
+              {t("siteSettings.domain.subdomainLabel")}{" "}
               {(() => {
                 const bd = import.meta.env.VITE_BASE_DOMAIN || "cadmus.digital";
                 const host = bd === "cadmus.digital"
@@ -472,10 +476,10 @@ export function SiteSettings() {
                   setSubdomainError("");
                 }}
               >
-                Change
+                {t("siteSettings.domain.change")}
               </button>
             )}
-            {subdomainSaved && <span className="settings-success">Subdomain updated!</span>}
+            {subdomainSaved && <span className="settings-success">{t("siteSettings.domain.subdomainUpdated")}</span>}
           </div>
 
           {subdomainExpanded && (
@@ -496,7 +500,7 @@ export function SiteSettings() {
                     fontSize: "0.875rem",
                     marginBottom: "0.75rem",
                   }}>
-                    Your old URL will redirect to the new one for 48 hours. After that, only the new URL will work. We will email you a confirmation.
+                    {t("siteSettings.domain.subdomainChangePaidWarning")}
                   </div>
                 ) : (
                   <div style={{
@@ -507,12 +511,12 @@ export function SiteSettings() {
                     fontSize: "0.875rem",
                     marginBottom: "0.75rem",
                   }}>
-                    Your old URL will stop working immediately after this change.
+                    {t("siteSettings.domain.subdomainChangeFreeWarning")}
                   </div>
                 );
               })()}
               <label>
-                New subdomain
+                {t("siteSettings.domain.newSubdomain")}
                 <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
                   <input
                     type="text"
@@ -529,11 +533,11 @@ export function SiteSettings() {
                 {newSubdomain && newSubdomain.toLowerCase() !== siteData?.subdomain && (
                   <span style={{ fontSize: "0.8rem", marginTop: "0.25rem", display: "block" }}>
                     {subdomainChecking ? (
-                      <span style={{ color: "var(--color-text-muted)" }}>Checking...</span>
+                      <span style={{ color: "var(--color-text-muted)" }}>{t("siteSettings.domain.checkingAvailability")}</span>
                     ) : subdomainAvailable === true ? (
-                      <span style={{ color: "#16a34a" }}>Available</span>
+                      <span style={{ color: "#16a34a" }}>{t("siteSettings.domain.available")}</span>
                     ) : subdomainAvailable === false ? (
-                      <span style={{ color: "#dc2626" }}>Not available</span>
+                      <span style={{ color: "#dc2626" }}>{t("siteSettings.domain.notAvailable")}</span>
                     ) : null}
                   </span>
                 )}
@@ -550,7 +554,7 @@ export function SiteSettings() {
                     subdomainAvailable === false
                   }
                 >
-                  {subdomainSaving ? "Saving..." : "Save"}
+                  {subdomainSaving ? t("common.saving") : t("common.save")}
                 </button>
                 <button
                   type="button"
@@ -563,7 +567,7 @@ export function SiteSettings() {
                   }}
                   style={{ marginLeft: "0.5rem" }}
                 >
-                  Cancel
+                  {t("common.cancel")}
                 </button>
               </div>
             </div>
@@ -572,7 +576,7 @@ export function SiteSettings() {
         {siteData?.domain ? (
           <div>
             <p style={{ marginBottom: "0.75rem" }}>
-              Custom domain: {domainStatus === "active" ? (
+              {t("siteSettings.domain.customDomainLabel")} {domainStatus === "active" ? (
                 <a href={`https://${siteData.domain}`} target="_blank" rel="noopener noreferrer"><strong>{siteData.domain}</strong></a>
               ) : (
                 <strong>{siteData.domain}</strong>
@@ -593,14 +597,14 @@ export function SiteSettings() {
                       domainStatus === "failed" ? "#991b1b" : "#92400e",
                   }}
                 >
-                  {domainStatus === "active" ? "Active" :
-                   domainStatus === "ssl_pending" ? "SSL Provisioning..." :
-                   domainStatus === "failed" ? "Failed" : "Pending"}
+                  {domainStatus === "active" ? t("siteSettings.domain.status.active") :
+                   domainStatus === "ssl_pending" ? t("siteSettings.domain.status.sslProvisioning") :
+                   domainStatus === "failed" ? t("siteSettings.domain.status.failed") : t("siteSettings.domain.status.pending")}
                 </span>
               )}
               {sslStatus && sslStatus !== domainStatus && (
                 <span style={{ marginLeft: "0.5rem", fontSize: "0.85rem", color: "var(--color-text-muted, #64748b)" }}>
-                  (SSL: {sslStatus})
+                  {t("siteSettings.domain.sslStatusSuffix", { status: sslStatus })}
                 </span>
               )}
             </p>
@@ -610,7 +614,7 @@ export function SiteSettings() {
                 onClick={checkDomainStatus}
                 disabled={domainChecking}
               >
-                {domainChecking ? "Checking..." : "Check Status"}
+                {domainChecking ? t("siteSettings.domain.checking") : t("siteSettings.domain.checkStatus")}
               </button>
               <button
                 className="btn"
@@ -618,32 +622,32 @@ export function SiteSettings() {
                 disabled={disconnecting}
                 style={{ marginLeft: "0.5rem", color: "#991b1b" }}
               >
-                {disconnecting ? "Disconnecting..." : "Disconnect"}
+                {disconnecting ? t("siteSettings.domain.disconnecting") : t("siteSettings.domain.disconnect")}
               </button>
               {domainError && <span className="auth-error">{domainError}</span>}
             </div>
             {domainStatus === "failed" && (
               <div className="domain-failed-help">
-                <p><strong>Verification failed.</strong> Common causes:</p>
+                <p><strong>{t("siteSettings.domain.verificationFailed")}</strong> {t("siteSettings.domain.commonCauses")}</p>
                 <ul>
-                  <li>CNAME record not yet added at your DNS provider, or not yet propagated (DNS can take a few hours).</li>
-                  <li>CNAME points somewhere other than <code>origin.cadmus.digital</code> — double-check the value exactly.</li>
-                  <li>Proxy/CDN enabled at your DNS provider (turn off proxying; we handle SSL).</li>
+                  <li>{t("siteSettings.domain.causeCnameNotAdded")}</li>
+                  <li>{t("siteSettings.domain.causeCnameWrongTargetPrefix")} <code>origin.cadmus.digital</code> {t("siteSettings.domain.causeCnameWrongTargetSuffix")}</li>
+                  <li>{t("siteSettings.domain.causeProxyEnabled")}</li>
                 </ul>
-                <p>Update your DNS, then click <strong>Check Status</strong>. You can also disconnect and try again with a different domain.</p>
+                <p>{t("siteSettings.domain.updateDnsThenCheckPrefix")} <strong>{t("siteSettings.domain.checkStatus")}</strong>{t("siteSettings.domain.updateDnsThenCheckSuffix")}</p>
               </div>
             )}
             {(domainStatus === "pending" || domainStatus === "ssl_pending") && (
               <p className="domain-poll-note">
-                Waiting for DNS &amp; SSL verification — we check every 15 seconds automatically.
+                {t("siteSettings.domain.waitingForVerification")}
               </p>
             )}
             {dnsInstructions && (
               <div className="settings-domain-instructions" style={{ marginTop: "1rem" }}>
-                <p><strong>DNS Setup:</strong></p>
+                <p><strong>{t("siteSettings.domain.dnsSetup")}</strong></p>
                 <table className="content-table dns-records-table">
                   <thead>
-                    <tr><th>Type</th><th>Name</th><th>Value</th></tr>
+                    <tr><th>{t("siteSettings.domain.tableType")}</th><th>{t("siteSettings.domain.tableName")}</th><th>{t("siteSettings.domain.tableValue")}</th></tr>
                   </thead>
                   <tbody>
                     {dnsInstructions.map((rec, i) => (
@@ -676,7 +680,7 @@ export function SiteSettings() {
         ) : (
           <div className="settings-form">
             <label>
-              Connect Custom Domain
+              {t("siteSettings.domain.connectCustomDomain")}
               <input
                 type="text"
                 value={customDomain}
@@ -685,7 +689,7 @@ export function SiteSettings() {
               />
             </label>
             <div className="settings-actions">
-              <button className="btn btn-primary" onClick={connectDomain}>Connect</button>
+              <button className="btn btn-primary" onClick={connectDomain}>{t("siteSettings.domain.connect")}</button>
               {domainError && <span className="auth-error">{domainError}</span>}
             </div>
           </div>
@@ -694,31 +698,31 @@ export function SiteSettings() {
 
       {/* Site Brief */}
       <section className="settings-section">
-        <h3>Site Brief</h3>
+        <h3>{t("siteSettings.brief.heading")}</h3>
         <div className="settings-form">
           <label>
-            Business Name
+            {t("siteSettings.brief.businessName")}
             <input type="text" value={businessName} onChange={(e) => setBusinessName(e.target.value)} />
           </label>
           <label>
-            Business Description
+            {t("siteSettings.brief.businessDescription")}
             <textarea value={businessDescription} onChange={(e) => setBusinessDescription(e.target.value)} rows={3} />
           </label>
           <label>
-            Target Audience
+            {t("siteSettings.brief.targetAudience")}
             <input type="text" value={targetAudience} onChange={(e) => setTargetAudience(e.target.value)} />
           </label>
           <label>
-            Tone
-            <input type="text" value={tone} onChange={(e) => setTone(e.target.value)} placeholder="e.g. professional, friendly, casual" />
+            {t("siteSettings.brief.tone")}
+            <input type="text" value={tone} onChange={(e) => setTone(e.target.value)} placeholder={t("siteSettings.brief.tonePlaceholder")} />
           </label>
           <label>
-            Primary Goal
-            <input type="text" value={primaryGoal} onChange={(e) => setPrimaryGoal(e.target.value)} placeholder="e.g. generate leads, sell products" />
+            {t("siteSettings.brief.primaryGoal")}
+            <input type="text" value={primaryGoal} onChange={(e) => setPrimaryGoal(e.target.value)} placeholder={t("siteSettings.brief.primaryGoalPlaceholder")} />
           </label>
           <div className="settings-actions">
-            <button className="btn btn-primary" onClick={saveBrief}>Save Brief</button>
-            {briefSaved && <span className="settings-success">Saved!</span>}
+            <button className="btn btn-primary" onClick={saveBrief}>{t("siteSettings.brief.saveBrief")}</button>
+            {briefSaved && <span className="settings-success">{t("common.saved")}</span>}
             {briefError && <span className="auth-error">{briefError}</span>}
           </div>
         </div>
@@ -726,42 +730,42 @@ export function SiteSettings() {
 
       {/* Business Info */}
       <section className="settings-section">
-        <h3>Business Info</h3>
+        <h3>{t("siteSettings.businessInfo.heading")}</h3>
         <p style={{ marginBottom: "1rem", fontSize: "0.9rem", color: "var(--color-text-muted)" }}>
-          Contact details and address for your site's structured data (helps with SEO and Google Knowledge Panel).
+          {t("siteSettings.businessInfo.description")}
         </p>
         <div className="settings-form">
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
             <label>
-              Contact Email
+              {t("siteSettings.businessInfo.contactEmail")}
               <input type="email" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} placeholder="hello@example.com" />
             </label>
             <label>
-              Phone Number
+              {t("siteSettings.businessInfo.phoneNumber")}
               <input type="tel" value={contactPhone} onChange={(e) => setContactPhone(e.target.value)} placeholder="+1 (555) 123-4567" />
             </label>
           </div>
           <label>
-            Street Address
+            {t("siteSettings.businessInfo.streetAddress")}
             <input type="text" value={streetAddress} onChange={(e) => setStreetAddress(e.target.value)} placeholder="123 Main St" />
           </label>
           <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: "0.75rem" }}>
             <label>
-              City
+              {t("siteSettings.businessInfo.city")}
               <input type="text" value={city} onChange={(e) => setCity(e.target.value)} />
             </label>
             <label>
-              State / Province
+              {t("siteSettings.businessInfo.state")}
               <input type="text" value={state} onChange={(e) => setState(e.target.value)} />
             </label>
             <label>
-              Postal Code
+              {t("siteSettings.businessInfo.postalCode")}
               <input type="text" value={postalCode} onChange={(e) => setPostalCode(e.target.value)} />
             </label>
           </div>
           <label>
-            Country
-            <input type="text" value={country} onChange={(e) => setCountry(e.target.value)} placeholder="United States" />
+            {t("siteSettings.businessInfo.country")}
+            <input type="text" value={country} onChange={(e) => setCountry(e.target.value)} placeholder={t("siteSettings.businessInfo.countryPlaceholder")} />
           </label>
           <div className="settings-actions">
             <button
@@ -789,13 +793,13 @@ export function SiteSettings() {
                   setBusinessInfoSaved(true);
                   setTimeout(() => setBusinessInfoSaved(false), 3000);
                 } catch (e) {
-                  setBusinessInfoError(e instanceof Error ? e.message : "Failed to save");
+                  setBusinessInfoError(e instanceof Error ? e.message : t("common.failedToSave"));
                 }
               }}
             >
-              Save
+              {t("common.save")}
             </button>
-            {businessInfoSaved && <span className="settings-success">Saved!</span>}
+            {businessInfoSaved && <span className="settings-success">{t("common.saved")}</span>}
             {businessInfoError && <span className="auth-error">{businessInfoError}</span>}
           </div>
         </div>
@@ -803,33 +807,33 @@ export function SiteSettings() {
 
       {/* Social Links */}
       <section className="settings-section">
-        <h3>Social Links</h3>
+        <h3>{t("siteSettings.social.heading")}</h3>
         <p style={{ marginBottom: "1rem", fontSize: "0.9rem", color: "var(--color-text-muted)" }}>
-          Links to your social profiles. These appear in your footer and in the Organization schema for SEO.
+          {t("siteSettings.social.description")}
         </p>
         <div className="settings-form">
           <label>
-            Facebook
+            {t("siteSettings.social.facebook")}
             <input type="url" value={socialFacebook} onChange={(e) => setSocialFacebook(e.target.value)} placeholder="https://facebook.com/yourpage" />
           </label>
           <label>
-            Instagram
+            {t("siteSettings.social.instagram")}
             <input type="url" value={socialInstagram} onChange={(e) => setSocialInstagram(e.target.value)} placeholder="https://instagram.com/yourhandle" />
           </label>
           <label>
-            X / Twitter
+            {t("siteSettings.social.twitter")}
             <input type="url" value={socialTwitter} onChange={(e) => setSocialTwitter(e.target.value)} placeholder="https://x.com/yourhandle" />
           </label>
           <label>
-            LinkedIn
+            {t("siteSettings.social.linkedin")}
             <input type="url" value={socialLinkedIn} onChange={(e) => setSocialLinkedIn(e.target.value)} placeholder="https://linkedin.com/company/yourcompany" />
           </label>
           <label>
-            YouTube
+            {t("siteSettings.social.youtube")}
             <input type="url" value={socialYouTube} onChange={(e) => setSocialYouTube(e.target.value)} placeholder="https://youtube.com/@yourchannel" />
           </label>
           <label>
-            TikTok
+            {t("siteSettings.social.tiktok")}
             <input type="url" value={socialTikTok} onChange={(e) => setSocialTikTok(e.target.value)} placeholder="https://tiktok.com/@yourhandle" />
           </label>
           <div className="settings-actions">
@@ -858,13 +862,13 @@ export function SiteSettings() {
                   setSocialSaved(true);
                   setTimeout(() => setSocialSaved(false), 3000);
                 } catch (e) {
-                  setSocialError(e instanceof Error ? e.message : "Failed to save");
+                  setSocialError(e instanceof Error ? e.message : t("common.failedToSave"));
                 }
               }}
             >
-              Save
+              {t("common.save")}
             </button>
-            {socialSaved && <span className="settings-success">Saved!</span>}
+            {socialSaved && <span className="settings-success">{t("common.saved")}</span>}
             {socialError && <span className="auth-error">{socialError}</span>}
           </div>
         </div>
@@ -872,13 +876,13 @@ export function SiteSettings() {
 
       {/* Form Defaults */}
       <section className="settings-section">
-        <h3>Form Defaults</h3>
+        <h3>{t("siteSettings.forms.heading")}</h3>
         <p style={{ marginBottom: "1rem", fontSize: "0.9rem", color: "var(--color-text-muted)" }}>
-          Default settings for forms that don't have their own notification configured (e.g. Stitch design forms).
+          {t("siteSettings.forms.description")}
         </p>
         <div className="settings-form">
           <label>
-            Notification Email
+            {t("siteSettings.forms.notificationEmail")}
             <input
               type="email"
               value={formNotificationEmail}
@@ -892,23 +896,23 @@ export function SiteSettings() {
               checked={formConfirmationEnabled}
               onChange={(e) => setFormConfirmationEnabled(e.target.checked)}
             />
-            Send confirmation email to submitter
+            {t("siteSettings.forms.sendConfirmationEmail")}
           </label>
           {formConfirmationEnabled && (
             <label>
-              Confirmation Message
+              {t("siteSettings.forms.confirmationMessage")}
               <textarea
                 value={formConfirmationMessage}
                 onChange={(e) => setFormConfirmationMessage(e.target.value)}
-                placeholder="Thank you for reaching out. We'll get back to you soon."
+                placeholder={t("siteSettings.forms.confirmationMessagePlaceholder")}
                 rows={3}
               />
             </label>
           )}
 
-          <h4 style={{ margin: "1rem 0 0.25rem" }}>Webhook</h4>
+          <h4 style={{ margin: "1rem 0 0.25rem" }}>{t("siteSettings.forms.webhookHeading")}</h4>
           <p style={{ margin: "0 0 0.5rem", fontSize: "0.85rem", color: "var(--color-text-muted)" }}>
-            Default webhook for forms without their own. Individual forms can override this in the page editor.
+            {t("siteSettings.forms.webhookDescription")}
           </p>
           <label className="checkbox-label">
             <input
@@ -916,11 +920,11 @@ export function SiteSettings() {
               checked={formWebhookEnabled}
               onChange={(e) => setFormWebhookEnabled(e.target.checked)}
             />
-            Send each submission to a webhook URL
+            {t("siteSettings.forms.sendEachSubmissionToWebhook")}
           </label>
           {formWebhookEnabled && (
             <label>
-              Webhook URL
+              {t("siteSettings.forms.webhookUrl")}
               <input
                 type="url"
                 value={formWebhookUrl}
@@ -930,9 +934,9 @@ export function SiteSettings() {
             </label>
           )}
           <div style={{ marginTop: "0.5rem" }}>
-            <label style={{ fontSize: "0.85rem", color: "var(--color-text-muted)" }}>Signing secret</label>
+            <label style={{ fontSize: "0.85rem", color: "var(--color-text-muted)" }}>{t("siteSettings.forms.signingSecret")}</label>
             <p style={{ margin: "0.15rem 0 0.4rem", fontSize: "0.8rem", color: "var(--color-text-muted)" }}>
-              We sign every webhook with this secret (HMAC-SHA256 of "&lt;timestamp&gt;.&lt;body&gt;" in the X-Cadmus-Signature header). Use it to verify requests are from us.
+              {t("siteSettings.forms.signingSecretDescription")}
             </p>
             {webhookSecret ? (
               <>
@@ -945,19 +949,19 @@ export function SiteSettings() {
                   style={{ marginTop: "0.4rem" }}
                   disabled={revealingSecret}
                   onClick={async () => {
-                    if (!confirm("Rotate the signing secret? The current secret stops working immediately — any receiver verifying signatures must be updated with the new one.")) return;
+                    if (!confirm(t("siteSettings.forms.rotateSecretConfirm"))) return;
                     setRevealingSecret(true);
                     try {
                       const { secret } = await submissions.rotateWebhookSecret();
                       setWebhookSecret(secret);
                     } catch {
-                      setFormError("Failed to rotate signing secret");
+                      setFormError(t("siteSettings.forms.failedToRotateSecret"));
                     } finally {
                       setRevealingSecret(false);
                     }
                   }}
                 >
-                  {revealingSecret ? "Rotating…" : "Rotate secret"}
+                  {revealingSecret ? t("siteSettings.forms.rotating") : t("siteSettings.forms.rotateSecret")}
                 </button>
               </>
             ) : (
@@ -971,13 +975,13 @@ export function SiteSettings() {
                     const { secret } = await submissions.webhookSecret();
                     setWebhookSecret(secret);
                   } catch {
-                    setFormError("Failed to load signing secret");
+                    setFormError(t("siteSettings.forms.failedToLoadSecret"));
                   } finally {
                     setRevealingSecret(false);
                   }
                 }}
               >
-                {revealingSecret ? "Loading…" : "Reveal signing secret"}
+                {revealingSecret ? t("common.loading") : t("siteSettings.forms.revealSigningSecret")}
               </button>
             )}
           </div>
@@ -1010,13 +1014,13 @@ export function SiteSettings() {
                   setFormSaved(true);
                   setTimeout(() => setFormSaved(false), 3000);
                 } catch (e) {
-                  setFormError(e instanceof Error ? e.message : "Failed to save");
+                  setFormError(e instanceof Error ? e.message : t("common.failedToSave"));
                 }
               }}
             >
-              Save
+              {t("common.save")}
             </button>
-            {formSaved && <span className="settings-success">Saved!</span>}
+            {formSaved && <span className="settings-success">{t("common.saved")}</span>}
             {formError && <span className="auth-error">{formError}</span>}
           </div>
         </div>
@@ -1024,13 +1028,13 @@ export function SiteSettings() {
 
       {user?.role === "owner" && (
         <section className="settings-section">
-          <h3>Custom Code</h3>
+          <h3>{t("siteSettings.customCode.heading")}</h3>
           <p style={{ marginBottom: "0.75rem", fontSize: "0.9rem", color: "var(--color-text-muted)" }}>
-            Add analytics, pixels, chat widgets, or verification tags. This code is injected verbatim into every page — it is NOT sanitized, so only paste code from sources you trust. Owner-only.
+            {t("siteSettings.customCode.description")}
           </p>
           <div className="settings-form">
             <label>
-              Head code <span style={{ color: "var(--color-text-muted)", fontWeight: 400 }}>(injected into &lt;head&gt; — analytics, meta verification)</span>
+              {t("siteSettings.customCode.headCode")} <span style={{ color: "var(--color-text-muted)", fontWeight: 400 }}>{t("siteSettings.customCode.headCodeHint")}</span>
               <textarea
                 value={customHead}
                 onChange={(e) => setCustomHead(e.target.value)}
@@ -1040,7 +1044,7 @@ export function SiteSettings() {
               />
             </label>
             <label>
-              Body end code <span style={{ color: "var(--color-text-muted)", fontWeight: 400 }}>(injected before &lt;/body&gt; — chat widgets, deferred scripts)</span>
+              {t("siteSettings.customCode.bodyEndCode")} <span style={{ color: "var(--color-text-muted)", fontWeight: 400 }}>{t("siteSettings.customCode.bodyEndCodeHint")}</span>
               <textarea
                 value={customBodyEnd}
                 onChange={(e) => setCustomBodyEnd(e.target.value)}
@@ -1063,15 +1067,15 @@ export function SiteSettings() {
                     setCustomCodeSaved(true);
                     setTimeout(() => setCustomCodeSaved(false), 3000);
                   } catch (e) {
-                    setCustomCodeError(e instanceof Error ? e.message : "Failed to save");
+                    setCustomCodeError(e instanceof Error ? e.message : t("common.failedToSave"));
                   } finally {
                     setCustomCodeSaving(false);
                   }
                 }}
               >
-                {customCodeSaving ? "Saving…" : "Save Custom Code"}
+                {customCodeSaving ? t("common.saving") : t("siteSettings.customCode.saveCustomCode")}
               </button>
-              {customCodeSaved && <span className="settings-success">Saved!</span>}
+              {customCodeSaved && <span className="settings-success">{t("common.saved")}</span>}
               {customCodeError && <span className="auth-error">{customCodeError}</span>}
             </div>
           </div>
@@ -1088,12 +1092,12 @@ export function SiteSettings() {
       {/* Debug: Stitch Import */}
       {showDebug && (
       <section className="settings-section" style={{ borderTop: "2px dashed var(--color-border)" }}>
-        <h3>Debug: Import Stitch Project</h3>
+        <h3>{t("siteSettings.stitch.heading")}</h3>
         <p style={{ fontSize: "0.85rem", color: "var(--color-text-muted)" }}>
-          Fetch screens from an existing Stitch project and apply them to your pages.
+          {t("siteSettings.stitch.description")}
         </p>
         <div className="settings-row">
-          <label>Stitch Project ID</label>
+          <label>{t("siteSettings.stitch.projectId")}</label>
           <div style={{ display: "flex", gap: "0.5rem" }}>
             <input
               type="text"
@@ -1115,16 +1119,16 @@ export function SiteSettings() {
                   const res = await ai.listStitchScreens(stitchProjectId.trim());
                   setStitchScreens(res.screens);
                   if (res.screens.length === 0) {
-                    setStitchError("No screens found in this project");
+                    setStitchError(t("siteSettings.stitch.noScreensFound"));
                   }
                 } catch (e) {
-                  setStitchError(e instanceof Error ? e.message : "Failed to fetch screens");
+                  setStitchError(e instanceof Error ? e.message : t("siteSettings.stitch.failedToFetchScreens"));
                 } finally {
                   setStitchLoading(false);
                 }
               }}
             >
-              {stitchLoading ? "Fetching..." : "Fetch Screens"}
+              {stitchLoading ? t("siteSettings.stitch.fetching") : t("siteSettings.stitch.fetchScreens")}
             </button>
           </div>
           {stitchError && <span className="auth-error">{stitchError}</span>}
@@ -1133,19 +1137,19 @@ export function SiteSettings() {
         {stitchScreens.length > 0 && !stitchDone && (
           <div style={{ marginTop: "1rem" }}>
             <p style={{ fontWeight: 600, marginBottom: "0.5rem" }}>
-              Found {stitchScreens.length} screen(s). Map each to an existing page:
+              {t("siteSettings.stitch.foundScreens", { count: stitchScreens.length })}
             </p>
             {stitchScreens.map((screen, i) => (
               <div key={screen.screenId} className="settings-row" style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
                 {screen.screenshotUrl && (
                   <img
                     src={screen.screenshotUrl}
-                    alt={screen.name || `Screen ${i + 1}`}
+                    alt={screen.name || t("siteSettings.stitch.screenFallbackName", { number: i + 1 })}
                     style={{ width: 120, height: 80, objectFit: "cover", borderRadius: 4, border: "1px solid var(--color-border)", flexShrink: 0 }}
                   />
                 )}
                 <span style={{ minWidth: 150 }}>
-                  {screen.name || `Screen ${i + 1}`}
+                  {screen.name || t("siteSettings.stitch.screenFallbackName", { number: i + 1 })}
                   <span style={{ fontSize: "0.75rem", color: "var(--color-text-muted)", display: "block" }}>
                     {screen.screenId.slice(0, 12)}...
                   </span>
@@ -1160,8 +1164,8 @@ export function SiteSettings() {
                   }
                   style={{ flex: 1 }}
                 >
-                  <option value="">— Skip (don't apply) —</option>
-                  <option value="__post-template__">Blog Post Template</option>
+                  <option value="">{t("siteSettings.stitch.skipOption")}</option>
+                  <option value="__post-template__">{t("siteSettings.stitch.blogPostTemplate")}</option>
                   {existingPages.map((p) => (
                     <option key={p.id} value={p.id}>
                       /{p.slug} ({p.type})
@@ -1189,8 +1193,13 @@ export function SiteSettings() {
                   const [screenId, contentId] = entries[i];
                   const isPostTemplate = contentId === "__post-template__";
                   const screenName = stitchScreens.find((s) => s.screenId === screenId)?.name || screenId.slice(0, 12);
-                  const pageName = isPostTemplate ? "Blog Post Template" : existingPages.find((p) => p.id === contentId)?.slug || "page";
-                  setStitchProgress(`Applying ${screenName} → ${isPostTemplate ? pageName : `/${pageName}`} (${i + 1}/${entries.length})...`);
+                  const pageName = isPostTemplate ? t("siteSettings.stitch.blogPostTemplate") : existingPages.find((p) => p.id === contentId)?.slug || t("siteSettings.stitch.genericPage");
+                  setStitchProgress(t("siteSettings.stitch.applyingProgress", {
+                    screenName,
+                    target: isPostTemplate ? pageName : `/${pageName}`,
+                    current: i + 1,
+                    total: entries.length,
+                  }));
                   try {
                     if (isPostTemplate) {
                       await ai.applyStitchScreenAsTemplate(stitchProjectId.trim(), screenId);
@@ -1207,16 +1216,16 @@ export function SiteSettings() {
                 setStitchDone({ applied, failed });
               }}
             >
-              {stitchApplying ? "Applying..." : "Apply to Pages"}
+              {stitchApplying ? t("siteSettings.stitch.applying") : t("siteSettings.stitch.applyToPages")}
             </button>
           </div>
         )}
 
         {stitchDone && (
           <div style={{ marginTop: "1rem", padding: "0.75rem", background: stitchDone.failed ? "#fff3e0" : "#e6f9e6", borderRadius: 6 }}>
-            <strong>Done!</strong> Applied Stitch designs to {stitchDone.applied} page(s).
-            {stitchDone.failed > 0 && ` ${stitchDone.failed} failed.`}
-            {stitchDone.applied > 0 && " Refresh your site to see the changes."}
+            <strong>{t("siteSettings.stitch.done")}</strong> {t("siteSettings.stitch.appliedToPages", { count: stitchDone.applied })}
+            {stitchDone.failed > 0 && ` ${t("siteSettings.stitch.someFailed", { count: stitchDone.failed })}`}
+            {stitchDone.applied > 0 && ` ${t("siteSettings.stitch.refreshToSeeChanges")}`}
           </div>
         )}
       </section>
@@ -1225,16 +1234,16 @@ export function SiteSettings() {
       {/* Debug: Reset Site */}
       {showDebug && (
       <section className="settings-section" style={{ borderTop: "2px dashed var(--color-border)" }}>
-        <h3>Debug: Reset Site</h3>
+        <h3>{t("siteSettings.resetSite.heading")}</h3>
         <p style={{ fontSize: "0.85rem", color: "var(--color-text-muted)", marginBottom: "0.75rem" }}>
-          Delete all content, media, collections, navigation, and design settings, then restart onboarding from scratch. Your account and subdomain are preserved.
+          {t("siteSettings.resetSite.description")}
         </p>
         <button
           className="btn btn-danger"
           disabled={resetting}
           onClick={async () => {
             if (!siteData) return;
-            if (!window.confirm("Are you sure? This will permanently delete all site content, media, and settings.")) return;
+            if (!window.confirm(t("siteSettings.resetSite.confirm"))) return;
             setResetting(true);
             try {
               await site.reset(siteData.id);
@@ -1244,7 +1253,7 @@ export function SiteSettings() {
             }
           }}
         >
-          {resetting ? "Resetting..." : "Reset Site & Start Over"}
+          {resetting ? t("siteSettings.resetSite.resetting") : t("siteSettings.resetSite.resetButton")}
         </button>
       </section>
       )}
@@ -1252,9 +1261,9 @@ export function SiteSettings() {
       {/* Platform Admin: Theme Debug */}
       {user?.globalRole === "cadmus_admin" && (
       <section className="settings-section" style={{ borderTop: "2px dashed var(--color-border)" }}>
-        <h3>Platform Admin: Theme Debug</h3>
+        <h3>{t("siteSettings.themeDebug.heading")}</h3>
         <p style={{ fontSize: "0.85rem", color: "var(--color-text-muted)", marginBottom: "0.75rem" }}>
-          Inspect the compiled theme (fonts, header/footer, CSS coverage) and recompile Tailwind from the current blocks.
+          {t("siteSettings.themeDebug.description")}
         </p>
         <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", marginBottom: "0.75rem" }}>
           <button
@@ -1268,13 +1277,13 @@ export function SiteSettings() {
                 const data = await platformAdmin.themeDebug(siteData.id);
                 setThemeDebugData(data);
               } catch (err) {
-                setThemeDebugError(err instanceof Error ? err.message : "Failed to load theme debug info");
+                setThemeDebugError(err instanceof Error ? err.message : t("siteSettings.themeDebug.failedToLoad"));
               } finally {
                 setThemeDebugLoading(false);
               }
             }}
           >
-            {themeDebugLoading ? "Loading..." : "Load Theme Debug Info"}
+            {themeDebugLoading ? t("common.loading") : t("siteSettings.themeDebug.loadThemeDebugInfo")}
           </button>
           <button
             className="btn btn-primary"
@@ -1288,13 +1297,13 @@ export function SiteSettings() {
                 const result = await platformAdmin.recompileTheme(siteData.id);
                 setRecompileResult(result);
               } catch (err) {
-                setRecompileError(err instanceof Error ? err.message : "Recompile failed");
+                setRecompileError(err instanceof Error ? err.message : t("siteSettings.themeDebug.recompileFailed"));
               } finally {
                 setRecompiling(false);
               }
             }}
           >
-            {recompiling ? "Recompiling..." : "Recompile Theme"}
+            {recompiling ? t("siteSettings.themeDebug.recompiling") : t("siteSettings.themeDebug.recompileTheme")}
           </button>
         </div>
         {themeDebugError && (
@@ -1305,7 +1314,11 @@ export function SiteSettings() {
         )}
         {recompileResult && (
           <div style={{ marginBottom: "0.75rem", padding: "0.75rem", background: "#e6f9e6", borderRadius: 6, fontSize: "0.85rem" }}>
-            <strong>Recompiled.</strong> Compiled CSS: {recompileResult.beforeBytes} → {recompileResult.afterBytes} bytes across {recompileResult.blockCount} block(s).
+            <strong>{t("siteSettings.themeDebug.recompiled")}</strong> {t("siteSettings.themeDebug.compiledCssSummary", {
+              beforeBytes: recompileResult.beforeBytes,
+              afterBytes: recompileResult.afterBytes,
+              blockCount: recompileResult.blockCount,
+            })}
           </div>
         )}
         {themeDebugData && (
@@ -1338,6 +1351,7 @@ export function SiteSettings() {
 type ImportStep = "entry" | "options" | "running" | "done";
 
 function WordPressImportSection({ siteId, userId }: { siteId: string | null; userId: string | null }) {
+  const { t } = useTranslation();
   const [step, setStep] = useState<ImportStep>("entry");
   const [billingStatus, setBillingStatus] = useState<BillingStatus | null>(null);
   const [billingLoading, setBillingLoading] = useState(true);
@@ -1451,8 +1465,7 @@ function WordPressImportSection({ siteId, userId }: { siteId: string | null; use
 
     if (file.size > MAX_UPLOAD_MB * 1024 * 1024) {
       setAnalyzeError(
-        `This file is ${(file.size / 1024 / 1024).toFixed(0)} MB, which exceeds the 25 MB upload limit. ` +
-        `In WordPress, go to Tools → Export and use the filters to export posts, pages, and media separately.`
+        t("siteSettings.import.fileTooLargeDetailed", { sizeMb: (file.size / 1024 / 1024).toFixed(0) })
       );
       return;
     }
@@ -1466,8 +1479,8 @@ function WordPressImportSection({ siteId, userId }: { siteId: string | null; use
       const msg = err instanceof Error ? err.message : "";
       setAnalyzeError(
         msg.includes("413") || msg.toLowerCase().includes("too large")
-          ? `File is too large (max ${MAX_UPLOAD_MB} MB). In WordPress, go to Tools → Export and export posts, pages, and media separately.`
-          : msg || "Failed to analyze the file. Make sure it is a valid WordPress XML export."
+          ? t("siteSettings.import.fileTooLarge", { maxMb: MAX_UPLOAD_MB })
+          : msg || t("siteSettings.import.failedToAnalyze")
       );
     } finally {
       setAnalyzing(false);
@@ -1492,7 +1505,7 @@ function WordPressImportSection({ siteId, userId }: { siteId: string | null; use
         localStorage.setItem(storageKey, JSON.stringify({ jobId: res.jobId }));
       }
     } catch (err) {
-      setStartError(err instanceof Error ? err.message : "Failed to start import");
+      setStartError(err instanceof Error ? err.message : t("siteSettings.import.failedToStart"));
     }
   };
 
@@ -1517,8 +1530,8 @@ function WordPressImportSection({ siteId, userId }: { siteId: string | null; use
   if (billingLoading) {
     return (
       <section className="settings-section">
-        <h3>Import from WordPress</h3>
-        <p>Loading...</p>
+        <h3>{t("siteSettings.import.heading")}</h3>
+        <p>{t("common.loading")}</p>
       </section>
     );
   }
@@ -1527,10 +1540,9 @@ function WordPressImportSection({ siteId, userId }: { siteId: string | null; use
 
   return (
     <section className="settings-section">
-      <h3>Import from WordPress</h3>
+      <h3>{t("siteSettings.import.heading")}</h3>
       <p style={{ marginBottom: "1rem", fontSize: "0.9rem", color: "var(--color-text-muted)" }}>
-        Import posts, pages, and media from a WordPress XML export (WXR) file.
-        Go to WordPress Admin → Tools → Export to download your export file.
+        {t("siteSettings.import.description")}
       </p>
 
       {!hasPaymentMethod && (
@@ -1545,7 +1557,7 @@ function WordPressImportSection({ siteId, userId }: { siteId: string | null; use
         }}>
           <span style={{ fontSize: "1.25rem" }}>🔒</span>
           <p style={{ margin: 0, fontSize: "0.9rem" }}>
-            A payment method is required to use the importer. Add one in the Account section.
+            {t("siteSettings.import.paymentMethodRequired")}
           </p>
         </div>
       )}
@@ -1553,7 +1565,7 @@ function WordPressImportSection({ siteId, userId }: { siteId: string | null; use
       {hasPaymentMethod && step === "entry" && (
         <div className="settings-form">
           <label>
-            WordPress Export File (.xml)
+            {t("siteSettings.import.exportFileLabel")}
             <input
               type="file"
               accept=".xml,application/xml,text/xml"
@@ -1567,7 +1579,7 @@ function WordPressImportSection({ siteId, userId }: { siteId: string | null; use
               disabled={!file || analyzing}
               onClick={handleAnalyze}
             >
-              {analyzing ? "Analyzing..." : "Analyze File"}
+              {analyzing ? t("siteSettings.import.analyzing") : t("siteSettings.import.analyzeFile")}
             </button>
           </div>
         </div>
@@ -1576,19 +1588,22 @@ function WordPressImportSection({ siteId, userId }: { siteId: string | null; use
       {hasPaymentMethod && step === "options" && analyzeResult && (
         <div className="settings-form">
           <div style={{ padding: "0.75rem", background: "var(--color-bg-subtle, #f5f5f5)", borderRadius: "6px", marginBottom: "1rem" }}>
-            <strong>Found:</strong>{" "}
-            {analyzeResult.postCount} posts, {analyzeResult.pageCount} pages, {analyzeResult.attachmentCount} attachments
+            <strong>{t("siteSettings.import.foundLabel")}</strong>{" "}
+            {t("siteSettings.import.foundSummary", {
+              postCount: analyzeResult.postCount,
+              pageCount: analyzeResult.pageCount,
+              attachmentCount: analyzeResult.attachmentCount,
+            })}
           </div>
 
           {analyzeResult.hasMedia && (
             <div style={{ padding: "0.75rem", background: "#fefce8", border: "1px solid #fde68a", borderRadius: "6px", fontSize: "0.9rem", marginBottom: "1rem" }}>
-              Media import requires your original WordPress site to still be accessible.
-              Dead links will be skipped and logged.
+              {t("siteSettings.import.mediaImportNote")}
             </div>
           )}
 
           <fieldset style={{ border: "none", padding: 0, margin: 0 }}>
-            <legend style={{ fontWeight: 600, marginBottom: "0.5rem" }}>Content to import</legend>
+            <legend style={{ fontWeight: 600, marginBottom: "0.5rem" }}>{t("siteSettings.import.contentToImport")}</legend>
             <label className="checkbox-label">
               <input
                 type="checkbox"
@@ -1598,7 +1613,7 @@ function WordPressImportSection({ siteId, userId }: { siteId: string | null; use
                   else setIncludePostTypes((p) => p.filter((t) => t !== "post"));
                 }}
               />
-              Posts ({analyzeResult.postCount})
+              {t("siteSettings.import.postsCount", { count: analyzeResult.postCount })}
             </label>
             <label className="checkbox-label">
               <input
@@ -1609,7 +1624,7 @@ function WordPressImportSection({ siteId, userId }: { siteId: string | null; use
                   else setIncludePostTypes((p) => p.filter((t) => t !== "page"));
                 }}
               />
-              Pages ({analyzeResult.pageCount})
+              {t("siteSettings.import.pagesCount", { count: analyzeResult.pageCount })}
             </label>
           </fieldset>
 
@@ -1619,7 +1634,7 @@ function WordPressImportSection({ siteId, userId }: { siteId: string | null; use
               checked={importDrafts}
               onChange={(e) => setImportDrafts(e.target.checked)}
             />
-            Import draft posts/pages
+            {t("siteSettings.import.importDrafts")}
           </label>
 
           {analyzeResult.hasMedia && (
@@ -1629,13 +1644,13 @@ function WordPressImportSection({ siteId, userId }: { siteId: string | null; use
                 checked={importMedia}
                 onChange={(e) => setImportMedia(e.target.checked)}
               />
-              Import media files to Cadmus
+              {t("siteSettings.import.importMediaFiles")}
             </label>
           )}
 
           {analyzeResult.authors.length > 1 && teamMembers.length > 1 && (
             <div>
-              <p style={{ fontWeight: 600, marginBottom: "0.5rem" }}>Author Mapping</p>
+              <p style={{ fontWeight: 600, marginBottom: "0.5rem" }}>{t("siteSettings.import.authorMapping")}</p>
               {analyzeResult.authors.map((author) => (
                 <div key={author.login} style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "0.5rem" }}>
                   <span style={{ minWidth: "150px", fontSize: "0.9rem" }}>{author.displayName} ({author.login})</span>
@@ -1644,7 +1659,7 @@ function WordPressImportSection({ siteId, userId }: { siteId: string | null; use
                     onChange={(e) => setAuthorMap((prev) => ({ ...prev, [author.login]: e.target.value }))}
                     style={{ flex: 1 }}
                   >
-                    <option value="owner">Owner</option>
+                    <option value="owner">{t("siteSettings.import.ownerOption")}</option>
                     {teamMembers.map((m) => (
                       <option key={m.userId} value={m.userId}>
                         {m.firstName || m.email} {m.lastName || ""} ({m.role})
@@ -1658,7 +1673,7 @@ function WordPressImportSection({ siteId, userId }: { siteId: string | null; use
 
           {analyzeResult.categories.length > 0 && (
             <div>
-              <p style={{ fontWeight: 600, marginBottom: "0.5rem" }}>Category Mapping</p>
+              <p style={{ fontWeight: 600, marginBottom: "0.5rem" }}>{t("siteSettings.import.categoryMapping")}</p>
               {analyzeResult.categories.map((cat) => (
                 <div key={cat.slug} style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "0.5rem" }}>
                   <span style={{ minWidth: "150px", fontSize: "0.9rem" }}>
@@ -1670,7 +1685,7 @@ function WordPressImportSection({ siteId, userId }: { siteId: string | null; use
                     onChange={(e) => setCategoryMap((prev) => ({ ...prev, [cat.slug]: e.target.value as "new" | string }))}
                     style={{ flex: 1 }}
                   >
-                    <option value="new">Create new collection</option>
+                    <option value="new">{t("siteSettings.import.createNewCollection")}</option>
                     {existingCollections.map((c) => (
                       <option key={c.id} value={c.id}>{c.name} (/{c.slug})</option>
                     ))}
@@ -1688,10 +1703,10 @@ function WordPressImportSection({ siteId, userId }: { siteId: string | null; use
               disabled={includePostTypes.length === 0}
               onClick={handleStart}
             >
-              Start Import
+              {t("siteSettings.import.startImport")}
             </button>
             <button className="btn" onClick={handleReset} style={{ marginLeft: "0.5rem" }}>
-              Cancel
+              {t("common.cancel")}
             </button>
           </div>
         </div>
@@ -1700,7 +1715,7 @@ function WordPressImportSection({ siteId, userId }: { siteId: string | null; use
       {hasPaymentMethod && step === "running" && (
         <div>
           <p style={{ marginBottom: "0.5rem", fontWeight: 500 }}>
-            Importing...{pollStatus ? ` (${pollStatus.progress} of ${pollStatus.total})` : ""}
+            {t("siteSettings.import.importing")}{pollStatus ? ` ${t("siteSettings.import.progressOfTotal", { progress: pollStatus.progress, total: pollStatus.total })}` : ""}
           </p>
           <div style={{
             height: "8px",
@@ -1721,7 +1736,7 @@ function WordPressImportSection({ siteId, userId }: { siteId: string | null; use
             />
           </div>
           <p style={{ fontSize: "0.85rem", color: "var(--color-text-muted)" }}>
-            This may take a few minutes. You can leave this page — the import will continue in the background.
+            {t("siteSettings.import.importingHint")}
           </p>
         </div>
       )}
@@ -1737,22 +1752,22 @@ function WordPressImportSection({ siteId, userId }: { siteId: string | null; use
           }}>
             {importResult ? (
               <>
-                <p style={{ fontWeight: 600, marginBottom: "0.5rem" }}>Import complete</p>
+                <p style={{ fontWeight: 600, marginBottom: "0.5rem" }}>{t("siteSettings.import.importComplete")}</p>
                 <p>
-                  Imported: {importResult.imported.posts} posts, {importResult.imported.pages} pages
-                  {importResult.imported.media > 0 && `, ${importResult.imported.media} media files`}
+                  {t("siteSettings.import.importedSummary", { posts: importResult.imported.posts, pages: importResult.imported.pages })}
+                  {importResult.imported.media > 0 && `, ${t("siteSettings.import.importedMediaSuffix", { count: importResult.imported.media })}`}
                 </p>
-                {importResult.skipped > 0 && <p>Skipped: {importResult.skipped} items</p>}
+                {importResult.skipped > 0 && <p>{t("siteSettings.import.skippedSummary", { count: importResult.skipped })}</p>}
               </>
             ) : (
-              <p style={{ fontWeight: 600 }}>Import failed</p>
+              <p style={{ fontWeight: 600 }}>{t("siteSettings.import.importFailed")}</p>
             )}
           </div>
 
           {importResult?.renamedSlugs && importResult.renamedSlugs.length > 0 && (
             <details style={{ marginBottom: "0.75rem" }}>
               <summary style={{ cursor: "pointer", fontWeight: 500, marginBottom: "0.5rem" }}>
-                Renamed slugs ({importResult.renamedSlugs.length})
+                {t("siteSettings.import.renamedSlugs", { count: importResult.renamedSlugs.length })}
               </summary>
               <ul style={{ fontSize: "0.85rem", paddingLeft: "1.25rem", margin: "0.5rem 0" }}>
                 {importResult.renamedSlugs.map((r, i) => (
@@ -1765,7 +1780,7 @@ function WordPressImportSection({ siteId, userId }: { siteId: string | null; use
           {importResult?.mediaErrors && importResult.mediaErrors.length > 0 && (
             <details style={{ marginBottom: "0.75rem" }}>
               <summary style={{ cursor: "pointer", fontWeight: 500, marginBottom: "0.5rem" }}>
-                Media errors ({importResult.mediaErrors.length})
+                {t("siteSettings.import.mediaErrors", { count: importResult.mediaErrors.length })}
               </summary>
               <ul style={{ fontSize: "0.85rem", paddingLeft: "1.25rem", margin: "0.5rem 0" }}>
                 {importResult.mediaErrors.map((e, i) => (
@@ -1778,7 +1793,7 @@ function WordPressImportSection({ siteId, userId }: { siteId: string | null; use
           {importResult?.otherErrors && importResult.otherErrors.length > 0 && (
             <details style={{ marginBottom: "0.75rem" }}>
               <summary style={{ cursor: "pointer", fontWeight: 500, marginBottom: "0.5rem" }}>
-                Other errors ({importResult.otherErrors.length})
+                {t("siteSettings.import.otherErrors", { count: importResult.otherErrors.length })}
               </summary>
               <ul style={{ fontSize: "0.85rem", paddingLeft: "1.25rem", margin: "0.5rem 0" }}>
                 {importResult.otherErrors.map((e, i) => (
@@ -1789,7 +1804,7 @@ function WordPressImportSection({ siteId, userId }: { siteId: string | null; use
           )}
 
           <button className="btn btn-secondary" onClick={handleReset}>
-            Start another import
+            {t("siteSettings.import.startAnotherImport")}
           </button>
         </div>
       )}
@@ -1804,15 +1819,16 @@ function WordPressImportSection({ siteId, userId }: { siteId: string | null; use
 type ExportFormat = "html" | "json";
 
 const EXPORT_CATEGORIES = [
-  { id: "content", label: "Content", description: "All pages, posts, and their blocks" },
-  { id: "submissions", label: "Form Submissions", description: "All form submission data" },
-  { id: "settings", label: "Site Settings", description: "Name, brief, theme, and configuration" },
-  { id: "collections", label: "Collections", description: "Categories, tags, and content groupings" },
-  { id: "navigation", label: "Navigation", description: "Menu items and structure" },
-  { id: "media", label: "Media", description: "Image and file metadata (not the files themselves)" },
+  { id: "content" },
+  { id: "submissions" },
+  { id: "settings" },
+  { id: "collections" },
+  { id: "navigation" },
+  { id: "media" },
 ];
 
 function ExportSection() {
+  const { t } = useTranslation();
   const [format, setFormat] = useState<ExportFormat>("html");
   const [selectedCategories, setSelectedCategories] = useState<Set<string>>(
     new Set(EXPORT_CATEGORIES.map((c) => c.id))
@@ -1839,7 +1855,7 @@ function ExportSection() {
   async function handleExport() {
     setError("");
     if (format === "json" && selectedCategories.size === 0) {
-      setError("Select at least one category to export.");
+      setError(t("siteSettings.export.selectAtLeastOneCategory"));
       return;
     }
 
@@ -1854,7 +1870,7 @@ function ExportSection() {
 
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
-        throw new Error((body as { error?: string }).error || `Export failed (${res.status})`);
+        throw new Error((body as { error?: string }).error || t("siteSettings.export.exportFailedWithStatus", { status: res.status }));
       }
 
       const disposition = res.headers.get("Content-Disposition") || "";
@@ -1872,7 +1888,7 @@ function ExportSection() {
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Export failed");
+      setError(err instanceof Error ? err.message : t("siteSettings.export.exportFailed"));
     } finally {
       setExporting(false);
     }
@@ -1880,9 +1896,9 @@ function ExportSection() {
 
   return (
     <section className="settings-section">
-      <h3>Export</h3>
+      <h3>{t("siteSettings.export.heading")}</h3>
       <p style={{ marginBottom: "1rem", fontSize: "0.9rem", color: "var(--color-text-muted)" }}>
-        Download your site data for backup or migration.
+        {t("siteSettings.export.description")}
       </p>
 
       <div style={{ display: "flex", gap: "0.75rem", marginBottom: "1rem" }}>
@@ -1891,27 +1907,27 @@ function ExportSection() {
           className={`variant-chip${format === "html" ? " active" : ""}`}
           onClick={() => setFormat("html")}
         >
-          HTML
+          {t("siteSettings.export.formatHtml")}
         </button>
         <button
           type="button"
           className={`variant-chip${format === "json" ? " active" : ""}`}
           onClick={() => setFormat("json")}
         >
-          JSON
+          {t("siteSettings.export.formatJson")}
         </button>
       </div>
 
       {format === "html" && (
         <p style={{ fontSize: "0.9rem", color: "var(--color-text-muted)" }}>
-          Exports all pages as a single self-contained HTML file with embedded styles. Suitable for archiving or viewing offline.
+          {t("siteSettings.export.htmlDescription")}
         </p>
       )}
 
       {format === "json" && (
         <div>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "0.75rem" }}>
-            <span style={{ fontWeight: 500, fontSize: "0.9rem" }}>Data to include</span>
+            <span style={{ fontWeight: 500, fontSize: "0.9rem" }}>{t("siteSettings.export.dataToInclude")}</span>
             <button
               type="button"
               onClick={toggleAll}
@@ -1925,7 +1941,7 @@ function ExportSection() {
                 padding: 0,
               }}
             >
-              {allSelected ? "Deselect all" : "Select all"}
+              {allSelected ? t("siteSettings.export.deselectAll") : t("siteSettings.export.selectAll")}
             </button>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
@@ -1947,9 +1963,9 @@ function ExportSection() {
                   onChange={() => toggleCategory(cat.id)}
                 />
                 <div>
-                  <div style={{ fontWeight: 500 }}>{cat.label}</div>
+                  <div style={{ fontWeight: 500 }}>{t(`siteSettings.export.categories.${cat.id}.label`)}</div>
                   <div style={{ fontSize: "0.8rem", color: "var(--color-text-muted)" }}>
-                    {cat.description}
+                    {t(`siteSettings.export.categories.${cat.id}.description`)}
                   </div>
                 </div>
               </label>
@@ -1978,7 +1994,7 @@ function ExportSection() {
           onClick={handleExport}
           disabled={exporting || (format === "json" && selectedCategories.size === 0)}
         >
-          {exporting ? "Exporting..." : `Export as ${format.toUpperCase()}`}
+          {exporting ? t("siteSettings.export.exporting") : t("siteSettings.export.exportAs", { format: format.toUpperCase() })}
         </button>
       </div>
     </section>
@@ -1990,17 +2006,18 @@ function ExportSection() {
 // ---------------------------------------------------------------------------
 
 const TEXT_MODELS = [
-  { value: "claude-sonnet-4-6", label: "Claude Sonnet 4.6 (Anthropic)" },
-  { value: "gemini-2.5-flash", label: "Gemini 2.5 Flash (Google)" },
+  { value: "claude-sonnet-4-6" },
+  { value: "gemini-2.5-flash" },
 ];
 
 const IMAGE_MODELS = [
-  { value: "imagen-4.0-generate-001", label: "Imagen 4.0 (Google)" },
-  { value: "imagen-4.0-fast-generate-001", label: "Imagen 4.0 Fast (Google)" },
-  { value: "imagen-4.0-ultra-generate-001", label: "Imagen 4.0 Ultra (Google)" },
+  { value: "imagen-4.0-generate-001" },
+  { value: "imagen-4.0-fast-generate-001" },
+  { value: "imagen-4.0-ultra-generate-001" },
 ];
 
 function AIPreferencesSection() {
+  const { t } = useTranslation();
   const [textModel, setTextModel] = useState("claude-sonnet-4-6");
   const [imageModel, setImageModel] = useState("imagen-4.0-generate-001");
   const [saving, setSaving] = useState(false);
@@ -2023,9 +2040,9 @@ function AIPreferencesSection() {
     setStatusMsg(null);
     try {
       await ai.updatePreferences({ textModel, imageModel });
-      setStatusMsg("Preferences saved.");
+      setStatusMsg(t("siteSettings.aiPreferences.preferencesSaved"));
     } catch {
-      setStatusMsg("Failed to save preferences.");
+      setStatusMsg(t("siteSettings.aiPreferences.failedToSavePreferences"));
     } finally {
       setSaving(false);
     }
@@ -2035,30 +2052,30 @@ function AIPreferencesSection() {
 
   return (
     <section className="settings-section" style={{ borderTop: "2px dashed var(--color-border)" }}>
-      <h3>Debug: AI Preferences</h3>
-      <p>Choose your preferred AI models for different tasks.</p>
+      <h3>{t("siteSettings.aiPreferences.heading")}</h3>
+      <p>{t("siteSettings.aiPreferences.description")}</p>
       <div className="settings-form">
         <label>
-          Text Generation Model
+          {t("siteSettings.aiPreferences.textModel")}
           <select value={textModel} onChange={(e) => setTextModel(e.target.value)}>
             {TEXT_MODELS.map((m) => (
-              <option key={m.value} value={m.value}>{m.label}</option>
+              <option key={m.value} value={m.value}>{t(`siteSettings.aiPreferences.textModelOptions.${m.value}`)}</option>
             ))}
           </select>
         </label>
         <label>
-          Image Generation Model
+          {t("siteSettings.aiPreferences.imageModel")}
           <select value={imageModel} onChange={(e) => setImageModel(e.target.value)}>
             {IMAGE_MODELS.map((m) => (
-              <option key={m.value} value={m.value}>{m.label}</option>
+              <option key={m.value} value={m.value}>{t(`siteSettings.aiPreferences.imageModelOptions.${m.value}`)}</option>
             ))}
           </select>
         </label>
         <div className="settings-actions">
           <button className="btn btn-primary" onClick={handleSave} disabled={saving}>
-            {saving ? "Saving..." : "Save Preferences"}
+            {saving ? t("common.saving") : t("siteSettings.aiPreferences.savePreferences")}
           </button>
-          {statusMsg && <span className={statusMsg.includes("Failed") ? "auth-error" : "settings-success"}>{statusMsg}</span>}
+          {statusMsg && <span className={statusMsg === t("siteSettings.aiPreferences.failedToSavePreferences") ? "auth-error" : "settings-success"}>{statusMsg}</span>}
         </div>
       </div>
     </section>

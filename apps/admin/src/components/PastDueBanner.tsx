@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { billing, type BillingStatus } from "../lib/api";
 
 export function PastDueBanner() {
+  const { t } = useTranslation();
   const [data, setData] = useState<BillingStatus | null>(null);
 
   useEffect(() => {
@@ -35,8 +37,7 @@ export function PastDueBanner() {
       }}
     >
       <span>
-        Your last payment was declined. Stripe will keep retrying, but your site
-        will be suspended if those attempts also fail — please update your card.
+        {t("pastDueBanner.message")}
       </span>
       <button
         onClick={handleUpdatePayment}
@@ -53,7 +54,7 @@ export function PastDueBanner() {
           whiteSpace: "nowrap",
         }}
       >
-        Update payment method
+        {t("pastDueBanner.updatePaymentMethod")}
       </button>
     </div>
   );

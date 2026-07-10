@@ -1,8 +1,10 @@
 import { useState, type FormEvent } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 
 export function Login() {
+  const { t } = useTranslation();
   const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -25,7 +27,7 @@ export function Login() {
       await login(email, password, requestedSiteId);
       navigate(returnTo ?? "/");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Login failed");
+      setError(err instanceof Error ? err.message : t("login.error"));
     } finally {
       setSubmitting(false);
     }
@@ -34,13 +36,13 @@ export function Login() {
   return (
     <div className="auth-page">
       <div className="auth-card">
-        <h1>Cadmus</h1>
-        <h2>Sign in</h2>
+        <h1>{t("sidebar.brand")}</h1>
+        <h2>{t("login.title")}</h2>
         {successMessage && <div style={{ color: "#16a34a", background: "#f0fdf4", padding: "0.75rem", borderRadius: "6px", marginBottom: "1rem", fontSize: "0.9rem" }}>{successMessage}</div>}
         {error && <div className="auth-error">{error}</div>}
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>Email</label>
+            <label>{t("common.emailLabel")}</label>
             <input
               type="email"
               value={email}
@@ -50,7 +52,7 @@ export function Login() {
             />
           </div>
           <div className="form-group">
-            <label>Password</label>
+            <label>{t("common.passwordLabel")}</label>
             <input
               type="password"
               value={password}
@@ -59,14 +61,14 @@ export function Login() {
             />
           </div>
           <button type="submit" className="btn btn-primary btn-full" disabled={submitting}>
-            {submitting ? "Signing in..." : "Sign in"}
+            {submitting ? t("login.signingIn") : t("login.signIn")}
           </button>
         </form>
         <p className="auth-link">
-          <Link to="/forgot-password">Forgot password?</Link>
+          <Link to="/forgot-password">{t("login.forgotPassword")}</Link>
         </p>
         <p className="auth-link">
-          Don't have an account? <Link to="/signup">Sign up</Link>
+          {t("login.noAccount")} <Link to="/signup">{t("login.signUp")}</Link>
         </p>
       </div>
     </div>

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 import { auth } from "../lib/api";
 
@@ -12,6 +13,7 @@ function isValidSubdomainClient(sub: string): boolean {
 }
 
 export function SubdomainSetup() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [subdomain, setSubdomain] = useState("");
@@ -80,7 +82,7 @@ export function SubdomainSetup() {
     setError("");
     const normalized = subdomain.toLowerCase().trim();
     if (availability !== "available") {
-      setError("Please choose an available subdomain first.");
+      setError(t("subdomainSetup.error.noneSelected"));
       return;
     }
     setSubmitting(true);
@@ -88,7 +90,7 @@ export function SubdomainSetup() {
       await auth.setSubdomain(normalized);
       navigate("/verify-email");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to set subdomain");
+      setError(err instanceof Error ? err.message : t("subdomainSetup.error.generic"));
     } finally {
       setSubmitting(false);
     }
@@ -100,16 +102,16 @@ export function SubdomainSetup() {
   const availabilityIndicator = () => {
     switch (availability) {
       case "checking":
-        return <span className="subdomain-status checking">Checking...</span>;
+        return <span className="subdomain-status checking">{t("subdomainSetup.checking")}</span>;
       case "available":
-        return <span className="subdomain-status available">Available</span>;
+        return <span className="subdomain-status available">{t("subdomainSetup.available")}</span>;
       case "taken":
         return (
           <span className="subdomain-status taken">
-            Taken
+            {t("subdomainSetup.taken")}
             {suggestion && (
               <>
-                {" "}— try{" "}
+                {" "}— {t("subdomainSetup.tryPrefix")}{" "}
                 <button
                   type="button"
                   className="subdomain-suggestion-link"
@@ -122,7 +124,7 @@ export function SubdomainSetup() {
           </span>
         );
       case "invalid":
-        return <span className="subdomain-status invalid">Use 3–40 lowercase letters, numbers, or hyphens</span>;
+        return <span className="subdomain-status invalid">{t("subdomainSetup.invalidHint")}</span>;
       default:
         return null;
     }
@@ -131,21 +133,21 @@ export function SubdomainSetup() {
   return (
     <div className="auth-page">
       <div className="auth-card">
-        <h1>Cadmus</h1>
-        <h2>Choose your subdomain</h2>
+        <h1>{t("sidebar.brand")}</h1>
+        <h2>{t("subdomainSetup.title")}</h2>
         <p className="auth-description">
-          This will be your site's address on Cadmus. You can connect a custom domain later.
+          {t("subdomainSetup.description")}
         </p>
         {error && <div className="auth-error">{error}</div>}
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>Subdomain</label>
+            <label>{t("subdomainSetup.subdomainLabel")}</label>
             <div className="subdomain-input-wrap">
               <input
                 type="text"
                 value={subdomain}
                 onChange={(e) => setSubdomain(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""))}
-                placeholder="my-site"
+                placeholder={t("subdomainSetup.placeholder")}
                 required
                 autoFocus
                 autoComplete="off"
@@ -161,14 +163,14 @@ export function SubdomainSetup() {
             onClick={handlePickForMe}
             style={{ marginBottom: "0.75rem" }}
           >
-            Pick one for me
+            {t("subdomainSetup.pickForMe")}
           </button>
           <button
             type="submit"
             className="btn btn-primary btn-full"
             disabled={submitting || availability !== "available"}
           >
-            {submitting ? "Saving..." : "Continue"}
+            {submitting ? t("subdomainSetup.saving") : t("subdomainSetup.continue")}
           </button>
         </form>
       </div>

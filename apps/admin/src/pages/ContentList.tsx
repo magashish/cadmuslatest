@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 import { content, collections, importHTML, site } from "../lib/api";
 
@@ -16,6 +17,7 @@ interface ContentItem {
 type StatusFilter = "all" | "draft" | "published" | "archive";
 
 export function ContentList() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const navigate = useNavigate();
   const debugMode = new URLSearchParams(window.location.search).get("debug") === "true";
@@ -136,7 +138,7 @@ export function ContentList() {
       setImportFile(file);
       setImportError(null);
     } else {
-      setImportError("Please drop an HTML file (.html or .htm).");
+      setImportError(t("contentList.importModal.invalidFileError"));
     }
   };
 
@@ -163,7 +165,7 @@ export function ContentList() {
       setShowImportModal(false);
       navigate(`/content/${result.pageId}`);
     } catch (err) {
-      setImportError(err instanceof Error ? err.message : "Import failed");
+      setImportError(err instanceof Error ? err.message : t("contentList.importModal.importFailed"));
     } finally {
       setImporting(false);
     }
@@ -172,15 +174,15 @@ export function ContentList() {
   return (
     <div className="page">
       <div className="page-header">
-        <h2>Content</h2>
+        <h2>{t("contentList.title")}</h2>
         <div style={{ display: "flex", gap: "0.5rem" }}>
           {debugMode && (
             <button className="btn" onClick={openImportModal}>
-              Import HTML
+              {t("contentList.importHtml")}
             </button>
           )}
           <Link to={`/content/new?type=${activeTab}`} className="btn btn-primary">
-            + New {activeTab}
+            {t("contentList.newItem", { type: activeTab })}
           </Link>
         </div>
       </div>
@@ -192,7 +194,7 @@ export function ContentList() {
             className={`tab ${activeTab === tab ? "active" : ""}`}
             onClick={() => setActiveTab(tab)}
           >
-            {tab.charAt(0).toUpperCase() + tab.slice(1)}s
+            {t(`contentList.tabs.${tab}`)}
           </button>
         ))}
       </div>
@@ -204,29 +206,29 @@ export function ContentList() {
             className={`btn btn-sm ${statusFilter === s ? "btn-primary" : ""}`}
             onClick={() => setStatusFilter(s)}
           >
-            {s === "all" ? "All" : s.charAt(0).toUpperCase() + s.slice(1)}
+            {t(`contentList.statuses.${s}`)}
           </button>
         ))}
       </div>
 
       {loading ? (
-        <p>Loading...</p>
+        <p>{t("common.loading")}</p>
       ) : items.length === 0 ? (
         <div className="content-list">
           <p>
-            No {activeTab}s yet.{" "}
-            <Link to={`/content/new?type=${activeTab}`}>Create your first one</Link> or ask the AI to generate content.
+            {t("contentList.emptyState.text", { type: activeTab })}{" "}
+            <Link to={`/content/new?type=${activeTab}`}>{t("contentList.emptyState.createLink")}</Link> {t("contentList.emptyState.orAskAi")}
           </p>
         </div>
       ) : (
         <table className="content-table">
           <thead>
             <tr>
-              <th>Title</th>
-              <th>Slug</th>
-              <th>Collections</th>
-              <th>Status</th>
-              <th>Updated</th>
+              <th>{t("contentList.table.title")}</th>
+              <th>{t("contentList.table.slug")}</th>
+              <th>{t("contentList.table.collections")}</th>
+              <th>{t("contentList.table.status")}</th>
+              <th>{t("contentList.table.updated")}</th>
               <th></th>
             </tr>
           </thead>
@@ -235,7 +237,7 @@ export function ContentList() {
               <tr key={item.id}>
                 <td>
                   <Link to={`/content/${item.id}`}>
-                    {item.schemaData?.title || "Untitled"}
+                    {item.schemaData?.title || t("contentList.untitled")}
                   </Link>
                 </td>
                 <td>{item.slug}</td>
@@ -244,7 +246,7 @@ export function ContentList() {
                 </td>
                 <td>
                   <span className={`status-badge status-${item.status}`}>
-                    {item.status}
+                    {t(`contentList.statusBadge.${item.status}`, { defaultValue: item.status })}
                   </span>
                 </td>
                 <td>{new Date(item.updatedAt).toLocaleDateString()}</td>
@@ -254,14 +256,14 @@ export function ContentList() {
                       className="btn btn-sm"
                       onClick={() => handleUnarchive(item.id)}
                     >
-                      Restore
+                      {t("common.restore")}
                     </button>
                   ) : (
                     <button
                       className="btn btn-sm btn-danger"
                       onClick={() => handleDelete(item.id)}
                     >
-                      Archive
+                      {t("contentList.archive")}
                     </button>
                   )}
                 </td>
@@ -291,7 +293,7 @@ export function ContentList() {
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 style={{ marginTop: 0, marginBottom: "1rem" }}>Import HTML Page</h3>
+            <h3 style={{ marginTop: 0, marginBottom: "1rem" }}>{t("contentList.importModal.title")}</h3>
 
             {/* Step: loading (checking site) */}
             {importStep === "loading" && (
@@ -304,7 +306,7 @@ export function ContentList() {
                   animation: "spin 0.8s linear infinite",
                   flexShrink: 0,
                 }} />
-                <span>Checking site…</span>
+                <span>{t("contentList.importModal.checkingSite")}</span>
               </div>
             )}
 
@@ -312,7 +314,7 @@ export function ContentList() {
             {importStep === "theme" && (
               <div>
                 <p style={{ marginTop: 0, fontSize: "0.9rem", color: "var(--color-text-secondary)" }}>
-                  Your site doesn't have a theme yet. Choose how to set one up:
+                  {t("contentList.importModal.themeIntro")}
                 </p>
                 <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", marginBottom: "1rem" }}>
                   <label style={{
@@ -332,9 +334,9 @@ export function ContentList() {
                       style={{ marginTop: "2px" }}
                     />
                     <div>
-                      <div style={{ fontWeight: 600, fontSize: "0.9rem" }}>Extract from my page</div>
+                      <div style={{ fontWeight: 600, fontSize: "0.9rem" }}>{t("contentList.importModal.extractOption")}</div>
                       <div style={{ fontSize: "0.8rem", color: "var(--color-text-secondary)", marginTop: "0.2rem" }}>
-                        AI will detect your colors, fonts, and header/footer from the imported HTML.
+                        {t("contentList.importModal.extractDesc")}
                       </div>
                     </div>
                   </label>
@@ -355,15 +357,15 @@ export function ContentList() {
                       style={{ marginTop: "2px" }}
                     />
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontWeight: 600, fontSize: "0.9rem" }}>Describe my brand</div>
+                      <div style={{ fontWeight: 600, fontSize: "0.9rem" }}>{t("contentList.importModal.briefOption")}</div>
                       <div style={{ fontSize: "0.8rem", color: "var(--color-text-secondary)", marginTop: "0.2rem" }}>
-                        Describe your brand colors and style and AI will generate a theme.
+                        {t("contentList.importModal.briefDesc")}
                       </div>
                       {themeMode === "brief" && (
                         <textarea
                           value={themeBrief}
                           onChange={(e) => setThemeBrief(e.target.value)}
-                          placeholder="e.g. Modern SaaS, navy and white, Inter font, clean and minimal"
+                          placeholder={t("contentList.importModal.briefPlaceholder")}
                           rows={3}
                           style={{
                             marginTop: "0.625rem",
@@ -381,14 +383,14 @@ export function ContentList() {
                   </label>
                 </div>
                 <div style={{ display: "flex", gap: "0.5rem", justifyContent: "flex-end" }}>
-                  <button type="button" className="btn" onClick={closeImportModal}>Cancel</button>
+                  <button type="button" className="btn" onClick={closeImportModal}>{t("common.cancel")}</button>
                   <button
                     type="button"
                     className="btn btn-primary"
                     onClick={() => setImportStep("upload")}
                     disabled={themeMode === "brief" && !themeBrief.trim()}
                   >
-                    Continue
+                    {t("contentList.importModal.continue")}
                   </button>
                 </div>
               </div>
@@ -400,13 +402,13 @@ export function ContentList() {
                 {/* Optional title */}
                 <label style={{ display: "block", marginBottom: "1rem" }}>
                   <span style={{ fontSize: "0.85rem", fontWeight: 600, display: "block", marginBottom: "0.25rem" }}>
-                    Page Title <span style={{ fontWeight: 400, color: "var(--color-text-muted, #6b7280)" }}>(optional)</span>
+                    {t("contentList.importModal.pageTitleLabel")} <span style={{ fontWeight: 400, color: "var(--color-text-muted, #6b7280)" }}>{t("contentList.importModal.optional")}</span>
                   </span>
                   <input
                     type="text"
                     value={importTitle}
                     onChange={(e) => setImportTitle(e.target.value)}
-                    placeholder="Auto-detect from HTML"
+                    placeholder={t("contentList.importModal.titlePlaceholder")}
                     disabled={importing}
                     style={{
                       width: "100%",
@@ -450,15 +452,15 @@ export function ContentList() {
                       <div style={{ fontSize: "1.5rem", marginBottom: "0.5rem" }}>📄</div>
                       <div style={{ fontWeight: 600, wordBreak: "break-all" }}>{importFile.name}</div>
                       <div style={{ fontSize: "0.8rem", color: "var(--color-text-muted, #6b7280)", marginTop: "0.25rem" }}>
-                        {(importFile.size / 1024).toFixed(1)} KB — click to change
+                        {t("contentList.importModal.fileSizeClickChange", { size: (importFile.size / 1024).toFixed(1) })}
                       </div>
                     </div>
                   ) : (
                     <div>
                       <div style={{ fontSize: "1.5rem", marginBottom: "0.5rem" }}>⬆️</div>
-                      <div style={{ fontWeight: 500 }}>Drop an HTML file here, or click to browse</div>
+                      <div style={{ fontWeight: 500 }}>{t("contentList.importModal.dropZoneText")}</div>
                       <div style={{ fontSize: "0.8rem", color: "var(--color-text-muted, #6b7280)", marginTop: "0.25rem" }}>
-                        Accepts .html and .htm files
+                        {t("contentList.importModal.acceptedFiles")}
                       </div>
                     </div>
                   )}
@@ -483,7 +485,7 @@ export function ContentList() {
                       animation: "spin 0.8s linear infinite",
                       flexShrink: 0,
                     }} />
-                    <span>{needsTheme ? "Importing and setting up your theme…" : "Importing… downloading images and rewriting with your theme"}</span>
+                    <span>{needsTheme ? t("contentList.importModal.importingWithTheme") : t("contentList.importModal.importingDefault")}</span>
                   </div>
                 )}
 
@@ -506,7 +508,7 @@ export function ContentList() {
                 <div style={{ display: "flex", gap: "0.5rem", justifyContent: "flex-end" }}>
                   {needsTheme && (
                     <button type="button" className="btn" onClick={() => setImportStep("theme")} disabled={importing}>
-                      Back
+                      {t("contentList.importModal.back")}
                     </button>
                   )}
                   <button
@@ -515,7 +517,7 @@ export function ContentList() {
                     onClick={closeImportModal}
                     disabled={importing}
                   >
-                    Cancel
+                    {t("common.cancel")}
                   </button>
                   <button
                     type="button"
@@ -523,7 +525,7 @@ export function ContentList() {
                     onClick={handleImport}
                     disabled={!importFile || importing}
                   >
-                    {importing ? "Importing…" : "Import"}
+                    {importing ? t("contentList.importModal.importingBtn") : t("contentList.importModal.importBtn")}
                   </button>
                 </div>
               </>

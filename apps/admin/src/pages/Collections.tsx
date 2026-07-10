@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { collections } from "../lib/api";
 
 interface Collection {
@@ -8,6 +9,7 @@ interface Collection {
 }
 
 export function Collections() {
+  const { t } = useTranslation();
   const [items, setItems] = useState<Collection[]>([]);
   const [loading, setLoading] = useState(true);
   const [newName, setNewName] = useState("");
@@ -60,7 +62,7 @@ export function Collections() {
       setNewName("");
       await load();
     } catch (err) {
-      setCreateError(err instanceof Error ? err.message : "Failed to create collection");
+      setCreateError(err instanceof Error ? err.message : t("collections.createFailed"));
     } finally {
       setCreating(false);
     }
@@ -102,7 +104,7 @@ export function Collections() {
   return (
     <div className="page">
       <div className="page-header">
-        <h2>Collections</h2>
+        <h2>{t("collections.title")}</h2>
       </div>
 
       <form onSubmit={handleCreate} style={{ display: "flex", gap: "0.5rem", marginBottom: "1.5rem" }}>
@@ -110,11 +112,11 @@ export function Collections() {
           type="text"
           value={newName}
           onChange={(e) => setNewName(e.target.value)}
-          placeholder="New collection name..."
+          placeholder={t("collections.newNamePlaceholder")}
           style={{ flex: 1 }}
         />
         <button type="submit" className="btn btn-primary" disabled={creating || !newName.trim()}>
-          {creating ? "Adding..." : "Add"}
+          {creating ? t("common.adding") : t("common.add")}
         </button>
       </form>
       {createError && (
@@ -124,17 +126,17 @@ export function Collections() {
       )}
 
       {loading ? (
-        <p>Loading...</p>
+        <p>{t("common.loading")}</p>
       ) : items.length === 0 ? (
         <p style={{ color: "var(--color-text-secondary)" }}>
-          No collections yet.
+          {t("collections.empty")}
         </p>
       ) : (
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr>
-              <th style={{ textAlign: "left", padding: "0.5rem", borderBottom: "1px solid var(--color-border)" }}>Name</th>
-              <th style={{ textAlign: "left", padding: "0.5rem", borderBottom: "1px solid var(--color-border)" }}>Slug</th>
+              <th style={{ textAlign: "left", padding: "0.5rem", borderBottom: "1px solid var(--color-border)" }}>{t("collections.table.name")}</th>
+              <th style={{ textAlign: "left", padding: "0.5rem", borderBottom: "1px solid var(--color-border)" }}>{t("collections.table.slug")}</th>
               <th style={{ width: "160px", padding: "0.5rem", borderBottom: "1px solid var(--color-border)" }} />
             </tr>
           </thead>
@@ -167,7 +169,7 @@ export function Collections() {
                           style={{ fontSize: "0.8rem", padding: "0.25rem 0.5rem" }}
                           onClick={() => handleSave(item.id)}
                         >
-                          Save
+                          {t("common.save")}
                         </button>
                         <button
                           type="button"
@@ -175,7 +177,7 @@ export function Collections() {
                           style={{ fontSize: "0.8rem", padding: "0.25rem 0.5rem" }}
                           onClick={cancelEditing}
                         >
-                          Cancel
+                          {t("common.cancel")}
                         </button>
                       </div>
                     </td>
@@ -194,7 +196,7 @@ export function Collections() {
                           style={{ fontSize: "0.8rem", padding: "0.25rem 0.5rem" }}
                           onClick={() => startEditing(item)}
                         >
-                          Edit
+                          {t("common.edit")}
                         </button>
                         <button
                           type="button"
@@ -202,7 +204,7 @@ export function Collections() {
                           style={{ fontSize: "0.8rem", padding: "0.25rem 0.5rem" }}
                           onClick={() => handleDelete(item.id)}
                         >
-                          Delete
+                          {t("common.delete")}
                         </button>
                       </div>
                     </td>

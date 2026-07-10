@@ -1,33 +1,39 @@
+import { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
 import type { FeatureKey, GateResult } from "../lib/feature-gates";
 
-const FEATURE_LABELS: Record<FeatureKey, string> = {
-  custom_domain: "Custom Domain",
-  team_members: "Team Members",
-  ai_chat_message: "AI Chat Messages",
-  ai_image_generation: "AI Image Generation",
-  page_count: "Page Limit",
-  post_count: "Post Limit",
-  storage_upload: "Media Storage",
-  form_email_notification: "Form Email Notifications",
-  paid_addons: "Paid Add-ons",
-};
+function getFeatureLabels(t: TFunction): Record<FeatureKey, string> {
+  return {
+    custom_domain: t("upgradePrompt.features.custom_domain.label"),
+    team_members: t("upgradePrompt.features.team_members.label"),
+    ai_chat_message: t("upgradePrompt.features.ai_chat_message.label"),
+    ai_image_generation: t("upgradePrompt.features.ai_image_generation.label"),
+    page_count: t("upgradePrompt.features.page_count.label"),
+    post_count: t("upgradePrompt.features.post_count.label"),
+    storage_upload: t("upgradePrompt.features.storage_upload.label"),
+    form_email_notification: t("upgradePrompt.features.form_email_notification.label"),
+    paid_addons: t("upgradePrompt.features.paid_addons.label"),
+  };
+}
 
-const FEATURE_DESCRIPTIONS: Record<FeatureKey, string> = {
-  custom_domain: "Connect your own domain name to your site.",
-  team_members: "Invite collaborators to help manage your site.",
-  ai_chat_message: "Chat with Cadmus AI to edit content and get suggestions.",
-  ai_image_generation: "Generate professional images using AI.",
-  page_count: "Create additional pages on your site.",
-  post_count: "Publish additional blog posts.",
-  storage_upload: "Upload images, videos, and documents to your media library.",
-  form_email_notification: "Receive email notifications when visitors submit forms.",
-  paid_addons: "Install premium add-ons from the marketplace.",
-};
+function getFeatureDescriptions(t: TFunction): Record<FeatureKey, string> {
+  return {
+    custom_domain: t("upgradePrompt.features.custom_domain.description"),
+    team_members: t("upgradePrompt.features.team_members.description"),
+    ai_chat_message: t("upgradePrompt.features.ai_chat_message.description"),
+    ai_image_generation: t("upgradePrompt.features.ai_image_generation.description"),
+    page_count: t("upgradePrompt.features.page_count.description"),
+    post_count: t("upgradePrompt.features.post_count.description"),
+    storage_upload: t("upgradePrompt.features.storage_upload.description"),
+    form_email_notification: t("upgradePrompt.features.form_email_notification.description"),
+    paid_addons: t("upgradePrompt.features.paid_addons.description"),
+  };
+}
 
-function periodLabel(period: GateResult["period"]): string {
-  if (period === "daily") return "today";
-  if (period === "monthly") return "this month";
-  if (period === "lifetime") return "total";
+function periodLabel(period: GateResult["period"], t: TFunction): string {
+  if (period === "daily") return t("upgradePrompt.period.today");
+  if (period === "monthly") return t("upgradePrompt.period.thisMonth");
+  if (period === "lifetime") return t("upgradePrompt.period.total");
   return "";
 }
 
@@ -43,8 +49,9 @@ interface UpgradePromptProps {
 }
 
 export function UpgradePrompt({ feature, gate, inline = false }: UpgradePromptProps) {
-  const label = FEATURE_LABELS[feature];
-  const description = FEATURE_DESCRIPTIONS[feature];
+  const { t } = useTranslation();
+  const label = getFeatureLabels(t)[feature];
+  const description = getFeatureDescriptions(t)[feature];
   const pct = usagePercent(gate);
   const hasUsageInfo = gate.limit !== null && gate.usage !== null;
 
@@ -66,12 +73,12 @@ export function UpgradePrompt({ feature, gate, inline = false }: UpgradePromptPr
         <span style={{ flex: 1 }}>
           {hasUsageInfo ? (
             <>
-              {label}: {gate.usage} / {gate.limit} {periodLabel(gate.period)} used.{" "}
+              {t("upgradePrompt.inline.usage", { label, usage: gate.usage, limit: gate.limit, period: periodLabel(gate.period, t) })}{" "}
             </>
           ) : (
-            <>{label} is not available on the free plan. </>
+            <>{t("upgradePrompt.inline.notAvailable", { label })} </>
           )}
-          Upgrade to unlock more.
+          {t("upgradePrompt.inline.upgradeToUnlock")}
         </span>
         <a
           href="/admin/account"
@@ -86,7 +93,7 @@ export function UpgradePrompt({ feature, gate, inline = false }: UpgradePromptPr
             whiteSpace: "nowrap",
           }}
         >
-          Upgrade
+          {t("upgradePrompt.upgradeButton")}
         </a>
       </div>
     );
@@ -136,7 +143,7 @@ export function UpgradePrompt({ feature, gate, inline = false }: UpgradePromptPr
             marginBottom: "0.375rem",
           }}
         >
-          {label} Limit Reached
+          {t("upgradePrompt.card.limitReached", { label })}
         </div>
         <div
           style={{
@@ -161,7 +168,7 @@ export function UpgradePrompt({ feature, gate, inline = false }: UpgradePromptPr
             }}
           >
             <span>
-              {gate.usage} / {gate.limit} {periodLabel(gate.period)}
+              {t("upgradePrompt.card.usageFraction", { usage: gate.usage, limit: gate.limit, period: periodLabel(gate.period, t) })}
             </span>
             <span>{pct}%</span>
           </div>
@@ -201,7 +208,7 @@ export function UpgradePrompt({ feature, gate, inline = false }: UpgradePromptPr
           boxSizing: "border-box",
         }}
       >
-        Upgrade Plan
+        {t("upgradePrompt.card.upgradePlanButton")}
       </a>
       <div
         style={{
@@ -209,7 +216,7 @@ export function UpgradePrompt({ feature, gate, inline = false }: UpgradePromptPr
           color: "var(--color-text-muted, #6b7280)",
         }}
       >
-        Unlock unlimited access with a paid plan.
+        {t("upgradePrompt.card.unlockText")}
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback, useRef, type ReactNode } from "react";
 import { auth, site, setSiteId, isAbortError, ApiError } from "../lib/api";
+import i18n, { isSupportedLocale } from "../i18n";
 
 
 interface SiteMembership {
@@ -22,6 +23,7 @@ interface User {
   globalRole?: string;
   memberships?: SiteMembership[];
   emailVerifiedAt?: string | null;
+  locale?: string;
 }
 
 interface AuthContextValue {
@@ -54,6 +56,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [hardDeleteAt, setHardDeleteAt] = useState<string | null>(null);
   const [skippedOnboarding, setSkippedOnboarding] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  // Apply the user's saved language preference once it's known. Until then
+  // (or for guests/no preference) the browser/localStorage default from
+  // src/i18n applies.
+  useEffect(() => {
+    const locale = user?.locale;
+    if (isSupportedLocale(locale) && i18n.language !== locale) {
+      void i18n.changeLanguage(locale);
+    }
+  }, [user?.locale]);
 
   const fetchSiteStatus = useCallback(async (siteId: string) => {
     // Partner-portal sessions have no site context — nothing to fetch.

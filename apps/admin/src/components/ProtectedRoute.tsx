@@ -1,14 +1,16 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 
 export function ProtectedRoute() {
+  const { t } = useTranslation();
   const { user, siteStatus, loading } = useAuth();
   const location = useLocation();
 
   if (loading) {
     return (
       <div className="auth-page">
-        <p>Loading...</p>
+        <p>{t("common.loading")}</p>
       </div>
     );
   }

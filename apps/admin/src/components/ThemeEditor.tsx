@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
 import type { SiteTheme } from "@cadmus/shared";
 
 interface Props {
@@ -7,20 +9,22 @@ interface Props {
 }
 
 // Group color tokens by prefix for readability
-const COLOR_GROUPS: Array<{ label: string; match: (key: string) => boolean }> = [
-  { label: "Primary", match: (k) => k.startsWith("primary") || k.startsWith("on-primary") || k === "inverse-primary" },
-  { label: "Secondary", match: (k) => k.startsWith("secondary") || k.startsWith("on-secondary") },
-  { label: "Tertiary", match: (k) => k.startsWith("tertiary") || k.startsWith("on-tertiary") },
-  { label: "Surface", match: (k) => k.startsWith("surface") || k.startsWith("on-surface") || k.startsWith("inverse") },
-  { label: "Error", match: (k) => k.startsWith("error") || k.startsWith("on-error") },
-  { label: "Other", match: () => true },
-];
+function getColorGroups(t: TFunction): Array<{ label: string; match: (key: string) => boolean }> {
+  return [
+    { label: t("themeEditor.colorGroups.primary"), match: (k) => k.startsWith("primary") || k.startsWith("on-primary") || k === "inverse-primary" },
+    { label: t("themeEditor.colorGroups.secondary"), match: (k) => k.startsWith("secondary") || k.startsWith("on-secondary") },
+    { label: t("themeEditor.colorGroups.tertiary"), match: (k) => k.startsWith("tertiary") || k.startsWith("on-tertiary") },
+    { label: t("themeEditor.colorGroups.surface"), match: (k) => k.startsWith("surface") || k.startsWith("on-surface") || k.startsWith("inverse") },
+    { label: t("themeEditor.colorGroups.error"), match: (k) => k.startsWith("error") || k.startsWith("on-error") },
+    { label: t("themeEditor.colorGroups.other"), match: () => true },
+  ];
+}
 
-function groupColors(colors: Record<string, string>) {
+function groupColors(colors: Record<string, string>, t: TFunction) {
   const assigned = new Set<string>();
   const groups: Array<{ label: string; entries: Array<[string, string]> }> = [];
 
-  for (const group of COLOR_GROUPS) {
+  for (const group of getColorGroups(t)) {
     const entries: Array<[string, string]> = [];
     for (const [key, value] of Object.entries(colors)) {
       if (!assigned.has(key) && group.match(key)) {
@@ -64,6 +68,7 @@ function formatLabel(key: string): string {
 }
 
 export function ThemeEditor({ theme, onSave }: Props) {
+  const { t } = useTranslation();
   const [colors, setColors] = useState<Record<string, string>>({ ...theme.colors });
   const [fontFamilies, setFontFamilies] = useState<Record<string, string[]>>({
     ...Object.fromEntries(
@@ -96,18 +101,18 @@ export function ThemeEditor({ theme, onSave }: Props) {
       setDirty(false);
       setTimeout(() => setSaved(false), 3000);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to save");
+      setError(e instanceof Error ? e.message : t("themeEditor.errors.saveFailed"));
     } finally {
       setSaving(false);
     }
   };
 
-  const groups = groupColors(colors);
+  const groups = groupColors(colors, t);
 
   return (
     <div>
       <p style={{ marginBottom: "1rem", color: "var(--color-text-muted, #64748b)" }}>
-        Colors and fonts for your site theme. Edit any value and save.
+        {t("themeEditor.subtitle")}
       </p>
 
       {/* Color groups */}
@@ -163,7 +168,7 @@ export function ThemeEditor({ theme, onSave }: Props) {
       {/* Font families */}
       <div style={{ marginBottom: "1.5rem" }}>
         <h4 style={{ fontSize: "0.85rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--color-text-muted)", marginBottom: "0.5rem" }}>
-          Fonts
+          {t("themeEditor.fontsHeading")}
         </h4>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "0.75rem" }}>
           {Object.entries(fontFamilies).map(([key, fonts]) => {
@@ -202,9 +207,9 @@ export function ThemeEditor({ theme, onSave }: Props) {
           disabled={!dirty || saving}
           style={{ opacity: dirty ? 1 : 0.5 }}
         >
-          {saving ? "Saving..." : "Save Theme"}
+          {saving ? t("themeEditor.saving") : t("themeEditor.saveButton")}
         </button>
-        {saved && <span className="settings-success">Saved!</span>}
+        {saved && <span className="settings-success">{t("common.saved")}</span>}
         {error && <span className="auth-error">{error}</span>}
       </div>
     </div>

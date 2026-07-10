@@ -1,6 +1,8 @@
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 
 export function SuspensionBanner() {
+  const { t } = useTranslation();
   const { siteStatus, suspensionReason, archiveReason, hardDeleteAt } = useAuth();
 
   if (siteStatus !== "suspended" && siteStatus !== "archived") return null;
@@ -20,7 +22,7 @@ export function SuspensionBanner() {
       day: "numeric",
       year: "numeric",
     });
-    deletionLine = `Scheduled for permanent deletion on ${dateStr} (${daysLeft} day${daysLeft === 1 ? "" : "s"} remaining).`;
+    deletionLine = t("suspensionBanner.deletion", { date: dateStr, count: daysLeft });
   }
 
   return (
@@ -36,15 +38,15 @@ export function SuspensionBanner() {
       }}
     >
       <div style={{ fontWeight: 600, marginBottom: "0.25rem" }}>
-        {isArchived ? "This site is archived" : "This site is suspended"}
+        {isArchived ? t("suspensionBanner.archivedTitle") : t("suspensionBanner.suspendedTitle")}
       </div>
       <div>
-        You can still sign in and view content, but editing and publishing are disabled.
-        {reason ? ` Reason: ${reason}` : ""}
+        {t("suspensionBanner.body")}
+        {reason ? t("suspensionBanner.reasonSuffix", { reason }) : ""}
       </div>
       {deletionLine && <div style={{ marginTop: "0.25rem" }}>{deletionLine}</div>}
       <div style={{ marginTop: "0.25rem" }}>
-        Questions? Contact{" "}
+        {t("suspensionBanner.contactPrefix")}{" "}
         <a href="mailto:support@cadmus.digital" style={{ color: "#7f1d1d", textDecoration: "underline" }}>
           support@cadmus.digital
         </a>

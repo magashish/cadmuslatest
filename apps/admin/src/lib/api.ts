@@ -197,6 +197,7 @@ interface UserProfile {
   globalRole?: string;
   memberships?: SiteMembership[];
   emailVerifiedAt?: string | null;
+  locale?: string;
 }
 
 export const auth = {
@@ -243,7 +244,7 @@ export const auth = {
     );
   },
 
-  updateProfile(data: { firstName?: string; lastName?: string }) {
+  updateProfile(data: { firstName?: string; lastName?: string; locale?: string }) {
     return apiFetch<{ user: UserProfile }>(
       "/api/auth/profile",
       { method: "PUT", body: JSON.stringify(data) }
